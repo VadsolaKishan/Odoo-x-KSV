@@ -29,17 +29,19 @@ app.use('/api', apiRouter);
 app.use(errorHandler);
 
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, async () => {
-  console.log(
-    `Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`
-  );
-  try {
-    await pool.query('SELECT NOW()');
-    console.log('Database connection status: Connected successfully');
-  } catch (err: any) {
-    console.error('Database connection status: Connection failed');
-    console.error(err);
-  }
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, async () => {
+    console.log(
+      `Server running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`
+    );
+    try {
+      await pool.query('SELECT NOW()');
+      console.log('Database connection status: Connected successfully');
+    } catch (err: any) {
+      console.error('Database connection status: Connection failed');
+      console.error(err);
+    }
+  });
+}
 
 export default app;
