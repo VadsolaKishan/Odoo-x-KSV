@@ -1,0 +1,26 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/src/assets/react.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>VendorBridge | Procurement & Supplier Management ERP</title>
+    <meta name="description" content="A premium, dark-mode ERP portal for modern vendor onboarding, request-for-quotation (RFQ) processing, purchase orders, and invoice workflows." />
+    <script>
+      (function() {
+        try {
+          const themeState = JSON.parse(localStorage.getItem('vb-theme'));
+          if (themeState && themeState.state && themeState.state.theme === 'light') {
+            document.documentElement.classList.add('light');
+          } else {
+            document.documentElement.classList.remove('light');
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body class="bg-surface-base text-text-primary">
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

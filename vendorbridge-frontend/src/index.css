@@ -1,0 +1,218 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Primary brand & hover */
+  --brand-primary: #10b981;
+  --brand-hover: #059669;
+  --brand-glow: rgba(16, 185, 129, 0.15);
+
+  /* Deep slate dark backgrounds */
+  --bg-base: #0b0f19;
+  --bg-surface: #151f32;
+  --bg-elevated: #1e293b;
+  --bg-glass: rgba(21, 31, 50, 0.7);
+
+  /* Slate dark text hierarchy */
+  --text-primary: #f8fafc;
+  --text-secondary: #94a3b8;
+  --text-accent: #34d399;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(255, 255, 255, 0.08);
+  --border-green: rgba(16, 185, 129, 0.3);
+  --border-focus: rgba(16, 185, 129, 0.5);
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 20px rgba(16, 185, 129, 0.2);
+
+  /* Semantic status colors (text, bg, border) */
+  --status-success-text: #34d399;
+  --status-success-bg: rgba(52, 211, 153, 0.1);
+  --status-success-border: rgba(52, 211, 153, 0.2);
+
+  --status-warning-text: #fbbf24;
+  --status-warning-bg: rgba(251, 191, 36, 0.1);
+  --status-warning-border: rgba(251, 191, 36, 0.2);
+
+  --status-danger-text: #f87171;
+  --status-danger-bg: rgba(248, 113, 113, 0.1);
+  --status-danger-border: rgba(248, 113, 113, 0.2);
+
+  --status-muted-text: #94a3b8;
+  --status-muted-bg: rgba(148, 163, 184, 0.1);
+  --status-muted-border: rgba(148, 163, 184, 0.2);
+}
+
+/* Light theme variables */
+:root.light {
+  /* Primary brand & hover */
+  --brand-primary: #059669;
+  --brand-hover: #047857;
+  --brand-glow: rgba(5, 150, 105, 0.1);
+
+  /* Slate light backgrounds */
+  --bg-base: #f8fafc;
+  --bg-surface: #ffffff;
+  --bg-elevated: #f1f5f9;
+  --bg-glass: rgba(255, 255, 255, 0.75);
+
+  /* Slate light text hierarchy */
+  --text-primary: #0f172a;
+  --text-secondary: #475569;
+  --text-accent: #059669;
+
+  /* Borders & Shadows */
+  --border-subtle: rgba(15, 23, 42, 0.08);
+  --border-green: rgba(16, 185, 129, 0.2);
+  --border-focus: rgba(5, 150, 105, 0.5);
+  --shadow-card: 0 4px 20px rgba(0, 0, 0, 0.05);
+  --shadow-glow: 0 0 15px rgba(16, 185, 129, 0.1);
+
+  /* Semantic status colors (text, bg, border) */
+  --status-success-text: #047857;
+  --status-success-bg: rgba(5, 150, 105, 0.08);
+  --status-success-border: rgba(5, 150, 105, 0.18);
+
+  --status-warning-text: #b45309;
+  --status-warning-bg: rgba(217, 119, 6, 0.08);
+  --status-warning-border: rgba(217, 119, 6, 0.18);
+
+  --status-danger-text: #b91c1c;
+  --status-danger-bg: rgba(220, 38, 38, 0.08);
+  --status-danger-border: rgba(220, 38, 38, 0.18);
+
+  --status-muted-text: #475569;
+  --status-muted-bg: rgba(71, 85, 105, 0.08);
+  --status-muted-border: rgba(71, 85, 105, 0.18);
+}
+
+body {
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+  transition: background-color 0.3s, color 0.3s;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-base);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+:root.light ::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(16, 185, 129, 0.3);
+}
+
+@layer components {
+  /* Glassmorphism card utility */
+  .glass-card {
+    background: var(--bg-glass);
+    backdrop-filter: blur(12px);
+    border: 1px solid var(--border-subtle);
+    box-shadow: var(--shadow-card);
+    transition: background-color 0.3s, border-color 0.3s, box-shadow 0.3s;
+  }
+
+  /* Glassmorphism header utility */
+  .header-glass {
+    background: var(--bg-glass);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border-subtle);
+    transition: background-color 0.3s, border-color 0.3s;
+  }
+
+  /* Input field base */
+  .input-field {
+    background: var(--bg-surface);
+    border: 1px solid var(--border-subtle);
+    color: var(--text-primary);
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s, background-color 0.3s, color 0.3s;
+  }
+  .input-field:focus {
+    outline: none;
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px var(--brand-glow);
+  }
+  .input-field::placeholder {
+    color: var(--text-secondary);
+    opacity: 0.7;
+  }
+
+  /* Dropdown select custom styling */
+  select.input-field {
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='%2394a3b8' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 40px;
+  }
+
+  /* Semantic status utility classes */
+  .status-success {
+    color: var(--status-success-text);
+    background-color: var(--status-success-bg);
+    border-color: var(--status-success-border);
+  }
+  .status-warning {
+    color: var(--status-warning-text);
+    background-color: var(--status-warning-bg);
+    border-color: var(--status-warning-border);
+  }
+  .status-danger {
+    color: var(--status-danger-text);
+    background-color: var(--status-danger-bg);
+    border-color: var(--status-danger-border);
+  }
+  .status-muted {
+    color: var(--status-muted-text);
+    background-color: var(--status-muted-bg);
+    border-color: var(--status-muted-border);
+  }
+}
+
+/* Micro-animations */
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+.animate-spin-slow {
+  animation: spin-slow 12s linear infinite;
+}
+
+/* Browser autofill custom overrides */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+textarea:-webkit-autofill:active,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus,
+select:-webkit-autofill:active {
+  -webkit-text-fill-color: var(--text-primary) !important;
+  -webkit-box-shadow: 0 0 0px 1000px var(--bg-surface) inset !important;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
