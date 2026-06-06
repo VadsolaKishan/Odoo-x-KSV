@@ -1,28 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
-import { Plus, Trash2, Calendar, CheckSquare, ArrowRight, ArrowLeft, Send, Sparkles, Building, ListPlus } from 'lucide-react';
 import { useApp } from '../context/AppContext';
-import { FormInput } from '../components/FormInput';
-import { StepForm } from '../components/StepForm';
 
 export const RfqCreate = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const { vendors, rfqs, createRfq, addToast } = useApp();
 
-  // Wizard Step Control
-  const [currentStep, setCurrentStep] = useState(1);
-  const steps = ['Basic Details', 'Item Catalog', 'Select Vendors', 'Review & Send'];
-
-  // Form States
-  const [title, setTitle] = useState('');
-  const [description, setDescription] = useState('');
-  const [deadline, setDeadline] = useState('');
-  const [items, setItems] = useState([{ name: '', quantity: 1, hsnCode: '84713010' }]);
-  const [assignedVendors, setAssignedVendors] = useState([]);
+  // Form States prefilled with Mockup Data
+  const [title, setTitle] = useState('Office Furniture procurement Q2');
+  const [category, setCategory] = useState('Furniture');
+  const [deadline, setDeadline] = useState('2025-06-15');
+  const [description, setDescription] = useState('Ergonomic chairs and standing desks for 3rd floor');
+  
+  const [items, setItems] = useState([
+    { name: 'Ergonomic chair', quantity: 25, unit: 'NOS' },
+    { name: 'Standing desks', quantity: 10, unit: 'NOS' }
+  ]);
+  
+  const [assignedVendors, setAssignedVendors] = useState(['V-001', 'V-004']); // Default assigned vendors
+  const [showVendorSelect, setShowVendorSelect] = useState(false);
   const [errors, setErrors] = useState({});
 
-  // Trigger Reorder autofill if parameter exists
+  // Autofill if reordering
   useEffect(() => {
     const reorderId = searchParams.get('reorderId');
     if (reorderId) {
@@ -30,72 +30,24 @@ export const RfqCreate = () => {
       if (sourceRfq) {
         setTitle(`Copy of ${sourceRfq.title}`);
         setDescription(sourceRfq.description);
-        
-        // Parse DD/MM/YYYY back to YYYY-MM-DD for date input
         if (sourceRfq.deadline && sourceRfq.deadline.includes('/')) {
           setDeadline(sourceRfq.deadline.split('/').reverse().join('-'));
-        } else {
-          // Default deadline to +14 days from now if not in standard format
-          const defaultDeadline = new Date(Date.now() + 86400000 * 14).toISOString().split('T')[0];
-          setDeadline(defaultDeadline);
         }
-        
-        setItems(sourceRfq.items.map(i => ({ name: i.name, quantity: i.quantity, hsnCode: i.hsnCode || '84713010' })));
+        setItems(sourceRfq.items.map(i => ({ name: i.name, quantity: i.quantity, unit: 'NOS' })));
         setAssignedVendors(sourceRfq.assignedVendors || []);
         addToast(`Prefilled details from previous RFQ: ${reorderId}`, 'success');
       }
     }
   }, [searchParams, rfqs]);
 
-  // Step Nav Actions
-  const handleNext = () => {
-    if (validateStep()) {
-      setCurrentStep((prev) => prev + 1);
-    }
-  };
-
-  const handlePrev = () => {
-    setCurrentStep((prev) => prev - 1);
-  };
-
-  // Step Input Validation
-  const validateStep = () => {
-    const errs = {};
-    if (currentStep === 1) {
-      if (!title.trim()) errs.title = 'RFQ Title is required.';
-      if (!description.trim()) errs.description = 'Description is required.';
-      if (!deadline) {
-        errs.deadline = 'Submission deadline date is required.';
-      } else {
-        const deadDate = new Date(deadline);
-        if (deadDate < new Date().setHours(0,0,0,0)) {
-          errs.deadline = 'Deadline must be a future date.';
-        }
-      }
-    } else if (currentStep === 2) {
-      const invalid = items.some(item => !item.name.trim() || item.quantity <= 0);
-      if (invalid) {
-        addToast('All items must have a description and positive quantity.', 'danger');
-        return false;
-      }
-    } else if (currentStep === 3) {
-      if (assignedVendors.length === 0) {
-        addToast('Please assign at least one vendor to participate.', 'danger');
-        return false;
-      }
-    }
-    setErrors(errs);
-    return Object.keys(errs).length === 0;
-  };
-
-  // Dynamic Item List Operations
+  // Line item handlers
   const handleAddItem = () => {
-    setItems((prev) => [...prev, { name: '', quantity: 1, hsnCode: '84713010' }]);
+    setItems((prev) => [...prev, { name: '', quantity: 1, unit: 'NOS' }]);
   };
 
   const handleRemoveItem = (index) => {
     if (items.length === 1) {
-      addToast('RFQs must catalog at least one product item.', 'warning');
+      addToast('RFQs must contain at least one item.', 'warning');
       return;
     }
     setItems((prev) => prev.filter((_, i) => i !== index));
@@ -109,27 +61,32 @@ export const RfqCreate = () => {
     });
   };
 
-  // Vendor Checklist handlers
-  const handleToggleVendor = (vendorId) => {
-    setAssignedVendors((prev) =>
-      prev.includes(vendorId)
-        ? prev.filter((id) => id !== vendorId)
-        : [...prev, vendorId]
-    );
+  // Vendor handlers
+  const handleRemoveVendor = (vendorId) => {
+    setAssignedVendors((prev) => prev.filter((id) => id !== vendorId));
   };
 
+  const handleAddVendor = (vendorId) => {
+    if (!assignedVendors.includes(vendorId)) {
+      setAssignedVendors((prev) => [...prev, vendorId]);
+    }
+    setShowVendorSelect(false);
+  };
+
+  // Submit / Send
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!validateStep()) return;
+    if (!title.trim() || !description.trim() || !deadline) {
+      addToast('Please fill out all required fields.', 'danger');
+      return;
+    }
 
-    // Convert deadline date from YYYY-MM-DD to Indian DD/MM/YYYY
     const formattedDeadline = deadline.split('-').reverse().join('/');
-
     const payload = {
       title,
       description,
       deadline: formattedDeadline,
-      items,
+      items: items.map(i => ({ name: i.name, quantity: i.quantity, hsnCode: '84713010' })),
       assignedVendors
     };
 
@@ -139,278 +96,289 @@ export const RfqCreate = () => {
     }
   };
 
+  const handleSaveDraft = () => {
+    addToast('RFQ saved as Draft successfully!', 'success');
+    navigate('/dashboard');
+  };
+
+  const unassignedVendors = vendors.filter((v) => !assignedVendors.includes(v.id));
+
   return (
-    <div className="max-w-3xl mx-auto space-y-6 text-xs">
+    <div className="max-w-4xl mx-auto space-y-6 text-xs text-slate-700 dark:text-dark-300">
       
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-display font-extrabold text-slate-800 dark:text-dark-100 tracking-tight">
-          Request for Quotation (RFQ)
+        <h1 className="text-3xl font-display font-extrabold text-slate-800 dark:text-dark-100 tracking-tight">
+          Create RFQ's
         </h1>
         <p className="text-xs text-slate-400 dark:text-dark-500 font-medium">
-          Create and dispatch quotation bidding forms to suppliers.
+          new request for quotation
         </p>
       </div>
 
-      {/* Main wizard board */}
-      <div className="bg-white dark:bg-dark-900 border border-slate-200 dark:border-dark-800 rounded-2xl shadow-premium dark:shadow-dark-premium overflow-hidden">
-        {/* Step Numbers Header */}
-        <StepForm currentStep={currentStep} steps={steps} />
+      {/* Steps Indicator Layout */}
+      <div className="flex items-center justify-center py-4 select-none">
+        <div className="flex items-center w-full max-w-md">
+          <div className="flex items-center justify-center w-8 h-8 rounded-full border border-brand-500 bg-brand-50/70 dark:bg-brand-950/20 text-brand-600 dark:text-brand-400 font-semibold text-sm">
+            1
+          </div>
+          <div className="flex-1 h-px bg-slate-200 dark:bg-dark-800 mx-2" />
+          <div className="flex items-center justify-center w-8 h-8 rounded-full border border-slate-300 dark:border-dark-750 text-slate-400 dark:text-dark-500 font-semibold text-sm">
+            2
+          </div>
+          <div className="flex-1 h-px bg-slate-200 dark:bg-dark-800 mx-2" />
+          <div className="flex items-center justify-center w-8 h-8 rounded-full border border-slate-300 dark:border-dark-750 text-slate-400 dark:text-dark-500 font-semibold text-sm">
+            3
+          </div>
+        </div>
+      </div>
 
-        <div className="p-6">
-          {/* STEP 1: Basic Info */}
-          {currentStep === 1 && (
-            <div className="space-y-4 animate-fade-in">
-              <h3 className="text-sm font-bold text-slate-800 dark:text-dark-200 flex items-center gap-2">
-                <Sparkles className="w-4.5 h-4.5 text-brand-500" />
-                <span>Basic RFQ Information</span>
-              </h3>
+      {/* Two Column Form */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        {/* Left Column: Basic Details */}
+        <div className="space-y-4">
+          
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 dark:text-dark-400 mb-1.5">
+              RFQ's title*
+            </label>
+            <input
+              type="text"
+              required
+              value={title}
+              onChange={(e) => setTitle(e.target.value)}
+              className="w-full px-3 py-2 text-xs bg-white dark:bg-dark-900 border border-slate-200 dark:border-dark-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-slate-800 dark:text-dark-100"
+              placeholder="e.g. Office Furniture procurement Q2"
+            />
+          </div>
 
-              <FormInput
-                label="RFQ Title"
-                id="title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                error={errors.title}
-                placeholder="High-Performance GPU Servers Upgrade"
-                required
-              />
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 dark:text-dark-400 mb-1.5">
+              Category
+            </label>
+            <input
+              type="text"
+              value={category}
+              onChange={(e) => setCategory(e.target.value)}
+              className="w-full px-3 py-2 text-xs bg-white dark:bg-dark-900 border border-slate-200 dark:border-dark-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-slate-800 dark:text-dark-100"
+              placeholder="e.g. Furniture"
+            />
+          </div>
 
-              <FormInput
-                label="Detailed Description"
-                id="description"
-                type="textarea"
-                value={description}
-                onChange={(e) => setDescription(e.target.value)}
-                error={errors.description}
-                placeholder="Please state GST applicability, Place of Supply, delivery lead times, and warranties..."
-                required
-              />
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 dark:text-dark-400 mb-1.5">
+              Deadline*
+            </label>
+            <input
+              type="date"
+              required
+              value={deadline}
+              onChange={(e) => setDeadline(e.target.value)}
+              className="w-full px-3 py-2 text-xs bg-white dark:bg-dark-900 border border-slate-200 dark:border-dark-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-slate-800 dark:text-dark-100"
+            />
+          </div>
 
-              <FormInput
-                label="Quotation Submission Deadline"
-                id="deadline"
-                type="date"
-                value={deadline}
-                onChange={(e) => setDeadline(e.target.value)}
-                error={errors.deadline}
-                icon={Calendar}
-                required
-              />
-            </div>
-          )}
+          <div>
+            <label className="block text-xs font-semibold text-slate-500 dark:text-dark-400 mb-1.5">
+              Description
+            </label>
+            <textarea
+              rows={4}
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              className="w-full px-3 py-2 text-xs bg-white dark:bg-dark-900 border border-slate-200 dark:border-dark-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-slate-800 dark:text-dark-100 resize-none"
+              placeholder="Ergonomic chairs and standing desks for 3rd floor..."
+            />
+          </div>
 
-          {/* STEP 2: Items Details List */}
-          {currentStep === 2 && (
-            <div className="space-y-4 animate-fade-in">
-              <div className="flex items-center justify-between">
-                <h3 className="text-sm font-bold text-slate-800 dark:text-dark-200 flex items-center gap-2">
-                  <ListPlus className="w-4.5 h-4.5 text-brand-500" />
-                  <span>Item Specification Catalog</span>
-                </h3>
-                <button
-                  type="button"
-                  onClick={handleAddItem}
-                  className="flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-brand-50 dark:bg-brand-950/20 hover:bg-brand-100 dark:hover:bg-brand-900 text-brand-650 dark:text-brand-400 rounded-lg transition-colors border border-brand-100/50"
-                >
-                  <Plus className="w-4 h-4" /> Add Row
-                </button>
-              </div>
+        </div>
 
-              <div className="space-y-3">
-                {items.map((item, idx) => (
-                  <div key={idx} className="flex gap-3 items-end">
-                    <FormInput
-                      label={idx === 0 ? "Product/Service Description" : ""}
-                      id={`name-${idx}`}
-                      value={item.name}
-                      onChange={(e) => handleItemChange(idx, 'name', e.target.value)}
-                      placeholder="e.g. Nvidia H100 Compute Server Node"
-                      className="flex-1"
-                      required
-                    />
-
-                    <div className="w-28">
-                      <FormInput
-                        label={idx === 0 ? "HSN Code" : ""}
-                        id={`hsn-${idx}`}
-                        value={item.hsnCode}
-                        onChange={(e) => handleItemChange(idx, 'hsnCode', e.target.value)}
-                        placeholder="84713010"
-                        maxLength="8"
-                      />
-                    </div>
-
-                    <div className="w-20">
-                      <FormInput
-                        label={idx === 0 ? "Quantity" : ""}
-                        id={`qty-${idx}`}
-                        type="number"
-                        min="1"
-                        value={item.quantity}
-                        onChange={(e) => handleItemChange(idx, 'quantity', parseInt(e.target.value) || 1)}
-                        required
-                      />
-                    </div>
-
-                    <button
-                      type="button"
-                      onClick={() => handleRemoveItem(idx)}
-                      className={`p-2.5 rounded-xl border border-slate-200 dark:border-dark-800 text-slate-400 hover:text-danger-650 hover:bg-danger-50 dark:hover:bg-danger-950/20 transition-all ${
-                        idx === 0 ? 'mb-0.5' : ''
-                      }`}
-                    >
-                      <Trash2 className="w-4 h-4" />
-                    </button>
-                  </div>
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* STEP 3: Assign Vendors checklist */}
-          {currentStep === 3 && (
-            <div className="space-y-4 animate-fade-in">
-              <h3 className="text-sm font-bold text-slate-800 dark:text-dark-200 flex items-center gap-2">
-                <Building className="w-4.5 h-4.5 text-brand-500" />
-                <span>Invite Vendors to Bid</span>
-              </h3>
-              <p className="text-xs text-slate-400 dark:text-dark-500 leading-normal">
-                Select one or more Indian vendor partners to receive notification of this request.
-              </p>
-
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-80 overflow-y-auto pr-1">
-                {vendors.map((vendor) => {
-                  const isChecked = assignedVendors.includes(vendor.id);
-                  return (
-                    <div
-                      key={vendor.id}
-                      onClick={() => handleToggleVendor(vendor.id)}
-                      className={`p-4 border rounded-xl flex items-start justify-between cursor-pointer select-none transition-all ${
-                        isChecked
-                          ? 'border-brand-500 bg-brand-50/20 dark:bg-brand-950/10'
-                          : 'border-slate-200 dark:border-dark-800 hover:border-slate-300 dark:hover:border-dark-700 bg-slate-50/50 dark:bg-dark-950/30'
-                      }`}
-                    >
-                      <div className="min-w-0 pr-2 space-y-0.5">
-                        <p className="text-xs font-bold text-slate-800 dark:text-dark-150 truncate">{vendor.name}</p>
-                        <p className="text-[10px] text-slate-400 dark:text-dark-500 truncate">{vendor.email}</p>
-                        {vendor.gstin && (
-                          <p className="text-[9px] text-slate-500 font-semibold truncate">GSTIN: {vendor.gstin}</p>
-                        )}
-                        <div className="flex items-center gap-2 mt-1.5 text-[9px] font-semibold text-slate-500">
-                          <span className="bg-slate-100 dark:bg-dark-800 px-1.5 py-0.5 rounded text-slate-600 dark:text-dark-400 truncate">
-                            {vendor.category}
-                          </span>
-                          <span className="flex items-center gap-0.5">
-                            ★ {vendor.rating.toFixed(1)}
-                          </span>
-                        </div>
-                      </div>
-                      <div className={`w-5 h-5 rounded-md border flex items-center justify-center shrink-0 transition-colors ${
-                        isChecked 
-                          ? 'bg-brand-500 border-brand-500 text-white' 
-                          : 'border-slate-300 dark:border-dark-750 bg-white dark:bg-dark-900'
-                      }`}>
-                        {isChecked && <CheckSquare className="w-3.5 h-3.5" />}
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {/* STEP 4: Review and submit */}
-          {currentStep === 4 && (
-            <div className="space-y-4 animate-fade-in text-xs leading-normal">
-              <h3 className="text-sm font-bold text-slate-800 dark:text-dark-200">Review RFQ Specifications</h3>
-
-              {/* Review summary cards */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="p-4 rounded-xl border border-slate-150 dark:border-dark-800 bg-slate-50/50 dark:bg-dark-950/20 space-y-1">
-                  <p className="text-[10px] font-bold text-slate-400 dark:text-dark-500 uppercase">RFQ details</p>
-                  <p className="font-bold text-slate-800 dark:text-dark-100 text-sm">{title}</p>
-                  <p className="text-slate-600 dark:text-dark-400 font-medium truncate">{description}</p>
-                  <p className="text-[10px] text-slate-500 dark:text-dark-450 pt-1">
-                    Closing Date: <span className="font-bold text-slate-700 dark:text-dark-300">{deadline}</span>
-                  </p>
-                </div>
-
-                <div className="p-4 rounded-xl border border-slate-150 dark:border-dark-800 bg-slate-50/50 dark:bg-dark-950/20 space-y-1">
-                  <p className="text-[10px] font-bold text-slate-400 dark:text-dark-500 uppercase">Assigned Bidders</p>
-                  <div className="flex flex-wrap gap-1.5 pt-1">
-                    {assignedVendors.map((vId) => {
-                      const vObj = vendors.find((v) => v.id === vId);
-                      return (
-                        <span key={vId} className="px-2 py-0.5 rounded bg-brand-50 dark:bg-brand-950/30 text-brand-650 dark:text-brand-400 font-semibold border border-brand-100/30">
-                          {vObj ? vObj.name : vId}
-                        </span>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-
-              {/* Items List Review */}
-              <div className="rounded-xl border border-slate-150 dark:border-dark-800 overflow-hidden">
-                <table className="w-full text-left">
-                  <thead>
-                    <tr className="bg-slate-50 dark:bg-dark-950/40 text-[10px] font-bold text-slate-400 dark:text-dark-550 border-b border-slate-150 dark:border-dark-800 uppercase">
-                      <th className="px-4 py-2.5">Item Description</th>
-                      <th className="px-4 py-2.5 w-28 text-center">HSN Code</th>
-                      <th className="px-4 py-2.5 w-24 text-right">Qty</th>
+        {/* Right Column: Line items & Assign Vendors */}
+        <div className="space-y-6">
+          
+          {/* Line items Section */}
+          <div className="space-y-2">
+            <label className="block text-xs font-semibold text-slate-500 dark:text-dark-400">
+              Line items
+            </label>
+            
+            <div className="border border-slate-200 dark:border-dark-800 rounded-xl overflow-hidden bg-white dark:bg-dark-900/40">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="border-b border-slate-200 dark:border-dark-800 text-slate-400 dark:text-dark-500 text-[10px] font-bold">
+                    <th className="px-4 py-2">item</th>
+                    <th className="px-4 py-2 w-20 text-center">qty</th>
+                    <th className="px-4 py-2 w-20 text-center">Unit</th>
+                    <th className="px-4 py-2 w-10 text-center"></th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100 dark:divide-dark-800 text-slate-700 dark:text-dark-300">
+                  {items.map((item, idx) => (
+                    <tr key={idx}>
+                      <td className="p-1">
+                        <input
+                          type="text"
+                          required
+                          value={item.name}
+                          onChange={(e) => handleItemChange(idx, 'name', e.target.value)}
+                          className="w-full px-2 py-1 text-xs bg-transparent border-0 focus:outline-none focus:bg-slate-50 dark:focus:bg-dark-800 font-semibold"
+                          placeholder="item description"
+                        />
+                      </td>
+                      <td className="p-1 w-20">
+                        <input
+                          type="number"
+                          min="1"
+                          required
+                          value={item.quantity}
+                          onChange={(e) => handleItemChange(idx, 'quantity', parseInt(e.target.value) || 0)}
+                          className="w-full px-2 py-1 text-xs bg-transparent border-0 focus:outline-none focus:bg-slate-50 dark:focus:bg-dark-800 text-center"
+                        />
+                      </td>
+                      <td className="p-1 w-20">
+                        <input
+                          type="text"
+                          required
+                          value={item.unit}
+                          onChange={(e) => handleItemChange(idx, 'unit', e.target.value)}
+                          className="w-full px-2 py-1 text-xs bg-transparent border-0 focus:outline-none focus:bg-slate-50 dark:focus:bg-dark-800 text-center"
+                          placeholder="NOS"
+                        />
+                      </td>
+                      <td className="p-1 w-10 text-center">
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveItem(idx)}
+                          className="text-slate-400 hover:text-rose-600 font-bold p-1 text-sm focus:outline-none cursor-pointer"
+                        >
+                          &times;
+                        </button>
+                      </td>
                     </tr>
-                  </thead>
-                  <tbody className="divide-y divide-slate-150 dark:divide-dark-800 text-slate-700 dark:text-dark-300">
-                    {items.map((it, idx) => (
-                      <tr key={idx}>
-                        <td className="px-4 py-2.5 font-semibold">{it.name}</td>
-                        <td className="px-4 py-2.5 text-center font-medium text-slate-500">{it.hsnCode}</td>
-                        <td className="px-4 py-2.5 text-right font-bold">{it.quantity}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                  ))}
+                </tbody>
+              </table>
             </div>
-          )}
 
-          {/* Action Step Actions */}
-          <div className="flex items-center justify-between mt-6 pt-5 border-t border-slate-100 dark:border-dark-800 select-none">
             <button
               type="button"
-              disabled={currentStep === 1}
-              onClick={handlePrev}
-              className="flex items-center gap-1 px-4 py-2 text-xs font-bold bg-slate-50 hover:bg-slate-100 dark:bg-dark-850 dark:hover:bg-dark-800 text-slate-600 dark:text-dark-400 rounded-xl transition-colors border border-slate-150 dark:border-dark-750 disabled:opacity-50 disabled:cursor-not-allowed"
+              onClick={handleAddItem}
+              className="px-4 py-1.5 text-xs font-semibold bg-transparent border border-slate-300 dark:border-dark-700 text-slate-700 dark:text-dark-300 rounded-xl hover:bg-slate-50 dark:hover:bg-dark-800 transition-all cursor-pointer"
             >
-              <ArrowLeft className="w-4 h-4" />
-              <span>Back</span>
+              + add line item
             </button>
+          </div>
 
-            {currentStep < 4 ? (
-              <button
-                type="button"
-                onClick={handleNext}
-                className="flex items-center gap-1 px-4 py-2 text-xs font-semibold bg-brand-600 hover:bg-brand-500 text-white rounded-xl shadow-md transition-all active:scale-98"
-              >
-                <span>Continue</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            ) : (
-              <button
-                type="button"
-                onClick={handleSubmit}
-                className="flex items-center gap-1.5 px-4 py-2.5 bg-gradient-to-tr from-brand-600 to-brand-500 hover:from-brand-550 hover:to-brand-450 text-white font-bold text-xs rounded-xl shadow-lg shadow-brand-500/20 active:scale-98 transition-all"
-              >
-                <span>Dispatch RFQ Bids</span>
-                <Send className="w-4 h-4" />
-              </button>
-            )}
+          {/* Assign Vendors Section */}
+          <div className="space-y-2">
+            <label className="block text-xs font-semibold text-slate-500 dark:text-dark-400 uppercase tracking-wider">
+              ASSIGN VENDORS
+            </label>
+
+            <div className="border border-slate-200 dark:border-dark-800 rounded-xl bg-white dark:bg-dark-900/40 p-1 divide-y divide-slate-100 dark:divide-dark-800 relative">
+              {assignedVendors.length === 0 ? (
+                <p className="p-4 text-xs text-slate-400 dark:text-dark-500 text-center">No vendors assigned yet.</p>
+              ) : (
+                assignedVendors.map((vendorId) => {
+                  const vendorObj = vendors.find(v => v.id === vendorId);
+                  return (
+                    <div key={vendorId} className="flex items-center justify-between px-3 py-2 text-xs">
+                      <span className="font-semibold text-slate-800 dark:text-dark-200">
+                        {vendorObj ? vendorObj.name : vendorId}
+                      </span>
+                      <button
+                        type="button"
+                        onClick={() => handleRemoveVendor(vendorId)}
+                        className="text-slate-400 hover:text-rose-600 font-bold focus:outline-none p-1 text-sm cursor-pointer"
+                      >
+                        &times;
+                      </button>
+                    </div>
+                  );
+                })
+              )}
+              
+              {/* Add vendor trigger action */}
+              <div className="p-2 bg-slate-50/50 dark:bg-dark-950/20">
+                <button
+                  type="button"
+                  onClick={() => setShowVendorSelect(!showVendorSelect)}
+                  className="w-full text-left px-2 py-1.5 text-xs text-brand-600 dark:text-brand-400 font-semibold hover:underline cursor-pointer"
+                >
+                  + add vendor
+                </button>
+                
+                {/* Vendors Selection Popover dropdown */}
+                {showVendorSelect && (
+                  <div className="absolute left-2 right-2 bottom-12 mt-1 max-h-48 overflow-y-auto bg-white dark:bg-dark-900 border border-slate-250 dark:border-dark-750 rounded-xl shadow-lg z-10 divide-y divide-slate-100 dark:divide-dark-800 animate-fade-scale">
+                    {unassignedVendors.length === 0 ? (
+                      <div className="p-3 text-center text-slate-400 dark:text-dark-500">All vendors assigned.</div>
+                    ) : (
+                      unassignedVendors.map((v) => (
+                        <div
+                          key={v.id}
+                          onClick={() => handleAddVendor(v.id)}
+                          className="px-3 py-2 hover:bg-slate-50 dark:hover:bg-dark-800 cursor-pointer text-xs flex justify-between items-center"
+                        >
+                          <span className="font-semibold">{v.name}</span>
+                          <span className="text-[10px] text-slate-400 dark:text-dark-500">{v.category}</span>
+                        </div>
+                      ))
+                    )}
+                  </div>
+                )}
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      {/* Bottom Area (horizontal rule divider + actions + attachments) */}
+      <div>
+        <hr className="border-slate-200 dark:border-dark-800 my-6" />
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+          
+          {/* Stacked Save Buttons */}
+          <div className="flex flex-col gap-3 justify-center max-w-xs">
+            <button
+              type="button"
+              onClick={handleSubmit}
+              className="w-full py-2.5 text-xs font-semibold bg-transparent border border-slate-300 dark:border-dark-700 text-slate-800 dark:text-dark-200 rounded-xl hover:bg-slate-50 dark:hover:bg-dark-800 hover:border-slate-400 dark:hover:border-dark-600 transition-all cursor-pointer"
+            >
+              Save & Send to Vendors
+            </button>
+            <button
+              type="button"
+              onClick={handleSaveDraft}
+              className="w-full py-2.5 text-xs font-semibold bg-transparent border border-slate-300 dark:border-dark-700 text-slate-800 dark:text-dark-200 rounded-xl hover:bg-slate-50 dark:hover:bg-dark-800 hover:border-slate-400 dark:hover:border-dark-600 transition-all cursor-pointer"
+            >
+              Save as Draft
+            </button>
+          </div>
+
+          {/* Attachments Section */}
+          <div className="space-y-2">
+            <label className="block text-xs font-semibold text-slate-500 dark:text-dark-400">
+              Attchements
+            </label>
+            <div 
+              onClick={() => addToast('Attachment selector opened!', 'info')}
+              className="border border-dashed border-slate-300 dark:border-dark-750 rounded-xl p-8 bg-white dark:bg-dark-900/20 text-center cursor-pointer hover:border-brand-500/50 hover:bg-slate-50/50 dark:hover:bg-dark-800/20 transition-all flex items-center justify-center"
+            >
+              <span className="text-xs text-slate-450 dark:text-dark-500">
+                Drag & drop files or click to upload
+              </span>
+            </div>
           </div>
 
         </div>
       </div>
+
     </div>
   );
 };

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ClipboardList, Search, Download, ShieldCheck, User, RefreshCw, FileText, CreditCard, Layers, ArrowUpRight } from 'lucide-react';
+import { Search, Download, Layers } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
 export const ActivityLog = () => {
@@ -7,50 +7,69 @@ export const ActivityLog = () => {
   const [selectedFilter, setSelectedFilter] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
 
-  // Icon mapping based on log event type
-  const getLogIcon = (type) => {
-    switch (type?.toLowerCase()) {
-      case 'vendor':
-        return <User className="w-4 h-4 text-orange-500" />;
-      case 'rfq':
-        return <ArrowUpRight className="w-4 h-4 text-brand-500" />;
-      case 'po':
-        return <FileText className="w-4 h-4 text-blue-500" />;
-      case 'invoice':
-        return <CreditCard className="w-4 h-4 text-emerald-500" />;
-      case 'approval':
-        return <ShieldCheck className="w-4 h-4 text-indigo-500" />;
-      default:
-        return <ClipboardList className="w-4 h-4 text-slate-500" />;
+  // Icon mapping based on log event type/details
+  const getLogIcon = (log) => {
+    const desc = log.description?.toLowerCase() || '';
+    const type = log.type?.toLowerCase() || '';
+    
+    if (type === 'vendor') {
+      return (
+        <span className="flex items-center justify-center w-8 h-8 rounded-full border-2 border-rose-400 bg-rose-50 text-rose-500 dark:bg-rose-950/20 dark:border-rose-900/50 dark:text-rose-400 font-semibold text-sm select-none">
+          👤
+        </span>
+      );
     }
-  };
 
-  // Color theme mapping for the log type badges
-  const getBadgeClass = (type) => {
-    switch (type?.toLowerCase()) {
-      case 'vendor':
-        return 'bg-orange-50 text-orange-700 dark:bg-orange-950/20 dark:text-orange-450';
-      case 'rfq':
-        return 'bg-brand-50 text-brand-700 dark:bg-brand-950/20 dark:text-brand-400';
-      case 'po':
-        return 'bg-blue-50 text-blue-700 dark:bg-blue-950/20 dark:text-blue-400';
-      case 'invoice':
-        return 'bg-emerald-50 text-emerald-700 dark:bg-emerald-950/20 dark:text-emerald-400';
-      case 'approval':
-        return 'bg-indigo-50 text-indigo-700 dark:bg-indigo-950/20 dark:text-indigo-400';
-      default:
-        return 'bg-slate-50 text-slate-700 dark:bg-slate-900 dark:text-dark-300';
+    if (desc.includes('selected') || desc.includes('approved') || desc.includes('paid') || desc.includes('success')) {
+      return (
+        <span className="flex items-center justify-center w-8 h-8 rounded-full border-2 border-emerald-500 bg-emerald-50 text-emerald-600 dark:bg-emerald-950/20 dark:border-emerald-800 dark:text-emerald-400 font-semibold text-sm select-none">
+          ✓
+        </span>
+      );
     }
+    
+    if (desc.includes('pending') || desc.includes('awaiting') || type === 'approval') {
+      return (
+        <span className="flex items-center justify-center w-8 h-8 rounded-full border-2 border-blue-400 bg-blue-50 text-blue-500 dark:bg-blue-950/20 dark:border-blue-900/50 dark:text-blue-400 font-semibold text-sm select-none">
+          🕒
+        </span>
+      );
+    }
+    
+    if (type === 'rfq' || type === 'po' || type === 'invoice') {
+      return (
+        <span className="flex items-center justify-center w-8 h-8 rounded-full border-2 border-slate-400 bg-slate-50 text-slate-600 dark:bg-slate-900 dark:border-dark-800 dark:text-dark-300 font-semibold text-sm select-none">
+          📄
+        </span>
+      );
+    }
+    
+    return (
+      <span className="flex items-center justify-center w-8 h-8 rounded-full border-2 border-slate-400 bg-slate-50 text-slate-500 dark:bg-slate-900 dark:border-dark-800 dark:text-dark-300 font-semibold text-sm select-none">
+        📄
+      </span>
+    );
   };
 
   // Filter logs by type and search query
   const filteredFeed = activityFeed.filter(log => {
-    const matchesFilter = selectedFilter === 'all' || log.type?.toLowerCase() === selectedFilter.toLowerCase();
+    const matchesFilter = selectedFilter === 'all' || 
+      (selectedFilter === 'rfq' && (log.type?.toLowerCase() === 'rfq' || log.type?.toLowerCase() === 'po')) ||
+      log.type?.toLowerCase() === selectedFilter.toLowerCase();
+      
     const matchesSearch = log.description?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           log.user?.toLowerCase().includes(searchQuery.toLowerCase()) ||
                           log.type?.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesFilter && matchesSearch;
   });
+
+  const filterButtons = [
+    { id: 'all', label: 'All' },
+    { id: 'rfq', label: 'RFQ' },
+    { id: 'approval', label: 'Approvals' },
+    { id: 'invoice', label: 'Invoices' },
+    { id: 'vendor', label: 'Vendors' }
+  ];
 
   return (
     <div className="space-y-6">
@@ -77,7 +96,7 @@ export const ActivityLog = () => {
             downloadAnchor.click();
             downloadAnchor.remove();
           }}
-          className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold bg-white dark:bg-dark-900 border border-slate-200 dark:border-dark-800 text-slate-700 dark:text-dark-300 rounded-xl hover:bg-slate-50 dark:hover:bg-dark-850 shadow-sm transition-all"
+          className="flex items-center gap-1.5 px-4 py-2 text-xs font-semibold bg-white dark:bg-dark-900 border border-slate-200 dark:border-dark-800 text-slate-700 dark:text-dark-300 rounded-lg hover:bg-slate-50 dark:hover:bg-dark-850 shadow-sm transition-all"
         >
           <Download className="w-4 h-4" />
           <span>Export Audit Trail</span>
@@ -88,18 +107,18 @@ export const ActivityLog = () => {
       <div className="flex flex-col lg:flex-row gap-4 items-stretch lg:items-center justify-between">
         
         {/* Category Filters */}
-        <div className="flex flex-wrap items-center gap-1.5 select-none bg-slate-100 dark:bg-dark-900 border border-slate-200 dark:border-dark-800 rounded-xl p-1 shrink-0">
-          {['all', 'vendor', 'rfq', 'po', 'invoice', 'approval'].map((filterVal) => (
+        <div className="flex flex-wrap items-center gap-2 select-none">
+          {filterButtons.map((f) => (
             <button
-              key={filterVal}
-              onClick={() => setSelectedFilter(filterVal)}
-              className={`px-3 py-1.5 text-[10px] font-bold rounded-lg transition-all capitalize ${
-                selectedFilter === filterVal
-                  ? 'bg-white dark:bg-dark-800 text-slate-800 dark:text-dark-100 shadow-sm'
-                  : 'text-slate-550 hover:text-slate-800 dark:text-dark-400 dark:hover:text-dark-200'
+              key={f.id}
+              onClick={() => setSelectedFilter(f.id)}
+              className={`px-4 py-1.5 text-xs font-bold rounded-lg border transition-all ${
+                selectedFilter === f.id
+                  ? 'bg-blue-600 border-blue-600 text-white shadow-sm'
+                  : 'border-slate-300 dark:border-dark-700 text-slate-650 dark:text-dark-450 hover:border-slate-400 dark:hover:border-dark-300 bg-transparent'
               }`}
             >
-              {filterVal === 'all' ? 'All Activity' : filterVal}
+              {f.label}
             </button>
           ))}
         </div>
@@ -112,7 +131,7 @@ export const ActivityLog = () => {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search audit trail by description or user..."
-            className="w-full pl-10 pr-4 py-2.5 text-xs bg-white dark:bg-dark-900 border border-slate-200 dark:border-dark-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-slate-700 dark:text-dark-250 font-semibold shadow-sm"
+            className="w-full pl-10 pr-4 py-2 text-xs bg-white dark:bg-dark-900 border border-slate-200 dark:border-dark-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-slate-700 dark:text-dark-250 font-semibold shadow-sm"
           />
         </div>
       </div>
@@ -146,37 +165,26 @@ export const ActivityLog = () => {
             </div>
           </div>
         ) : (
-          // Logs Timeline
-          <div className="relative border-l-2 border-slate-150 dark:border-dark-800 pl-6 space-y-6">
+          // Logs List (Clean Horizontal Dividers, No timeline line, No box borders)
+          <div className="divide-y divide-slate-150 dark:divide-dark-800/80">
             {filteredFeed.map((log) => (
               <div 
                 key={log.id} 
-                className="relative group animate-fade-in text-xs leading-normal"
+                className="flex items-start gap-4 py-4 animate-fade-in text-xs"
               >
-                {/* Timeline dot icon container */}
-                <span className="absolute -left-[35px] top-1 flex items-center justify-center w-6 h-6 rounded-full bg-white dark:bg-dark-900 border-2 border-slate-150 dark:border-dark-800 shadow-sm group-hover:border-brand-500 transition-colors">
-                  {getLogIcon(log.type)}
-                </span>
+                {/* Status circle container */}
+                <div className="shrink-0 mt-0.5">
+                  {getLogIcon(log)}
+                </div>
 
-                {/* Log Event Box */}
-                <div className="p-4 rounded-xl border border-slate-150 dark:border-dark-800 hover:border-slate-200 dark:hover:border-dark-750 bg-slate-50/20 dark:bg-dark-950/10 hover:bg-slate-50/50 dark:hover:bg-dark-950/20 transition-all">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2">
-                    {/* User & Action description */}
-                    <div className="space-y-1">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <span className="font-bold text-slate-800 dark:text-dark-100">{log.user}</span>
-                        <span className={`px-2 py-0.5 rounded text-[9px] font-extrabold uppercase tracking-wide ${getBadgeClass(log.type)}`}>
-                          {log.type}
-                        </span>
-                      </div>
-                      <p className="font-semibold text-slate-600 dark:text-dark-300">{log.description}</p>
-                    </div>
-
-                    {/* Timestamp */}
-                    <span className="text-[10px] text-slate-400 dark:text-dark-500 font-bold shrink-0">
-                      {log.time}
-                    </span>
-                  </div>
+                {/* Log Details */}
+                <div className="flex-1 min-w-0">
+                  <p className="font-semibold text-slate-700 dark:text-dark-250 leading-relaxed text-sm">
+                    {log.description}
+                  </p>
+                  <p className="text-[10px] text-slate-400 dark:text-dark-500 font-bold mt-1 uppercase tracking-wider">
+                    {log.time}
+                  </p>
                 </div>
               </div>
             ))}

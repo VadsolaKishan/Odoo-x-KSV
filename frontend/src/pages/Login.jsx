@@ -108,6 +108,21 @@ export const Login = () => {
               </>
             )}
           </button>
+
+          {/* Quick Demo Log In (Bypass Auth) */}
+          <button
+            type="button"
+            onClick={async () => {
+              const success = await loginUser('sarah.j@vendorbridge.com', 'password');
+              if (success) {
+                navigate('/dashboard');
+              }
+            }}
+            disabled={loading}
+            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-slate-50 hover:bg-slate-100 dark:bg-dark-850 dark:hover:bg-dark-800 text-slate-600 dark:text-dark-300 font-semibold text-xs rounded-xl border border-slate-200 dark:border-dark-800 transition-all select-none cursor-pointer"
+          >
+            <span>Demo Mode (Bypass Auth)</span>
+          </button>
         </form>
 
         {/* Redirect Section */}

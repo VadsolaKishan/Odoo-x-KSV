@@ -70,7 +70,7 @@ export const convertNumberToWords = (num) => {
 };
 
 export const AppProvider = ({ children }) => {
-  const [theme, setTheme] = useState(localStorage.getItem('vb_theme') || 'light');
+  const [theme, setTheme] = useState('light');
   const [currentUser, setCurrentUser] = useState(() => {
     const user = localStorage.getItem('vb_user');
     return user ? JSON.parse(user) : { name: 'Sarah Jenkins', email: 'sarah.j@vendorbridge.com', role: 'VP of Procurement' }; // Initial log state

@@ -204,10 +204,10 @@ const defaultInvoices = [
 ];
 
 const defaultActivityFeed = [
-  { id: 'act-1', type: 'invoice', user: 'Finance Bot', description: 'Marked Invoice INV/2026/001 as Paid', time: '1 day ago' },
-  { id: 'act-2', type: 'po', user: 'Purchasing Team', description: 'Generated Purchase Order PO-2026-001 for Jaipur Stationery Mart', time: '3 days ago' },
-  { id: 'act-3', type: 'approval', user: 'Sarah Jenkins (VP)', description: 'Approved bid from Jaipur Stationery Mart on Standing Desks RFQ', time: '4 days ago' },
-  { id: 'act-4', type: 'rfq', user: 'Mark Sterling (Manager)', description: 'Created new RFQ "Custom Fabricated Steel Rebars"', time: '3 hours ago' },
+  { id: 'act-1', type: 'rfq', user: 'Procurement', description: 'Quotation selected - Infra supplies pvt ltd selected for office furniture Q2', time: '23 May 2025, 9:15 PM' },
+  { id: 'act-2', type: 'approval', user: 'Priya Shah', description: 'Approval pending - PO-2024 awaiting L2 approval by priya shah', time: '22 May 2025, 09:15 AM' },
+  { id: 'act-3', type: 'rfq', user: 'Mark Sterling', description: 'RFQ published - office furniture Q2 sent to 3 vendors', time: '19 May 2025' },
+  { id: 'act-4', type: 'vendor', user: 'Registration', description: 'Vendor added - FastLog transport registered and pending verifications', time: '18 May 2025, 3:20 PM' },
 ];
 
 const defaultNotifications = [
@@ -227,6 +227,12 @@ const initMockDB = () => {
     localStorage.removeItem('vb_invoices');
     localStorage.removeItem('vb_activity_feed');
     localStorage.removeItem('vb_notifications');
+  }
+
+  // Force re-seed of old activity feed to match mockup
+  const oldFeed = localStorage.getItem('vb_activity_feed');
+  if (oldFeed && oldFeed.includes('Marked Invoice INV/2026/001 as Paid')) {
+    localStorage.removeItem('vb_activity_feed');
   }
 
   if (!localStorage.getItem('vb_vendors')) setStorageItem('vb_vendors', defaultVendors);
