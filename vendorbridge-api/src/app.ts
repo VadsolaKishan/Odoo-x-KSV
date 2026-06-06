@@ -45,3 +45,5 @@ if (process.env.NODE_ENV !== 'test') {
 }
 
 export default app;
+// Trigger restart to load newly added JWT_SECRET env var
+

@@ -32,28 +32,35 @@ export const getQuotations = async (req: Request, res: Response, next: NextFunct
   try {
     const { rfq_id } = req.query;
 
-    if (!rfq_id || typeof rfq_id !== 'string') {
-      return res.status(400).json({
-        success: false,
-        message: 'rfq_id query parameter is required',
-      });
-    }
-
-    // Fetch all quotations for the given RFQ
+    // Fetch all quotations (optionally filtered by rfq_id)
     let queryText = `
        SELECT q.*, 
               v.name AS vendor_name, 
-              v.rating AS vendor_rating
+              v.rating AS vendor_rating,
+              r.title AS rfq_title,
+              r.rfq_number AS rfq_number
        FROM quotations q
        JOIN vendors v ON q.vendor_id = v.id
-       WHERE q.rfq_id = $1
+       JOIN rfqs r ON q.rfq_id = r.id
     `;
-    const params = [rfq_id];
+    const params: any[] = [];
+    const conditions: string[] = [];
+
+    if (rfq_id && typeof rfq_id === 'string') {
+      params.push(rfq_id);
+      conditions.push(`q.rfq_id = $${params.length}`);
+    }
 
     if (req.user?.role === 'vendor') {
-      queryText += ` AND (v.created_by = $2 OR v.contact_email = $3)`;
       params.push(req.user.userId);
+      const userParamIdx = params.length;
       params.push(req.user.email);
+      const emailParamIdx = params.length;
+      conditions.push(`(v.created_by = $${userParamIdx} OR v.contact_email = $${emailParamIdx})`);
+    }
+
+    if (conditions.length > 0) {
+      queryText += ` WHERE ${conditions.join(' AND ')}`;
     }
 
     queryText += ` ORDER BY q.created_at DESC`;
@@ -83,6 +90,8 @@ export const getQuotations = async (req: Request, res: Response, next: NextFunct
         submitted_at: q.submitted_at,
         created_at: q.created_at,
         updated_at: q.updated_at,
+        rfq_title: q.rfq_title,
+        rfq_number: q.rfq_number,
         vendor: {
           id: q.vendor_id,
           name: q.vendor_name,
