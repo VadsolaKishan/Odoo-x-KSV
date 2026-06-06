@@ -4,5 +4,5 @@
 |------|--------|
 | Kishan Vadsola | vadsolakishan1310@gmail.com |
 | Darshan Thummar | darshantce.059@gmail.com |
-| Shreeja Upadhyay | |
+| Shreeja Upadhyay | shreejaupadhyaycspitce@gmail.com |
 | Dhruvin Vaghasiya | dhruvinvaghasiya.dev@gmail.com |
