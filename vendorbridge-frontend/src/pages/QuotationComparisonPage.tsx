@@ -182,18 +182,18 @@ export default function QuotationComparisonPage() {
                         key={q.id} 
                         className={`py-4 px-6 text-center text-sm font-bold transition-colors relative ${
                           q.is_lowest 
-                            ? 'bg-brand-green/[0.04] text-white border-l-2 border-r-2 border-t-2 border-brand-green/30' 
+                            ? 'bg-brand-green/10 text-white border-l-2 border-r-2 border-t-2 border-brand-green/60' 
                             : 'text-text-primary border-r border-subtle'
                         }`}
                       >
                         {q.is_lowest && (
-                          <div className="absolute top-0 left-0 right-0 h-1 bg-brand-green shadow-glow"></div>
+                          <div className="absolute top-0 left-0 right-0 h-1.5 bg-brand-green shadow-glow"></div>
                         )}
                         <div className="flex flex-col items-center justify-center gap-1">
-                          <Building2 className={`w-5 h-5 ${q.is_lowest ? 'text-brand-green shadow-glow' : 'text-text-secondary'}`} />
+                          <Building2 className={`w-5 h-5 ${q.is_lowest ? 'text-brand-green drop-shadow-[0_0_6px_rgba(16,185,129,0.6)]' : 'text-text-secondary'}`} />
                           <span className="truncate max-w-[180px]">{q.vendor.name}</span>
                           {q.is_lowest && (
-                            <span className="text-[10px] bg-brand-green/20 text-brand-green px-2 py-0.5 rounded-full font-semibold border border-brand-green/30 tracking-wide uppercase inline-flex items-center gap-1">
+                            <span className="text-[10px] bg-brand-green/30 text-brand-green px-2 py-0.5 rounded-full font-semibold border border-brand-green/60 tracking-wide uppercase inline-flex items-center gap-1">
                               <ThumbsUp className="w-2.5 h-2.5" /> Lowest
                             </span>
                           )}
@@ -213,11 +213,11 @@ export default function QuotationComparisonPage() {
                         key={q.id} 
                         className={`py-4 px-6 font-mono font-bold text-base ${
                           q.is_lowest 
-                            ? 'bg-brand-green/[0.04] text-brand-green border-l-2 border-r-2 border-brand-green/30' 
+                            ? 'bg-brand-green/10 text-brand-green border-l-2 border-r-2 border-brand-green/60' 
                             : 'text-text-primary border-r border-subtle'
                         }`}
                       >
-                        <span className={q.is_lowest ? 'text-brand-green font-black drop-shadow-[0_0_8px_rgba(16,185,129,0.25)]' : ''}>
+                        <span className={q.is_lowest ? 'text-brand-green font-black drop-shadow-[0_0_12px_rgba(16,185,129,0.5)]' : ''}>
                           {formatCurrency(q.grand_total)}
                         </span>
                       </td>
@@ -234,7 +234,7 @@ export default function QuotationComparisonPage() {
                         key={q.id} 
                         className={`py-4 px-6 text-sm font-mono ${
                           q.is_lowest 
-                            ? 'bg-brand-green/[0.04] text-text-primary border-l-2 border-r-2 border-brand-green/30' 
+                            ? 'bg-brand-green/10 text-text-primary border-l-2 border-r-2 border-brand-green/60' 
                             : 'text-text-primary border-r border-subtle'
                         }`}
                       >
@@ -253,7 +253,7 @@ export default function QuotationComparisonPage() {
                         key={q.id} 
                         className={`py-4 px-6 text-sm font-medium ${
                           q.is_lowest 
-                            ? 'bg-brand-green/[0.04] text-text-primary border-l-2 border-r-2 border-brand-green/30' 
+                            ? 'bg-brand-green/10 text-text-primary border-l-2 border-r-2 border-brand-green/60' 
                             : 'text-text-primary border-r border-subtle'
                         }`}
                       >
@@ -272,7 +272,7 @@ export default function QuotationComparisonPage() {
                         key={q.id} 
                         className={`py-4 px-6 ${
                           q.is_lowest 
-                            ? 'bg-brand-green/[0.04] border-l-2 border-r-2 border-brand-green/30' 
+                            ? 'bg-brand-green/10 border-l-2 border-r-2 border-brand-green/60' 
                             : 'border-r border-subtle'
                         }`}
                       >
@@ -291,7 +291,7 @@ export default function QuotationComparisonPage() {
                         key={q.id} 
                         className={`py-4 px-6 text-xs text-text-secondary max-w-[200px] truncate ${
                           q.is_lowest 
-                            ? 'bg-brand-green/[0.04] border-l-2 border-r-2 border-brand-green/30' 
+                            ? 'bg-brand-green/10 border-l-2 border-r-2 border-brand-green/60' 
                             : 'border-r border-subtle'
                         }`}
                         title={q.payment_terms || ''}
@@ -311,7 +311,7 @@ export default function QuotationComparisonPage() {
                         key={q.id} 
                         className={`py-6 px-6 ${
                           q.is_lowest 
-                            ? 'bg-brand-green/[0.04] border-l-2 border-r-2 border-b-2 border-brand-green/30' 
+                            ? 'bg-brand-green/10 border-l-2 border-r-2 border-b-2 border-brand-green/60' 
                             : 'border-r border-subtle'
                         }`}
                       >
@@ -321,7 +321,7 @@ export default function QuotationComparisonPage() {
                           onClick={() => handleSelectQuotation(q.id)}
                           className={`w-full py-2.5 px-4 rounded-lg text-xs font-bold flex items-center justify-center gap-1.5 transition-all active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none ${
                             q.is_lowest
-                              ? 'bg-brand-green hover:bg-brand-green-dark text-white shadow-glow hover:shadow-[0_0_16px_rgba(16,185,129,0.3)]'
+                              ? 'bg-brand-green hover:bg-brand-green-dark text-white shadow-glow hover:shadow-[0_0_20px_rgba(16,185,129,0.5)]'
                               : 'bg-white/5 hover:bg-white/10 text-white border border-white/15'
                           }`}
                         >
