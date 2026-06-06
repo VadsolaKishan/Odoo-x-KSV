@@ -163,11 +163,11 @@ export default function ReportsPage() {
         {/* Date Selector & Export Actions */}
         <div className="flex flex-wrap items-center gap-3">
           <div className="relative">
-            <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary pointer-events-none" />
+            <Calendar className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-text-secondary pointer-events-none z-10" />
             <select
               value={selectedMonth}
               onChange={(e) => setSelectedMonth(e.target.value)}
-              className="input-field py-2 pl-10 pr-8 text-xs font-semibold select-custom bg-black/40 border border-white/10 text-white rounded-lg"
+              className="input-field py-2 pl-10 pr-8 text-xs font-semibold select-custom appearance-none cursor-pointer"
             >
               {monthOptions.map(m => (
                 <option key={m} value={m}>{m}</option>

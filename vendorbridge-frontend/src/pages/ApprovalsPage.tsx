@@ -363,10 +363,10 @@ export default function ApprovalsPage() {
               >
                 <ArrowLeft className="w-4 h-4" /> Back to Approvals List
               </button>
-              <h1 className="text-3xl font-extrabold tracking-tight text-white">Approval Workflow</h1>
+              <h1 className="text-3xl font-extrabold tracking-tight text-text-primary">Approval Workflow</h1>
               {quotation && (
                 <p className="text-text-secondary text-sm mt-1">
-                  RFQ: <span className="text-white font-semibold">Vendor: {quotation.vendor.name} — {formatCurrency(quotation.grand_total)}</span>
+                  RFQ: <span className="text-text-primary font-semibold">Vendor: {quotation.vendor.name} — {formatCurrency(quotation.grand_total)}</span>
                 </p>
               )}
             </div>
@@ -430,7 +430,7 @@ export default function ApprovalsPage() {
                           <div className="flex-1 space-y-1">
                             <div className="flex justify-between items-start flex-wrap gap-2">
                               <div>
-                                <h4 className="text-sm font-bold text-white flex items-center gap-1.5">
+                                <h4 className="text-sm font-bold text-text-primary flex items-center gap-1.5">
                                   {record.approver_name} 
                                   <span className="text-[10px] text-text-secondary font-mono tracking-tight uppercase px-1.5 py-0.5 rounded bg-white/5">
                                     {record.approver_role}
@@ -451,16 +451,55 @@ export default function ApprovalsPage() {
                               </div>
                             </div>
 
-                            {/* Remarks box */}
-                            {record.remarks && (
-                              <div className="mt-3 p-3 rounded bg-black/40 border border-white/5 text-xs text-text-primary flex gap-2 items-start">
-                                <MessageSquare className="w-4 h-4 text-brand-green flex-shrink-0 mt-0.5" />
-                                <div>
-                                  <span className="font-semibold block text-text-secondary mb-0.5">Remarks:</span>
-                                  <p className="italic leading-relaxed">"{record.remarks}"</p>
+                            {/* Remarks box — color-coded by status */}
+                            {record.remarks && (() => {
+                              const isLight = document.documentElement.classList.contains('light');
+                              const remarkStyles = isApproved
+                                ? {
+                                    bg: 'rgba(16,185,129,0.08)',
+                                    borderColor: 'rgba(16,185,129,0.25)',
+                                    icon: 'text-emerald-500',
+                                    labelColor: isLight ? '#047857' : '#34d399',
+                                    textColor: isLight ? '#0f172a' : '#d1fae5',
+                                  }
+                                : isRejected
+                                ? {
+                                    bg: 'rgba(239,68,68,0.08)',
+                                    borderColor: 'rgba(239,68,68,0.25)',
+                                    icon: 'text-red-500',
+                                    labelColor: isLight ? '#b91c1c' : '#fca5a5',
+                                    textColor: isLight ? '#0f172a' : '#fee2e2',
+                                  }
+                                : {
+                                    bg: 'rgba(245,158,11,0.08)',
+                                    borderColor: 'rgba(245,158,11,0.25)',
+                                    icon: 'text-amber-500',
+                                    labelColor: isLight ? '#b45309' : '#fcd34d',
+                                    textColor: isLight ? '#0f172a' : '#fef3c7',
+                                  };
+                              return (
+                                <div
+                                  className="mt-3 p-3 rounded-lg border text-xs flex gap-2 items-start"
+                                  style={{ backgroundColor: remarkStyles.bg, borderColor: remarkStyles.borderColor }}
+                                >
+                                  <MessageSquare className={`w-4 h-4 flex-shrink-0 mt-0.5 ${remarkStyles.icon}`} />
+                                  <div>
+                                    <span
+                                      className="font-bold block mb-1 uppercase tracking-widest text-[10px]"
+                                      style={{ color: remarkStyles.labelColor }}
+                                    >
+                                      Remarks:
+                                    </span>
+                                    <p
+                                      className="italic leading-relaxed font-medium"
+                                      style={{ color: remarkStyles.textColor }}
+                                    >
+                                      "{record.remarks}"
+                                    </p>
+                                  </div>
                                 </div>
-                              </div>
-                            )}
+                              );
+                            })()}
 
                             {isPending && (
                               <div className="mt-2 text-xs text-amber-500 font-semibold flex items-center gap-1.5">
@@ -479,7 +518,7 @@ export default function ApprovalsPage() {
                     <div className="glass-card rounded-xl border border-white/5 p-6 space-y-4">
                       <div className="flex items-center gap-2 pb-2 border-b border-subtle">
                         <UserCheck className="w-5 h-5 text-brand-green" />
-                        <h3 className="text-sm font-bold text-white uppercase tracking-wider">Submit Decision</h3>
+                        <h3 className="text-sm font-bold text-text-primary uppercase tracking-wider">Submit Decision</h3>
                       </div>
 
                       {isDesignatedApprover ? (
@@ -539,10 +578,10 @@ export default function ApprovalsPage() {
                         <div className="p-4 rounded-lg bg-white/[0.02] border border-white/5 text-xs text-text-secondary flex gap-2.5 items-start">
                           <AlertCircle className="w-5 h-5 text-amber-500 flex-shrink-0" />
                           <div className="space-y-1">
-                            <span className="font-semibold text-white block">Awaiting Approver Context</span>
+                            <span className="font-semibold text-text-primary block">Awaiting Approver Context</span>
                             <span>
-                              You are logged in as <span className="text-white font-medium">{user?.first_name} {user?.last_name}</span>. 
-                              Only the designated approver <span className="text-white font-semibold">{activeApproval.approver_name}</span> ({activeApproval.approver_role}) or an Administrator can action this approval level.
+                              You are logged in as <span className="text-text-primary font-medium">{user?.first_name} {user?.last_name}</span>. 
+                              Only the designated approver <span className="text-text-primary font-semibold">{activeApproval.approver_name}</span> ({activeApproval.approver_role}) or an Administrator can action this approval level.
                             </span>
                           </div>
                         </div>
@@ -555,7 +594,7 @@ export default function ApprovalsPage() {
                 {/* Right Side: Quotation Summary Card */}
                 <div className="lg:col-span-4 space-y-4">
                   <div className="glass-card rounded-xl border border-white/5 p-6 space-y-4">
-                    <h3 className="text-xs font-bold text-white uppercase tracking-wider pb-2 border-b border-subtle">
+                    <h3 className="text-xs font-bold text-text-primary uppercase tracking-wider pb-2 border-b border-subtle">
                       Quotation Summary
                     </h3>
 
@@ -563,13 +602,13 @@ export default function ApprovalsPage() {
                       <div className="space-y-4 text-sm">
                         <div>
                           <span className="text-xs text-text-secondary uppercase font-semibold block">Vendor Profile</span>
-                          <span className="text-sm font-bold text-white block mt-0.5">{quotation.vendor.name}</span>
+                          <span className="text-sm font-bold text-text-primary block mt-0.5">{quotation.vendor.name}</span>
                           <span className="text-xs text-text-secondary font-mono">Rating: {parseFloat(quotation.vendor.rating).toFixed(1)} / 5 ★</span>
                         </div>
 
                         <div>
                           <span className="text-xs text-text-secondary uppercase font-semibold block">Proposed Delivery</span>
-                          <span className="text-sm font-bold text-white block mt-0.5">
+                          <span className="text-sm font-bold text-text-primary block mt-0.5">
                             {quotation.delivery_days ? `${quotation.delivery_days} days` : 'Not specified'}
                           </span>
                         </div>
@@ -579,14 +618,14 @@ export default function ApprovalsPage() {
                           <div className="mt-1 space-y-1.5 font-mono text-xs">
                             <div className="flex justify-between">
                               <span className="text-text-secondary">Subtotal</span>
-                              <span className="text-white">{formatCurrency(quotation.subtotal)}</span>
+                              <span className="text-text-primary">{formatCurrency(quotation.subtotal)}</span>
                             </div>
                             <div className="flex justify-between">
                               <span className="text-text-secondary">GST ({parseFloat(quotation.gst_percentage).toFixed(0)}%)</span>
-                              <span className="text-white">{formatCurrency(quotation.gst_amount)}</span>
+                              <span className="text-text-primary">{formatCurrency(quotation.gst_amount)}</span>
                             </div>
                             <div className="flex justify-between border-t border-subtle/50 pt-2 text-sm font-bold">
-                              <span className="text-white font-semibold">Grand Total</span>
+                              <span className="text-text-primary font-semibold">Grand Total</span>
                               <span className="text-brand-green font-black">{formatCurrency(quotation.grand_total)}</span>
                             </div>
                           </div>
@@ -631,7 +670,7 @@ export default function ApprovalsPage() {
         <div className="space-y-6">
           <div className="flex justify-between items-center">
             <div>
-              <h1 className="text-3xl font-extrabold tracking-tight text-white">Approvals Workflow</h1>
+              <h1 className="text-3xl font-extrabold tracking-tight text-text-primary">Approvals Workflow</h1>
               <p className="text-text-secondary text-sm mt-1">Review and manage RFQ selection approval records</p>
             </div>
           </div>
@@ -684,7 +723,7 @@ export default function ApprovalsPage() {
           ) : approvalsList.length === 0 ? (
             <div className="glass-card rounded-xl border border-white/5 p-12 text-center max-w-xl mx-auto">
               <Clock className="w-12 h-12 text-text-secondary mx-auto mb-4" />
-              <h2 className="text-base font-bold text-white mb-1">No approvals found</h2>
+              <h2 className="text-base font-bold text-text-primary mb-1">No approvals found</h2>
               <p className="text-xs text-text-secondary">
                 {listFilter === 'pending' 
                   ? 'There are no active approvals waiting for review decision.'
@@ -725,7 +764,7 @@ export default function ApprovalsPage() {
                       </div>
 
                       <div>
-                        <h4 className="text-sm font-bold text-white group-hover:text-brand-green transition-colors leading-snug">
+                        <h4 className="text-sm font-bold text-text-primary group-hover:text-brand-green transition-colors leading-snug">
                           {item.rfq_number}: {item.rfq_title}
                         </h4>
                         <p className="text-xs text-text-secondary mt-1">Vendor Bidder: {item.vendor_name}</p>
@@ -735,7 +774,7 @@ export default function ApprovalsPage() {
                     <div className="border-t border-subtle/50 mt-4 pt-3 flex justify-between items-center">
                       <div>
                         <span className="text-[10px] text-text-secondary uppercase font-semibold">Total Price Bid</span>
-                        <span className="block font-mono font-bold text-white text-sm mt-0.5">{formatCurrency(item.quotation_total)}</span>
+                        <span className="block font-mono font-bold text-text-primary text-sm mt-0.5">{formatCurrency(item.quotation_total)}</span>
                       </div>
                       
                       <span className="text-xs font-semibold text-brand-green group-hover:translate-x-1 transition-transform inline-flex items-center gap-0.5">
