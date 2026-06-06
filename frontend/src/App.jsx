@@ -19,6 +19,7 @@ import { Approvals } from './pages/Approvals';
 import { PurchaseOrders } from './pages/PurchaseOrders';
 import { Invoices } from './pages/Invoices';
 import { Reports } from './pages/Reports';
+import { ActivityLog } from './pages/ActivityLog';
 
 // Route Guard for Authenticated Views
 const ProtectedRoute = ({ children }) => {
@@ -131,6 +132,14 @@ export const App = () => {
           element={
             <ProtectedRoute>
               <Reports />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/activity" 
+          element={
+            <ProtectedRoute>
+              <ActivityLog />
             </ProtectedRoute>
           } 
         />

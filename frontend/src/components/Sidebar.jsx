@@ -13,7 +13,8 @@ import {
   Moon,
   ShieldCheck,
   Menu,
-  X
+  X,
+  Activity
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
@@ -31,6 +32,7 @@ export const Sidebar = ({ isOpen, toggleMobileSidebar }) => {
     { to: '/purchase-orders', label: 'Purchase Orders', sublabel: 'क्रय आदेश', icon: FileText },
     { to: '/invoices', label: 'Invoices', sublabel: 'इनवॉइस', icon: CreditCard },
     { to: '/reports', label: 'Reports & Analytics', sublabel: 'रिपोर्ट', icon: BarChart3 },
+    { to: '/activity', label: 'Activity & Logs', sublabel: 'गतिविधि लॉग', icon: Activity },
   ];
 
   if (!currentUser) return null;
