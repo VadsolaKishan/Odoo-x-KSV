@@ -216,6 +216,31 @@ const defaultNotifications = [
   { id: 'not-3', type: 'vendor', message: 'Tata Digital Solutions updated their contact info.', read: true, time: '2d ago' },
 ];
 
+const defaultPendingVendors = [
+  {
+    id: 'PV-001',
+    companyName: 'Wipro Tech Solutions',
+    contactName: 'Arun Mehta',
+    email: 'arun@wipro-ts.com',
+    phone: '+91 80 5550 9982',
+    gstin: '29FFFFF6666F6Z6',
+    category: 'Software & IT',
+    status: 'Pending',
+    registeredAt: '04/06/2026',
+  },
+  {
+    id: 'PV-002',
+    companyName: 'BuildRight Constructions',
+    contactName: 'Suresh Patel',
+    email: 'suresh@buildright.in',
+    phone: '+91 79 5550 2211',
+    gstin: '24GGGGG7777G7Z7',
+    category: 'Manufacturing',
+    status: 'Pending',
+    registeredAt: '05/06/2026',
+  },
+];
+
 const initMockDB = () => {
   // Reset if old dataset detected (contains Acme Corp)
   const oldVendors = localStorage.getItem('vb_vendors');
@@ -242,6 +267,7 @@ const initMockDB = () => {
   if (!localStorage.getItem('vb_invoices')) setStorageItem('vb_invoices', defaultInvoices);
   if (!localStorage.getItem('vb_activity_feed')) setStorageItem('vb_activity_feed', defaultActivityFeed);
   if (!localStorage.getItem('vb_notifications')) setStorageItem('vb_notifications', defaultNotifications);
+  if (!localStorage.getItem('vb_pending_vendors')) setStorageItem('vb_pending_vendors', defaultPendingVendors);
 };
 
 initMockDB();
@@ -634,5 +660,71 @@ export const api = {
       setStorageItem('vb_notifications', list);
       return list;
     }
-  }
+  },
+
+  // PENDING VENDORS
+  pendingVendors: {
+    getAll: async () => {
+      await sleep(DELAY);
+      return getStorageItem('vb_pending_vendors', []);
+    },
+    add: async (data) => {
+      await sleep(DELAY);
+      const list = getStorageItem('vb_pending_vendors', []);
+      const newPV = {
+        ...data,
+        id: `PV-${Date.now()}`,
+        status: 'Pending',
+        registeredAt: new Date().toLocaleDateString('en-IN'),
+      };
+      list.unshift(newPV);
+      setStorageItem('vb_pending_vendors', list);
+      api.feed.add('vendor', `New vendor registration: "${data.companyName}" awaiting approval`);
+      return newPV;
+    },
+    approve: async (id) => {
+      await sleep(DELAY);
+      const pendingList = getStorageItem('vb_pending_vendors', []);
+      const pv = pendingList.find(p => p.id === id);
+      if (!pv) throw new Error('Pending vendor not found');
+
+      // Remove from pending
+      const updatedPending = pendingList.filter(p => p.id !== id);
+      setStorageItem('vb_pending_vendors', updatedPending);
+
+      // Add to active vendors
+      const vendors = getStorageItem('vb_vendors', []);
+      const newVendor = {
+        id: `V-${String(vendors.length + 1).padStart(3, '0')}`,
+        name: pv.companyName,
+        email: pv.email,
+        phone: pv.phone,
+        category: pv.category,
+        status: 'Active',
+        rating: 4.0,
+        location: 'India',
+        gstin: pv.gstin,
+        state: 'Maharashtra',
+        city: '',
+        pincode: '',
+        businessType: 'Pvt Ltd',
+        upiId: '',
+        accountNo: '',
+        ifscCode: '',
+      };
+      vendors.unshift(newVendor);
+      setStorageItem('vb_vendors', vendors);
+      api.feed.add('vendor', `Approved vendor "${pv.companyName}" — now active`);
+      return newVendor;
+    },
+    reject: async (id) => {
+      await sleep(DELAY);
+      const list = getStorageItem('vb_pending_vendors', []);
+      const pv = list.find(p => p.id === id);
+      const updated = list.filter(p => p.id !== id);
+      setStorageItem('vb_pending_vendors', updated);
+      if (pv) api.feed.add('vendor', `Rejected vendor registration: "${pv.companyName}"`);
+      return true;
+    },
+  },
 };

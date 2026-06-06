@@ -1,181 +1,292 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate, Link } from 'react-router-dom';
-import { useApp } from '../context/AppContext';
-import { FormInput } from '../components/FormInput';
-import { Camera, LogIn, ArrowRight } from 'lucide-react';
+import React, { useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { Eye, EyeOff, ChevronDown, Lock, Mail, Shield, Briefcase, UserCheck, Store, Loader2 } from 'lucide-react';
+import { useApp, DEMO_CREDENTIALS } from '../context/AppContext';
+
+const ROLE_TABS = [
+  { role: 'admin',   label: 'Admin',    icon: Shield,      color: 'text-brand-600 dark:text-brand-400',   bg: 'bg-brand-50 dark:bg-brand-950/20',   border: 'border-brand-300 dark:border-brand-700',  fill: 'bg-brand-600', email: 'admin@vendorbridge.com',   pass: 'Admin123' },
+  { role: 'officer', label: 'Officer',  icon: Briefcase,   color: 'text-sky-600 dark:text-sky-400',        bg: 'bg-sky-50 dark:bg-sky-950/20',         border: 'border-sky-300 dark:border-sky-700',      fill: 'bg-sky-600',   email: 'officer@vendorbridge.com', pass: 'Officer123' },
+  { role: 'manager', label: 'Manager',  icon: UserCheck,   color: 'text-emerald-600 dark:text-emerald-400',bg: 'bg-emerald-50 dark:bg-emerald-950/20', border: 'border-emerald-300 dark:border-emerald-700',fill:'bg-emerald-600',email: 'manager@vendorbridge.com', pass: 'Manager123' },
+  { role: 'vendor',  label: 'Vendor',   icon: Store,       color: 'text-amber-600 dark:text-amber-400',    bg: 'bg-amber-50 dark:bg-amber-950/20',     border: 'border-amber-300 dark:border-amber-700',  fill: 'bg-amber-600', email: 'vendor1@vendorbridge.com', pass: 'Vendor123' },
+];
+
+const VENDOR_ACCOUNTS = DEMO_CREDENTIALS.filter(c => c.role === 'vendor');
 
 export const Login = () => {
-  const { loginUser, loading } = useApp();
   const navigate = useNavigate();
+  const { loginWithCredentials, loading } = useApp();
 
-  // Form Fields
-  const [username, setUsername] = useState('');
+  const [selectedRole, setSelectedRole] = useState('officer');
+  const [email, setEmail]       = useState('');
   const [password, setPassword] = useState('');
-  const [photo, setPhoto] = useState(null);
-  const [errors, setErrors] = useState({});
+  const [showPw, setShowPw]     = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
+  const [showCredsPanel, setShowCredsPanel] = useState(false);
+  const [errors, setErrors]     = useState({});
 
-  // Load photo from local storage on mount if exists
-  useEffect(() => {
-    const savedPhoto = localStorage.getItem('vb_photo');
-    if (savedPhoto) {
-      setPhoto(savedPhoto);
-    }
-  }, []);
+  const activeTab = ROLE_TABS.find(t => t.role === selectedRole);
 
-  const handlePhotoChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        const base64String = reader.result;
-        setPhoto(base64String);
-        localStorage.setItem('vb_photo', base64String);
-      };
-      reader.readAsDataURL(file);
-    }
+  const handleRoleSelect = (tab) => {
+    setSelectedRole(tab.role);
+    setEmail('');
+    setPassword('');
+    setErrors({});
+  };
+
+  const fillDemo = (emailVal, passVal) => {
+    setEmail(emailVal);
+    setPassword(passVal);
   };
 
   const validate = () => {
-    const tempErrors = {};
-    if (!username) {
-      tempErrors.username = 'Username or email address is required.';
-    }
-    
-    if (!password) {
-      tempErrors.password = 'Password is required.';
-    } else if (password.length < 6) {
-      tempErrors.password = 'Password must be at least 6 characters.';
-    }
-
-    setErrors(tempErrors);
-    return Object.keys(tempErrors).length === 0;
+    const errs = {};
+    if (!email.trim()) errs.email = 'Email is required';
+    else if (!/\S+@\S+\.\S+/.test(email)) errs.email = 'Enter a valid email';
+    if (!password) errs.password = 'Password is required';
+    setErrors(errs);
+    return Object.keys(errs).length === 0;
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) return;
-
-    // Use username as the email for the existing loginUser mock API
-    const success = await loginUser(username, password);
-    if (success) {
-      navigate('/dashboard');
+    const user = await loginWithCredentials(email, password);
+    if (user) {
+      if (user.role === 'vendor') navigate('/vendor/dashboard');
+      else navigate('/dashboard');
     }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-slate-50 dark:bg-neutral-950 px-4 py-12 grid-lines">
-      {/* Outer Card (Box 1) */}
-      <div className="w-full max-w-md bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-3xl shadow-xl p-8 space-y-6">
-        
-        {/* Brand Header */}
-        <div className="text-center space-y-1">
-          <h2 className="text-2xl font-display font-extrabold text-slate-800 dark:text-neutral-100 tracking-tight">
-            VendorBridge Login
+    <div className="min-h-screen flex bg-slate-50 dark:bg-neutral-950">
+
+      {/* ─── Left Brand Panel ─── */}
+      <div className="hidden lg:flex lg:w-[45%] flex-col justify-between p-12 bg-gradient-to-br from-brand-700 via-brand-600 to-sky-600 relative overflow-hidden">
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-10 left-10 w-72 h-72 rounded-full bg-white blur-3xl" />
+          <div className="absolute bottom-10 right-10 w-64 h-64 rounded-full bg-sky-300 blur-3xl" />
+        </div>
+        <div className="relative z-10">
+          <div className="flex items-center gap-3 mb-16">
+            <div className="w-10 h-10 rounded-2xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+              <span className="text-white font-black text-base">VB</span>
+            </div>
+            <span className="text-white font-display font-black text-xl tracking-tight">VendorBridge</span>
+          </div>
+          <h2 className="text-4xl font-display font-black text-white leading-tight mb-4">
+            Enterprise Procurement,<br />Simplified.
           </h2>
-          <p className="text-xs text-slate-400 dark:text-neutral-500 font-medium">
-            Sign in to manage your procurement network
+          <p className="text-white/70 text-sm font-medium leading-relaxed max-w-sm">
+            Manage your entire vendor ecosystem — from RFQ creation to invoice settlement — in one powerful platform.
           </p>
         </div>
-
-        {/* Inner Card (Box 2) */}
-        <div className="bg-slate-50/50 dark:bg-neutral-900/30 border border-slate-200 dark:border-neutral-800/80 rounded-2xl p-6 shadow-inner space-y-6">
-          
-          {/* Photo Circular Container */}
-          <div className="flex flex-col items-center justify-center">
-            <label htmlFor="photo-upload" className="relative group cursor-pointer block">
-              <div className="w-24 h-24 rounded-full border-2 border-slate-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 flex flex-col items-center justify-center overflow-hidden transition-all duration-300 group-hover:border-brand-500 group-hover:shadow-lg group-hover:shadow-brand-500/10">
-                {photo ? (
-                  <img src={photo} alt="Avatar Preview" className="w-full h-full object-cover" />
-                ) : (
-                  <div className="flex flex-col items-center text-slate-400 dark:text-neutral-500">
-                    <span className="font-display text-sm font-semibold tracking-wider uppercase">Photo</span>
-                    <Camera className="w-4 h-4 mt-1 opacity-60 group-hover:scale-110 transition-transform" />
-                  </div>
-                )}
+        {/* Feature highlights */}
+        <div className="relative z-10 space-y-3">
+          {['Role-Based Access Control', 'Multi-Vendor RFQ Management', 'Approval Workflow Engine', 'Real-Time Analytics'].map(f => (
+            <div key={f} className="flex items-center gap-3 text-white/80 text-xs font-medium">
+              <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center shrink-0">
+                <div className="w-2 h-2 rounded-full bg-white" />
               </div>
-              <div className="absolute inset-0 rounded-full bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-200">
-                <span className="text-white text-xxs font-bold uppercase tracking-wider">Change</span>
-              </div>
-            </label>
-            <input 
-              type="file" 
-              id="photo-upload" 
-              accept="image/*" 
-              className="hidden" 
-              onChange={handlePhotoChange} 
-            />
-          </div>
-
-          {/* Form Fields */}
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <FormInput
-              label="Username"
-              id="username"
-              type="text"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              error={errors.username}
-              placeholder="sarah.jenkins"
-            />
-
-            <FormInput
-              label="Password"
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              error={errors.password}
-              placeholder="••••••••"
-            />
-
-            {/* Login Button Container - Centered */}
-            <div className="flex justify-center pt-2">
-              <button
-                type="submit"
-                disabled={loading}
-                className="px-8 py-2.5 bg-brand-600 hover:bg-brand-500 disabled:bg-brand-400 text-white font-semibold text-sm rounded-xl shadow-lg shadow-brand-500/20 hover:shadow-brand-500/35 active:scale-98 transition-all hover-glow-button"
-              >
-                {loading ? (
-                  <span className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin inline-block" />
-                ) : (
-                  <div className="flex items-center gap-2">
-                    <span>Login</span>
-                    <LogIn className="w-4 h-4" />
-                  </div>
-                )}
-              </button>
+              {f}
             </div>
-          </form>
+          ))}
+        </div>
+      </div>
+
+      {/* ─── Right Login Form ─── */}
+      <div className="flex-1 flex flex-col items-center justify-center p-6 lg:p-12">
+        {/* Logo (mobile) */}
+        <div className="lg:hidden flex items-center gap-2.5 mb-8">
+          <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-brand-600 to-brand-500 flex items-center justify-center">
+            <span className="text-white font-black text-sm">VB</span>
+          </div>
+          <span className="font-display font-black text-xl text-slate-900 dark:text-white">VendorBridge</span>
         </div>
 
-        {/* Demo Mode / Alternative Actions */}
-        <div className="space-y-4 pt-2">
-          {/* Quick Demo Log In (Bypass Auth) */}
-          <button
-            type="button"
-            onClick={async () => {
-              const success = await loginUser('sarah.j@vendorbridge.com', 'password');
-              if (success) {
-                navigate('/dashboard');
-              }
-            }}
-            disabled={loading}
-            className="w-full flex items-center justify-center gap-2 py-2.5 px-4 bg-slate-50 hover:bg-slate-100 dark:bg-neutral-850 dark:hover:bg-neutral-800 text-slate-600 dark:text-neutral-300 font-semibold text-xs rounded-xl border border-slate-200 dark:border-neutral-800 transition-all select-none cursor-pointer"
-          >
-            <span>Demo Mode (Bypass Auth)</span>
-          </button>
-
-          {/* Redirect Section */}
-          <div className="text-center">
-            <p className="text-xs text-slate-500 dark:text-neutral-500">
-              Don't have an enterprise account?{' '}
-              <Link to="/signup" className="font-bold text-brand-600 dark:text-brand-400 hover:underline inline-flex items-center gap-0.5">
-                Create an account <ArrowRight className="w-3 h-3" />
-              </Link>
+        <div className="w-full max-w-md">
+          <div className="mb-8">
+            <h1 className="text-3xl font-display font-black text-slate-900 dark:text-white tracking-tight mb-1">
+              Welcome back
+            </h1>
+            <p className="text-sm text-slate-500 dark:text-neutral-500 font-medium">
+              Sign in to your VendorBridge account
             </p>
           </div>
-        </div>
 
+          {/* Role Selector Tabs */}
+          <div className="grid grid-cols-4 gap-1.5 p-1.5 bg-slate-100 dark:bg-neutral-800/60 rounded-2xl mb-6">
+            {ROLE_TABS.map((tab) => {
+              const Icon = tab.icon;
+              const isActive = selectedRole === tab.role;
+              return (
+                <button
+                  key={tab.role}
+                  onClick={() => handleRoleSelect(tab)}
+                  className={`flex flex-col items-center gap-1 py-2.5 px-2 rounded-xl text-[10px] font-bold transition-all ${
+                    isActive
+                      ? 'bg-white dark:bg-neutral-900 shadow-sm ' + tab.color
+                      : 'text-slate-500 dark:text-neutral-500 hover:text-slate-700 dark:hover:text-neutral-300'
+                  }`}
+                >
+                  <Icon className={`w-4 h-4 ${isActive ? tab.color : ''}`} />
+                  {tab.label}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Login Form */}
+          <div className={`p-6 bg-white dark:bg-neutral-900 border ${activeTab.border} rounded-2xl shadow-sm mb-4`}>
+            <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Email */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold text-slate-500 dark:text-neutral-400 uppercase tracking-wider">
+                  Email Address
+                </label>
+                <div className="relative">
+                  <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-neutral-500 pointer-events-none" />
+                  <input
+                    id="login_email"
+                    type="email"
+                    value={email}
+                    onChange={e => { setEmail(e.target.value); setErrors(p => ({...p, email:''})); }}
+                    placeholder={activeTab.email}
+                    className={`w-full pl-10 pr-4 py-2.5 text-sm bg-white dark:bg-neutral-950 border rounded-xl focus:outline-none focus:ring-2 transition-all text-slate-800 dark:text-neutral-200 placeholder:text-slate-300 dark:placeholder:text-neutral-700 ${
+                      errors.email
+                        ? 'border-rose-400 focus:ring-rose-500/20 focus:border-rose-500'
+                        : 'border-slate-200 dark:border-neutral-800 hover:border-slate-300 dark:hover:border-neutral-700 focus:ring-brand-500/20 focus:border-brand-500'
+                    }`}
+                  />
+                </div>
+                {errors.email && <p className="text-[10px] font-semibold text-rose-600 dark:text-rose-400">{errors.email}</p>}
+              </div>
+
+              {/* Password */}
+              <div className="space-y-1.5">
+                <label className="text-[10px] font-bold text-slate-500 dark:text-neutral-400 uppercase tracking-wider">
+                  Password
+                </label>
+                <div className="relative">
+                  <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-neutral-500 pointer-events-none" />
+                  <input
+                    id="login_password"
+                    type={showPw ? 'text' : 'password'}
+                    value={password}
+                    onChange={e => { setPassword(e.target.value); setErrors(p => ({...p, password:''})); }}
+                    placeholder="••••••••"
+                    className={`w-full pl-10 pr-11 py-2.5 text-sm bg-white dark:bg-neutral-950 border rounded-xl focus:outline-none focus:ring-2 transition-all text-slate-800 dark:text-neutral-200 ${
+                      errors.password
+                        ? 'border-rose-400 focus:ring-rose-500/20 focus:border-rose-500'
+                        : 'border-slate-200 dark:border-neutral-800 hover:border-slate-300 dark:hover:border-neutral-700 focus:ring-brand-500/20 focus:border-brand-500'
+                    }`}
+                  />
+                  <button type="button" onClick={() => setShowPw(!showPw)}
+                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-neutral-500 dark:hover:text-neutral-300 transition-colors">
+                    {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                  </button>
+                </div>
+                {errors.password && <p className="text-[10px] font-semibold text-rose-600 dark:text-rose-400">{errors.password}</p>}
+              </div>
+
+              {/* Remember Me */}
+              <div className="flex items-center justify-between">
+                <label className="flex items-center gap-2 text-xs text-slate-600 dark:text-neutral-400 cursor-pointer">
+                  <input type="checkbox" checked={rememberMe} onChange={e => setRememberMe(e.target.checked)}
+                    className="w-3.5 h-3.5 rounded border-slate-300 dark:border-neutral-700 text-brand-600 focus:ring-brand-500/20" />
+                  <span className="font-medium">Remember me</span>
+                </label>
+                <button type="button" className="text-xs font-semibold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 transition-colors">
+                  Forgot password?
+                </button>
+              </div>
+
+              {/* Submit */}
+              <button
+                id="login_submit"
+                type="submit"
+                disabled={loading}
+                className={`w-full py-2.5 px-4 text-sm font-bold text-white rounded-xl shadow-md transition-all hover:-translate-y-0.5 active:translate-y-0 disabled:opacity-60 disabled:cursor-not-allowed flex items-center justify-center gap-2 ${activeTab.fill} hover:opacity-90 shadow-brand-500/20`}
+              >
+                {loading ? (
+                  <><Loader2 className="w-4 h-4 animate-spin" /> Signing in...</>
+                ) : (
+                  `Sign in as ${activeTab.label}`
+                )}
+              </button>
+            </form>
+          </div>
+
+          {/* Demo Credentials Panel */}
+          <div className="bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-2xl shadow-sm overflow-hidden mb-4">
+            <button
+              onClick={() => setShowCredsPanel(!showCredsPanel)}
+              className="w-full flex items-center justify-between px-5 py-3.5 text-xs font-bold text-slate-700 dark:text-neutral-300 hover:bg-slate-50 dark:hover:bg-neutral-800/50 transition-colors"
+            >
+              <div className="flex items-center gap-2">
+                <div className="w-5 h-5 rounded-full bg-brand-100 dark:bg-brand-950/40 flex items-center justify-center">
+                  <span className="text-brand-600 dark:text-brand-400 text-[10px] font-black">?</span>
+                </div>
+                <span>Demo Credentials</span>
+              </div>
+              <ChevronDown className={`w-4 h-4 transition-transform ${showCredsPanel ? 'rotate-180' : ''}`} />
+            </button>
+
+            {showCredsPanel && (
+              <div className="border-t border-slate-100 dark:border-neutral-800 p-4 space-y-2">
+                {ROLE_TABS.map(tab => {
+                  const Icon = tab.icon;
+                  const vendorList = tab.role === 'vendor' ? VENDOR_ACCOUNTS : [];
+                  return (
+                    <div key={tab.role}>
+                      {tab.role !== 'vendor' ? (
+                        <button
+                          onClick={() => { handleRoleSelect(tab); fillDemo(tab.email, tab.pass); }}
+                          className="w-full flex items-center gap-3 p-3 rounded-xl hover:bg-slate-50 dark:hover:bg-neutral-800 transition-colors text-left"
+                        >
+                          <div className={`w-8 h-8 rounded-xl ${tab.fill} flex items-center justify-center shrink-0`}>
+                            <Icon className="w-4 h-4 text-white" />
+                          </div>
+                          <div className="min-w-0">
+                            <p className="text-[10px] font-bold text-slate-700 dark:text-neutral-200">{tab.label}</p>
+                            <p className="text-[10px] text-slate-400 dark:text-neutral-500 font-mono truncate">{tab.email}</p>
+                          </div>
+                          <span className="ml-auto text-[10px] font-mono text-slate-500 dark:text-neutral-500 shrink-0">{tab.pass}</span>
+                        </button>
+                      ) : (
+                        <div>
+                          <p className="text-[10px] font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-wider px-3 mb-1">Vendor Accounts</p>
+                          {vendorList.map(v => (
+                            <button key={v.email}
+                              onClick={() => { handleRoleSelect(tab); fillDemo(v.email, v.password); }}
+                              className="w-full flex items-center gap-3 p-2.5 pl-3 rounded-xl hover:bg-slate-50 dark:hover:bg-neutral-800 transition-colors text-left"
+                            >
+                              <div className={`w-7 h-7 rounded-xl ${tab.fill} flex items-center justify-center shrink-0`}>
+                                <Store className="w-3.5 h-3.5 text-white" />
+                              </div>
+                              <div className="min-w-0">
+                                <p className="text-[10px] font-semibold text-slate-700 dark:text-neutral-300 truncate">{v.name}</p>
+                                <p className="text-[9px] text-slate-400 dark:text-neutral-500 font-mono truncate">{v.email}</p>
+                              </div>
+                              <span className="ml-auto text-[10px] font-mono text-slate-500 dark:text-neutral-500 shrink-0">{v.password}</span>
+                            </button>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+          {/* Register link */}
+          <p className="text-center text-xs text-slate-500 dark:text-neutral-500 font-medium">
+            Are you a vendor?{' '}
+            <Link to="/signup" className="font-bold text-brand-600 dark:text-brand-400 hover:text-brand-700 dark:hover:text-brand-300 transition-colors">
+              Register your company
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

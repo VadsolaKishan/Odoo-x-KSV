@@ -30,6 +30,15 @@ export const Navbar = ({ toggleMobileSidebar }) => {
   const unreadNotifications = notifications.filter(n => !n.read);
   const initials = currentUser?.name?.split(' ').map(n => n[0]).join('').slice(0, 2) || 'U';
 
+  const ROLE_BADGE = {
+    admin:   { label: 'Admin',   cls: 'bg-brand-100 text-brand-700 dark:bg-brand-950/40 dark:text-brand-400' },
+    officer: { label: 'Officer', cls: 'bg-sky-100 text-sky-700 dark:bg-sky-950/40 dark:text-sky-400' },
+    manager: { label: 'Manager', cls: 'bg-emerald-100 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400' },
+    vendor:  { label: 'Vendor',  cls: 'bg-amber-100 text-amber-700 dark:bg-amber-950/40 dark:text-amber-400' },
+  };
+  const roleBadge = ROLE_BADGE[currentUser?.role] || null;
+  const isVendor = currentUser?.role === 'vendor';
+
   if (!currentUser) return null;
 
   const notifTypeIcon = (type) => {
@@ -58,11 +67,24 @@ export const Navbar = ({ toggleMobileSidebar }) => {
           <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-brand-600 to-brand-500 flex items-center justify-center shadow-sm shadow-brand-500/30">
             <span className="text-white font-bold text-xs font-display">VB</span>
           </div>
-          <span className="font-display font-bold text-lg text-slate-800 dark:text-neutral-100 tracking-tight">
-            VendorBridge
-          </span>
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="font-display font-bold text-lg text-slate-800 dark:text-neutral-100 tracking-tight leading-none">
+                VendorBridge
+              </span>
+              {roleBadge && (
+                <span className={`hidden sm:inline px-2 py-0.5 text-[9px] font-black uppercase tracking-wider rounded-full ${roleBadge.cls}`}>
+                  {roleBadge.label}
+                </span>
+              )}
+            </div>
+            {isVendor && (
+              <p className="text-[9px] text-amber-600 dark:text-amber-500 font-bold leading-none mt-0.5">Vendor Portal</p>
+            )}
+          </div>
         </div>
       </div>
+
 
       {/* Right: Actions */}
       <div className="flex items-center gap-2">
@@ -176,7 +198,12 @@ export const Navbar = ({ toggleMobileSidebar }) => {
                   </div>
                   <div className="min-w-0">
                     <p className="text-xs font-bold text-slate-800 dark:text-neutral-200 truncate">{currentUser.name}</p>
-                    <p className="text-[10px] text-slate-500 dark:text-neutral-500 truncate">{currentUser.role}</p>
+                    <div className="flex items-center gap-1.5 mt-0.5">
+                      {roleBadge && (
+                        <span className={`text-[9px] font-black px-1.5 py-0.5 rounded-full ${roleBadge.cls}`}>{roleBadge.label}</span>
+                      )}
+                      <p className="text-[9px] text-slate-400 dark:text-neutral-500 truncate">{currentUser.title || currentUser.email}</p>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -184,7 +211,7 @@ export const Navbar = ({ toggleMobileSidebar }) => {
               {/* Menu Items */}
               <div className="p-1.5 space-y-0.5">
                 <Link
-                  to="/profile"
+                  to={isVendor ? '/vendor/profile' : '/profile'}
                   onClick={() => setShowProfileMenu(false)}
                   className="flex items-center gap-2.5 w-full px-3 py-2 text-xs text-slate-600 dark:text-neutral-400 hover:bg-slate-50 dark:hover:bg-neutral-850 hover:text-slate-800 dark:hover:text-neutral-200 rounded-xl text-left font-medium transition-colors"
                 >
