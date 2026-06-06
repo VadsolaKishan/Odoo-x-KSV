@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuthStore } from '../store/auth.store';
-import { Lock, Mail, ArrowRight, Eye, EyeOff, Loader2, CheckCircle2 } from 'lucide-react';
+import { Lock, Mail, ArrowRight, Eye, EyeOff, Loader2, CheckCircle2, Zap } from 'lucide-react';
 import api from '../lib/axios';
 import toast from 'react-hot-toast';
+
+const DEMO_ACCOUNTS = [
+  { role: 'Admin', email: 'admin@vendorbridge.com', password: 'Demo@1234', color: 'emerald', desc: 'Full system access' },
+  { role: 'Officer', email: 'officer@vendorbridge.com', password: 'Demo@1234', color: 'blue', desc: 'RFQ & Quotations' },
+  { role: 'Manager', email: 'manager@vendorbridge.com', password: 'Demo@1234', color: 'amber', desc: 'Approval workflows' },
+];
 
 export default function LoginPage() {
   const navigate = useNavigate();
@@ -37,7 +43,7 @@ export default function LoginPage() {
       
       setAuth(user, token);
       toast.success(`Welcome back, ${user.first_name}!`);
-      navigate('/');
+      navigate('/dashboard');
     } catch (error: any) {
       const msg = error.response?.data?.message || 'Invalid credentials';
       toast.error(msg);
@@ -178,13 +184,52 @@ export default function LoginPage() {
               </button>
             </form>
 
+            {/* Demo Accounts */}
+            <div className="mt-6 pt-5 border-t border-subtle">
+              <div className="flex items-center gap-2 mb-3">
+                <Zap className="w-3.5 h-3.5 text-amber-400" />
+                <span className="text-xs font-bold text-text-secondary uppercase tracking-wider">Quick Demo Login</span>
+              </div>
+              <div className="grid grid-cols-3 gap-2">
+                {DEMO_ACCOUNTS.map((d) => (
+                  <button
+                    key={d.role}
+                    type="button"
+                    onClick={() => {
+                      setEmail(d.email);
+                      setPassword(d.password);
+                      // Auto-submit after short delay for UX feedback
+                      setTimeout(async () => {
+                        setLoading(true);
+                        try {
+                          const response = await api.post('/auth/login', { email: d.email, password: d.password });
+                          const { token, user } = response.data.data;
+                          setAuth(user, token);
+                          toast.success(`Logged in as ${d.role}`);
+                          navigate('/dashboard');
+                        } catch {
+                          toast.error('Demo login failed — check backend is running');
+                        } finally {
+                          setLoading(false);
+                        }
+                      }, 150);
+                    }}
+                    disabled={loading}
+                    className={`flex flex-col items-center gap-1 p-2.5 rounded-lg bg-${d.color}-500/10 border border-${d.color}-500/20 hover:bg-${d.color}-500/20 transition-all duration-200 disabled:opacity-40 cursor-pointer`}
+                  >
+                    <span className={`text-xs font-bold text-${d.color}-400`}>{d.role}</span>
+                    <span className="text-[10px] text-text-secondary">{d.desc}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+
             {/* Separator / Redirect */}
-            <div className="mt-6 pt-5 border-t border-subtle text-center">
-              <span className="text-xs text-text-secondary block mb-3">or</span>
+            <div className="mt-4 text-center">
               <p className="text-xs text-text-secondary">
-                Don't have an account?{' '}
+                Vendor?{' '}
                 <Link to="/register" className="text-emerald-400 hover:text-brand-green-dark font-semibold transition-colors">
-                  Register
+                  Register your company
                 </Link>
               </p>
             </div>

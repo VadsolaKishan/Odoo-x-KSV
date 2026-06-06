@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import { z } from 'zod';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
-import { query } from '../config/db';
+import { query, pool } from '../config/db';
 import { JWTPayload } from '../models/types';
 
 // Validation Schemas
@@ -204,5 +204,102 @@ export const getMe = async (req: Request, res: Response, next: NextFunction) => 
     });
   } catch (error) {
     return next(error);
+  }
+};
+
+// ============================================================
+// VENDOR SELF-REGISTRATION (user + vendor company in one step)
+// ============================================================
+export const registerVendorSchema = z.object({
+  // User account fields
+  first_name: z.string().min(1, 'First name is required').max(100),
+  last_name: z.string().min(1, 'Last name is required').max(100),
+  email: z.string().email('Invalid email format').max(255),
+  password: z.string().min(8, 'Password must be at least 8 characters').max(100),
+  phone: z.string().max(30).optional().nullable(),
+  country: z.string().max(100).optional().nullable(),
+  // Vendor company fields
+  company_name: z.string().min(1, 'Company name is required').max(255),
+  gst_number: z.string().min(1, 'GST number is required').max(50),
+  category: z.string().min(1, 'Category is required').max(100),
+  contact_phone: z.string().min(1, 'Contact phone is required').max(30),
+  address: z.string().optional().nullable(),
+});
+
+export const registerVendor = async (req: Request, res: Response, next: NextFunction) => {
+  const client = await pool.connect();
+  try {
+    const {
+      first_name, last_name, email, password, phone, country,
+      company_name, gst_number, category, contact_phone, address,
+    } = req.body;
+
+    const passwordHash = await bcrypt.hash(password, 12);
+
+    await client.query('BEGIN');
+
+    // 1. Create user account (role = vendor)
+    let userResult;
+    try {
+      userResult = await client.query(
+        `INSERT INTO users (first_name, last_name, email, password_hash, role, country, phone)
+         VALUES ($1, $2, $3, $4, 'vendor', $5, $6)
+         RETURNING id, first_name, last_name, email, role, country, phone, is_active, created_at`,
+        [first_name, last_name, email.toLowerCase(), passwordHash, country || 'India', phone || null]
+      );
+    } catch (err: any) {
+      if (err.code === '23505') {
+        await client.query('ROLLBACK');
+        return res.status(409).json({ success: false, message: 'Email already registered' });
+      }
+      throw err;
+    }
+
+    const user = userResult.rows[0];
+
+    // 2. Create vendor company profile (status = pending — awaits admin approval)
+    let vendorResult;
+    try {
+      vendorResult = await client.query(
+        `INSERT INTO vendors (name, category, gst_number, contact_name, contact_phone, contact_email, address, status, rating, created_by)
+         VALUES ($1, $2, $3, $4, $5, $6, $7, 'pending', 0.00, $8)
+         RETURNING *`,
+        [
+          company_name, category, gst_number,
+          `${first_name} ${last_name}`,
+          contact_phone,
+          email.toLowerCase(),
+          address || null,
+          user.id,
+        ]
+      );
+    } catch (err: any) {
+      if (err.code === '23505') {
+        await client.query('ROLLBACK');
+        return res.status(409).json({ success: false, message: 'GST number already registered' });
+      }
+      throw err;
+    }
+
+    await client.query('COMMIT');
+
+    // Generate JWT
+    const tokenPayload: JWTPayload = { userId: user.id, email: user.email, role: user.role };
+    const token = jwt.sign(tokenPayload, process.env.JWT_SECRET!, { expiresIn: '7d' });
+
+    return res.status(201).json({
+      success: true,
+      message: 'Vendor registered successfully. Your account is pending admin approval.',
+      data: {
+        token,
+        user,
+        vendor: vendorResult.rows[0],
+      },
+    });
+  } catch (error) {
+    await client.query('ROLLBACK');
+    return next(error);
+  } finally {
+    client.release();
   }
 };
