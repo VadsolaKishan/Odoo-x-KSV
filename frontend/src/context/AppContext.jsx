@@ -71,10 +71,7 @@ export const convertNumberToWords = (num) => {
 
 export const AppProvider = ({ children }) => {
   const [theme, setTheme] = useState(localStorage.getItem('vb_theme') || 'light');
-  const [currentUser, setCurrentUser] = useState(() => {
-    const user = localStorage.getItem('vb_user');
-    return user ? JSON.parse(user) : { name: 'Sarah Jenkins', email: 'sarah.j@vendorbridge.com', role: 'VP of Procurement' }; // Initial log state
-  });
+  const [currentUser, setCurrentUser] = useState(() => api.auth.getCurrentUser());
   
   // Base State Collections
   const [vendors, setVendors] = useState([]);
@@ -153,29 +150,37 @@ export const AppProvider = ({ children }) => {
   // Auth Functions
   const loginUser = async (email, password) => {
     setLoading(true);
-    await new Promise(r => setTimeout(r, 800)); // fake delay
-    const user = { name: 'Sarah Jenkins', email, role: 'VP of Procurement' };
-    setCurrentUser(user);
-    localStorage.setItem('vb_user', JSON.stringify(user));
-    setLoading(false);
-    addToast('Successfully logged in!', 'success');
-    return true;
+    try {
+      const { user } = await api.auth.login({ email, password });
+      setCurrentUser(user);
+      addToast(`Welcome back, ${user.name}!`, 'success');
+      return true;
+    } catch (err) {
+      addToast(err.message || 'Invalid login credentials', 'danger');
+      return false;
+    } finally {
+      setLoading(false);
+    }
   };
 
   const signupUser = async (name, email, password) => {
     setLoading(true);
-    await new Promise(r => setTimeout(r, 800));
-    const user = { name, email, role: 'Buyer Manager' };
-    setCurrentUser(user);
-    localStorage.setItem('vb_user', JSON.stringify(user));
-    setLoading(false);
-    addToast('Account created successfully!', 'success');
-    return true;
+    try {
+      const { user } = await api.auth.signup({ name, email, password });
+      setCurrentUser(user);
+      addToast(`Account created for ${user.name}!`, 'success');
+      return true;
+    } catch (err) {
+      addToast(err.message || 'Unable to create account', 'danger');
+      return false;
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const logoutUser = () => {
+  const logoutUser = async () => {
+    await api.auth.logout();
     setCurrentUser(null);
-    localStorage.removeItem('vb_user');
     addToast('Logged out of VendorBridge', 'info');
   };
 

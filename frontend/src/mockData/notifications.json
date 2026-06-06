@@ -1,0 +1,5 @@
+[
+  { "id": "not-1", "type": "rfq", "message": "New quotations received for GPU Servers RFQ.", "read": false, "time": "10m ago" },
+  { "id": "not-2", "type": "approval", "message": "RFQ-2026-003 is awaiting your signature.", "read": false, "time": "1h ago" },
+  { "id": "not-3", "type": "vendor", "message": "Tata Digital Solutions updated their contact info.", "read": true, "time": "2d ago" }
+]

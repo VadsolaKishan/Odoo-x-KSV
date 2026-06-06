@@ -1,0 +1,6 @@
+[
+  { "id": "act-1", "type": "invoice", "user": "Finance Bot", "description": "Marked Invoice INV/2026/001 as Paid", "time": "1 day ago" },
+  { "id": "act-2", "type": "po", "user": "Purchasing Team", "description": "Generated Purchase Order PO-2026-001 for Jaipur Stationery Mart", "time": "3 days ago" },
+  { "id": "act-3", "type": "approval", "user": "Sarah Jenkins (VP)", "description": "Approved bid from Jaipur Stationery Mart on Standing Desks RFQ", "time": "4 days ago" },
+  { "id": "act-4", "type": "rfq", "user": "Mark Sterling (Manager)", "description": "Created new RFQ \"Custom Fabricated Steel Rebars\"", "time": "3 hours ago" }
+]

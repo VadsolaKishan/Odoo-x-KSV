@@ -25,14 +25,14 @@ export const Sidebar = ({ isOpen, toggleMobileSidebar }) => {
   const pendingApprovalsCount = rfqs.filter(r => r.status === 'Pending Approval').length;
 
   const navItems = [
-    { to: '/dashboard', label: 'Dashboard', sublabel: 'डैशबोर्ड', icon: LayoutDashboard },
-    { to: '/vendors', label: 'Vendors Directory', sublabel: 'विक्रेता', icon: Users },
-    { to: '/approvals', label: 'Approvals Inbox', sublabel: 'स्वीकृति', icon: FileCheck, badge: pendingApprovalsCount },
-    { to: '/quotations', label: 'Compare Quotes', sublabel: 'तुलना', icon: GitCompare },
-    { to: '/purchase-orders', label: 'Purchase Orders', sublabel: 'क्रय आदेश', icon: FileText },
-    { to: '/invoices', label: 'Invoices', sublabel: 'इनवॉइस', icon: CreditCard },
-    { to: '/reports', label: 'Reports & Analytics', sublabel: 'रिपोर्ट', icon: BarChart3 },
-    { to: '/activity', label: 'Activity & Logs', sublabel: 'गतिविधि लॉग', icon: Activity },
+    { to: '/dashboard', label: 'Dashboard', sublabel: 'डैशबोर्ड', icon: LayoutDashboard, roles: ['admin', 'manager', 'vendor'] },
+    { to: '/vendors', label: 'Vendors Directory', sublabel: 'विक्रेता', icon: Users, roles: ['admin', 'manager'] },
+    { to: '/approvals', label: 'Approvals Inbox', sublabel: 'स्वीकृति', icon: FileCheck, badge: pendingApprovalsCount, roles: ['admin', 'manager'] },
+    { to: '/quotations', label: 'Compare Quotes', sublabel: 'तुलना', icon: GitCompare, roles: ['admin', 'manager', 'vendor'] },
+    { to: '/purchase-orders', label: 'Purchase Orders', sublabel: 'क्रय आदेश', icon: FileText, roles: ['admin', 'manager'] },
+    { to: '/invoices', label: 'Invoices', sublabel: 'इनवॉइस', icon: CreditCard, roles: ['admin', 'manager'] },
+    { to: '/reports', label: 'Reports & Analytics', sublabel: 'रिपोर्ट', icon: BarChart3, roles: ['admin', 'manager'] },
+    { to: '/activity', label: 'Activity & Logs', sublabel: 'गतिविधि लॉग', icon: Activity, roles: ['admin', 'manager', 'vendor'] },
   ];
 
   if (!currentUser) return null;
@@ -73,7 +73,7 @@ export const Sidebar = ({ isOpen, toggleMobileSidebar }) => {
 
         {/* Navigation items */}
         <nav className="flex-1 px-4 py-6 space-y-1 overflow-y-auto">
-          {navItems.map((item) => {
+          {navItems.filter((item) => !item.roles || item.roles.includes(currentUser.roleKey)).map((item) => {
             const Icon = item.icon;
             return (
               <NavLink

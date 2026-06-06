@@ -1,0 +1,29 @@
+[
+  {
+    "id": "U-ADMIN-001",
+    "name": "Sarah Jenkins",
+    "email": "admin@vendorbridge.com",
+    "password": "123456",
+    "roleKey": "admin",
+    "role": "Admin",
+    "vendorScope": "internal"
+  },
+  {
+    "id": "U-MANAGER-001",
+    "name": "Mark Sterling",
+    "email": "manager@vendorbridge.com",
+    "password": "123456",
+    "roleKey": "manager",
+    "role": "Procurement Manager",
+    "vendorScope": "buyer"
+  },
+  {
+    "id": "U-VENDOR-001",
+    "name": "Tata Digital Team",
+    "email": "vendor@vendorbridge.com",
+    "password": "123456",
+    "roleKey": "vendor",
+    "role": "Vendor Partner",
+    "vendorScope": "supplier"
+  }
+]

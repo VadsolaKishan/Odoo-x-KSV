@@ -8,7 +8,7 @@ import { StepForm } from '../components/StepForm';
 export const RfqCreate = () => {
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
-  const { vendors, rfqs, createRfq, addToast } = useApp();
+  const { vendors, rfqs, createRfq, addToast, refreshAllData } = useApp();
 
   // Wizard Step Control
   const [currentStep, setCurrentStep] = useState(1);
@@ -133,9 +133,24 @@ export const RfqCreate = () => {
       assignedVendors
     };
 
-    const newRfq = await createRfq(payload);
-    if (newRfq) {
-      navigate(`/rfq/${newRfq.id}`);
+    try {
+      const newRfq = await createRfq(payload);
+      if (newRfq && newRfq.id) {
+        navigate(`/rfq/${newRfq.id}`);
+        return;
+      }
+
+      // Fallback: refresh data and attempt to find the created RFQ
+      await refreshAllData();
+      const matched = rfqs.find(r => r.title === title && r.deadline === formattedDeadline) || (rfqs[0] || null);
+      if (matched && matched.id) {
+        navigate(`/rfq/${matched.id}`);
+      } else {
+        addToast('RFQ created but could not navigate to details.', 'warning');
+      }
+    } catch (err) {
+      console.error('Error creating RFQ', err);
+      addToast('Failed to create RFQ. Please try again.', 'danger');
     }
   };
 

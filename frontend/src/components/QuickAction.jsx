@@ -31,7 +31,8 @@ export const QuickAction = ({ onAddVendorClick }) => {
       label: 'New RFQ',
       icon: ClipboardPlus,
       color: 'bg-brand-500 hover:bg-brand-600 text-white',
-      onClick: () => handleAction('/rfq/create')
+      onClick: () => handleAction('/rfq/create'),
+      roles: ['admin', 'manager']
     },
     {
       label: 'Add Vendor',
@@ -45,22 +46,26 @@ export const QuickAction = ({ onAddVendorClick }) => {
           handleAction('/vendors?add=true');
         }
         setIsOpen(false);
-      }
+      },
+      roles: ['admin', 'manager']
     },
     {
       label: 'Approvals',
       icon: CheckSquare,
       color: 'bg-indigo-500 hover:bg-indigo-600 text-white',
-      onClick: () => handleAction('/approvals')
+      onClick: () => handleAction('/approvals'),
+      roles: ['admin', 'manager']
     }
   ];
+
+  const visibleActions = actionItems.filter((item) => !item.roles || item.roles.includes(currentUser.roleKey));
 
   return (
     <div className="fixed bottom-6 right-6 z-40" ref={containerRef}>
       {/* Expanded list of actions */}
       {isOpen && (
         <div className="flex flex-col items-end gap-3 mb-4 animate-fade-in">
-          {actionItems.map((item, index) => {
+          {visibleActions.map((item, index) => {
             const Icon = item.icon;
             return (
               <div key={index} className="flex items-center gap-3 group">

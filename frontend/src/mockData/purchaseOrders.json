@@ -1,0 +1,27 @@
+[
+  {
+    "id": "PO-2026-001",
+    "rfqId": "RFQ-2026-002",
+    "rfqTitle": "Office Ergonomic Desks",
+    "vendorId": "V-004",
+    "vendorName": "Jaipur Stationery Mart",
+    "subtotal": 162711.86,
+    "gstRate": 18,
+    "gstAmount": 29288.14,
+    "cgst": 0,
+    "sgst": 0,
+    "igst": 29288.14,
+    "totalCost": 192000,
+    "createdAt": "24/05/2026",
+    "status": "Acknowledged",
+    "placeOfSupply": "Rajasthan",
+    "vendorGstin": "08DDDDD4444D4Z4",
+    "upiId": "jaipur@oksbi",
+    "accountNo": "109988445566",
+    "ifscCode": "SBIN0000302",
+    "items": [
+      { "name": "Smart Height Standing Desk Dual-Motor", "quantity": 45, "unitPrice": 4000, "total": 180000, "hsnCode": "94031000" },
+      { "name": "Under-desk Cable Trays", "quantity": 45, "unitPrice": 266.66, "total": 12000, "hsnCode": "94039000" }
+    ]
+  }
+]

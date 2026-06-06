@@ -22,10 +22,13 @@ import { Reports } from './pages/Reports';
 import { ActivityLog } from './pages/ActivityLog';
 
 // Route Guard for Authenticated Views
-const ProtectedRoute = ({ children }) => {
+const ProtectedRoute = ({ children, roles }) => {
   const { currentUser } = useApp();
   if (!currentUser) {
     return <Navigate to="/login" replace />;
+  }
+  if (roles && roles.length > 0 && !roles.includes(currentUser.roleKey)) {
+    return <Navigate to="/dashboard" replace />;
   }
   return <Layout>{children}</Layout>;
 };
@@ -74,7 +77,7 @@ export const App = () => {
         <Route 
           path="/vendors" 
           element={
-            <ProtectedRoute>
+            <ProtectedRoute roles={["admin", "manager"]}>
               <Vendors />
             </ProtectedRoute>
           } 
@@ -82,7 +85,7 @@ export const App = () => {
         <Route 
           path="/rfq/create" 
           element={
-            <ProtectedRoute>
+            <ProtectedRoute roles={["admin", "manager"]}>
               <RfqCreate />
             </ProtectedRoute>
           } 
@@ -106,7 +109,7 @@ export const App = () => {
         <Route 
           path="/approvals" 
           element={
-            <ProtectedRoute>
+            <ProtectedRoute roles={["admin", "manager"]}>
               <Approvals />
             </ProtectedRoute>
           } 
@@ -114,7 +117,7 @@ export const App = () => {
         <Route 
           path="/purchase-orders" 
           element={
-            <ProtectedRoute>
+            <ProtectedRoute roles={["admin", "manager"]}>
               <PurchaseOrders />
             </ProtectedRoute>
           } 
@@ -122,7 +125,7 @@ export const App = () => {
         <Route 
           path="/invoices" 
           element={
-            <ProtectedRoute>
+            <ProtectedRoute roles={["admin", "manager"]}>
               <Invoices />
             </ProtectedRoute>
           } 
@@ -130,7 +133,7 @@ export const App = () => {
         <Route 
           path="/reports" 
           element={
-            <ProtectedRoute>
+            <ProtectedRoute roles={["admin", "manager"]}>
               <Reports />
             </ProtectedRoute>
           } 

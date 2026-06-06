@@ -1,0 +1,47 @@
+[
+  {
+    "id": "RFQ-2026-001",
+    "title": "High-Performance GPU Servers",
+    "description": "Procuring 10x high-performance computing servers for AI model training cluster.",
+    "deadline": "25/06/2026",
+    "createdAt": "01/06/2026",
+    "status": "Quotes Gathered",
+    "items": [
+      { "name": "Nvidia H100 GPU Server Node", "quantity": 10, "hsnCode": "84713010" },
+      { "name": "100Gbps Switch ConnectX-7", "quantity": 2, "hsnCode": "85176200" }
+    ],
+    "assignedVendors": ["V-001", "V-002", "V-003"],
+    "timelineStep": 1
+  },
+  {
+    "id": "RFQ-2026-002",
+    "title": "Office Ergonomic Desks",
+    "description": "Standardizing ergonomic standing desks for the new Mumbai workspace annex.",
+    "deadline": "12/06/2026",
+    "createdAt": "20/05/2026",
+    "status": "Invoice Settled",
+    "items": [
+      { "name": "Smart Height Standing Desk Dual-Motor", "quantity": 45, "hsnCode": "94031000" },
+      { "name": "Under-desk Cable Trays", "quantity": 45, "hsnCode": "94039000" }
+    ],
+    "assignedVendors": ["V-004"],
+    "timelineStep": 4,
+    "poId": "PO-2026-001",
+    "invoiceId": "INV-2026-001"
+  },
+  {
+    "id": "RFQ-2026-003",
+    "title": "Custom Fabricated Steel Rebars",
+    "description": "Reinforced concrete foundation steel bars for construction Project Horizon.",
+    "deadline": "15/06/2026",
+    "createdAt": "03/06/2026",
+    "status": "Pending Approval",
+    "items": [
+      { "name": "Grade 60 Steel Rebar #4 (1/2 inch)", "quantity": 1200, "hsnCode": "72142090" },
+      { "name": "Grade 60 Steel Rebar #5 (5/8 inch)", "quantity": 800, "hsnCode": "72142090" }
+    ],
+    "assignedVendors": ["V-002", "V-003"],
+    "timelineStep": 2,
+    "selectedBidId": "Q-005"
+  }
+]
