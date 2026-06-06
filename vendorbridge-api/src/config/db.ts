@@ -7,7 +7,7 @@ export const pool = new Pool({
   ssl: { rejectUnauthorized: false }, // Required for Neon
   max: 10,
   idleTimeoutMillis: 30000,
-  connectionTimeoutMillis: 2000,
+  connectionTimeoutMillis: 15000,
 });
 
 pool.on('error', (err) => {
