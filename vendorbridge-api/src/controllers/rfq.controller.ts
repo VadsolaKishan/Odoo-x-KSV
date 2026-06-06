@@ -48,7 +48,7 @@ export const updateStatusSchema = z.object({
 // Controllers
 export const getRFQs = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { status, page = '1', limit = '10' } = req.query;
+    const { status, vendor_id, page = '1', limit = '10' } = req.query;
 
     const pageVal = parseInt(page as string, 10) || 1;
     const limitVal = parseInt(limit as string, 10) || 10;
@@ -62,11 +62,19 @@ export const getRFQs = async (req: Request, res: Response, next: NextFunction) =
       conditions.push(`r.status = $${params.length}`);
     }
 
+    // Filter by assigned vendor when vendor_id is provided
+    const vendorJoin = vendor_id
+      ? `JOIN rfq_vendor_assignments rva_filter ON r.id = rva_filter.rfq_id AND rva_filter.vendor_id = $${params.length + 1}`
+      : '';
+    if (vendor_id && typeof vendor_id === 'string') {
+      params.push(vendor_id);
+    }
+
     const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
 
     // Get total matching count
     const countResult = await query(
-      `SELECT COUNT(*) FROM rfqs r ${whereClause}`,
+      `SELECT COUNT(*) FROM rfqs r ${vendorJoin} ${whereClause}`,
       params
     );
     const total = parseInt(countResult.rows[0].count, 10);
@@ -94,6 +102,7 @@ export const getRFQs = async (req: Request, res: Response, next: NextFunction) =
         COALESCE(li.li_count, 0)::int AS line_items_count,
         COALESCE(va.va_count, 0)::int AS vendor_count
       FROM rfqs r
+      ${vendorJoin}
       LEFT JOIN users u ON r.created_by = u.id
       LEFT JOIN (
         SELECT rfq_id, COUNT(*) as li_count 

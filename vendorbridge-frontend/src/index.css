@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* Primary brand */
+  --brand-green: #10b981;       /* emerald-500 — primary CTA */
+  --brand-green-dark: #059669;  /* emerald-600 — hover */
+  --brand-green-glow: rgba(16, 185, 129, 0.15); /* subtle glow */
+
+  /* Dark backgrounds (layered) */
+  --bg-base: #0a0f0d;           /* deepest background */
+  --bg-surface: #111917;        /* cards, panels */
+  --bg-elevated: #1a2e25;       /* modals, dropdowns */
+  --bg-glass: rgba(26, 46, 37, 0.7); /* glassmorphism */
+
+  /* Text */
+  --text-primary: #e2e8f0;      /* main text */
+  --text-secondary: #94a3b8;    /* muted text */
+  --text-accent: #10b981;       /* accent text */
+
+  /* Borders */
+  --border-subtle: rgba(255,255,255,0.06);
+  --border-green: rgba(16, 185, 129, 0.3);
+
+  /* Status colors */
+  --status-active: #10b981;
+  --status-pending: #f59e0b;
+  --status-blocked: #ef4444;
+  --status-draft: #6b7280;
+
+  /* Shadows */
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.4);
+  --shadow-glow: 0 0 20px rgba(16, 185, 129, 0.2);
+}
+
+body {
+  background-color: #0a0f0d;
+  color: #e2e8f0;
+  font-family: 'Inter', sans-serif;
+  overflow-x: hidden;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #0a0f0d;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(16, 185, 129, 0.3);
+}
+
+@layer components {
+  /* Glassmorphism card utility */
+  .glass-card {
+    background: rgba(17, 25, 23, 0.65);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(16, 185, 129, 0.12);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.45);
+  }
+
+  /* Input field base */
+  .input-field {
+    background: rgba(10, 15, 13, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    color: #e2e8f0;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 14px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .input-field:focus {
+    outline: none;
+    border-color: rgba(16, 185, 129, 0.5);
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.08);
+  }
+  .input-field::placeholder {
+    color: #64748b;
+  }
+
+  /* Dropdown select custom styling styling */
+  select.input-field {
+    appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg fill='%2394a3b8' height='24' viewBox='0 0 24 24' width='24' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/><path d='M0 0h24v24H0z' fill='none'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    padding-right: 40px;
+  }
+}
