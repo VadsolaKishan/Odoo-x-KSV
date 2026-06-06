@@ -2,7 +2,7 @@
 ### Enterprise Procurement & Vendor Management ERP Platform
 > **Odoo Hackathon Project** — A fully integrated, secure, and automated ERP solution designed to streamline the procurement lifecycle, coordinate multi-level vendor bidding, and manage audit-ready approvals.
 
-![VendorBridge Login Demo](./Demo_Image/Screenshot%202026-06-06%20161532.png)
+![VendorBridge Demo](./Demo_Image/Screenshot%202026-06-06%20162036.png)
 
 VendorBridge is designed to **simplify, centralize, and digitize procurement operations**. It streamlines vendor communication, automates request for quotations (RFQs), manages approvals, and generates purchase orders and invoices, providing real-time tracking and audit logging.
 
