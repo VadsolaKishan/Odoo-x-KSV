@@ -33,3 +33,23 @@ VALUES (
   'manager', 'India', true
 )
 ON CONFLICT (email) DO NOTHING;
+
+-- L1 Approver - Rahul Mehta
+INSERT INTO users (first_name, last_name, email, password_hash, role, country, is_active)
+VALUES (
+  'Rahul', 'Mehta',
+  'rahul@vendorbridge.com',
+  '$2a$12$9cVRkVEfg2W.5YgQN7UpY.sMrmVI3DKZClfZCwOoejBF2o8zoeddm',
+  'manager', 'India', true
+)
+ON CONFLICT (email) DO NOTHING;
+
+-- L2 Approver - Priya Shah
+INSERT INTO users (first_name, last_name, email, password_hash, role, country, is_active)
+VALUES (
+  'Priya', 'Shah',
+  'priya@vendorbridge.com',
+  '$2a$12$9cVRkVEfg2W.5YgQN7UpY.sMrmVI3DKZClfZCwOoejBF2o8zoeddm',
+  'manager', 'India', true
+)
+ON CONFLICT (email) DO NOTHING;

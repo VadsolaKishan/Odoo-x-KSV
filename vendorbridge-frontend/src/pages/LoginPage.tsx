@@ -9,7 +9,8 @@ import toast from 'react-hot-toast';
 const DEMO_ACCOUNTS = [
   { role: 'Admin', email: 'admin@vendorbridge.com', password: 'VendorBridge@2026', color: 'emerald', desc: 'Full system access' },
   { role: 'Officer', email: 'officer@vendorbridge.com', password: 'VendorBridge@2026', color: 'blue', desc: 'RFQ & Quotations' },
-  { role: 'Manager', email: 'manager@vendorbridge.com', password: 'VendorBridge@2026', color: 'amber', desc: 'Approval workflows' },
+  { role: 'L1: Rahul', email: 'rahul@vendorbridge.com', password: 'VendorBridge@2026', color: 'amber', desc: 'Procurement Head' },
+  { role: 'L2: Priya', email: 'priya@vendorbridge.com', password: 'VendorBridge@2026', color: 'emerald', desc: 'Finance Manager' },
 ];
 
 export default function LoginPage() {
@@ -196,7 +197,7 @@ export default function LoginPage() {
                 <Zap className="w-3.5 h-3.5 text-amber-400" />
                 <span className="text-xs font-bold text-text-secondary uppercase tracking-wider">Quick Demo Login</span>
               </div>
-              <div className="grid grid-cols-3 gap-2">
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
                 {DEMO_ACCOUNTS.map((d) => (
                   <button
                     key={d.role}

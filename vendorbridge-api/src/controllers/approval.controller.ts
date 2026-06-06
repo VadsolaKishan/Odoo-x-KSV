@@ -12,26 +12,39 @@ export async function createApprovalChain(
   vendorId: string,
   client: any
 ) {
-  // Find a manager or admin user to act as approvers (foreign key integrity)
-  const usersRes = await client.query(
-    `SELECT id FROM users WHERE role IN ('manager', 'admin') ORDER BY role ASC LIMIT 2`
-  );
+  // Find Rahul Mehta and Priya Shah specifically by email
+  const rahulRes = await client.query("SELECT id FROM users WHERE email = 'rahul@vendorbridge.com'");
+  const priyaRes = await client.query("SELECT id FROM users WHERE email = 'priya@vendorbridge.com'");
 
-  // Fallback to RFQ creator if no manager/admin users exist
   let approver1Id: string;
   let approver2Id: string;
 
-  if (usersRes.rowCount >= 2) {
-    approver1Id = usersRes.rows[0].id;
-    approver2Id = usersRes.rows[1].id;
-  } else if (usersRes.rowCount === 1) {
-    approver1Id = usersRes.rows[0].id;
-    approver2Id = usersRes.rows[0].id;
+  if (rahulRes.rowCount > 0) {
+    approver1Id = rahulRes.rows[0].id;
   } else {
+    // Fallback to existing logic
+    const usersRes = await client.query(
+      `SELECT id FROM users WHERE role IN ('manager', 'admin') ORDER BY role ASC LIMIT 2`
+    );
+    approver1Id = usersRes.rows[0]?.id;
+  }
+
+  if (priyaRes.rowCount > 0) {
+    approver2Id = priyaRes.rows[0].id;
+  } else {
+    // Fallback to existing logic
+    const usersRes = await client.query(
+      `SELECT id FROM users WHERE role IN ('manager', 'admin') ORDER BY role ASC LIMIT 2`
+    );
+    approver2Id = usersRes.rows[1]?.id || usersRes.rows[0]?.id;
+  }
+
+  // Fallback to RFQ creator if no approvers resolved
+  if (!approver1Id || !approver2Id) {
     const rfqRes = await client.query('SELECT created_by FROM rfqs WHERE id = $1', [rfqId]);
     const creatorId = rfqRes.rows[0]?.created_by;
-    approver1Id = creatorId;
-    approver2Id = creatorId;
+    if (!approver1Id) approver1Id = creatorId;
+    if (!approver2Id) approver2Id = creatorId;
   }
 
   // Insert Level 1 Approval (Procurement Head - Rahul Mehta)

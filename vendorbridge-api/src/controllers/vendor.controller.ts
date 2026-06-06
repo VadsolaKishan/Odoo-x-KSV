@@ -262,3 +262,46 @@ export const deleteVendor = async (req: Request, res: Response, next: NextFuncti
     return next(error);
   }
 };
+
+export const rateVendor = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const { id } = req.params;
+    const { rating } = req.body;
+
+    const parsedRating = parseFloat(rating);
+    if (isNaN(parsedRating) || parsedRating < 1 || parsedRating > 5) {
+      return res.status(400).json({
+        success: false,
+        message: 'Rating must be a number between 1 and 5',
+      });
+    }
+
+    const vendorResult = await query('SELECT rating FROM vendors WHERE id = $1', [id]);
+    if (vendorResult.rowCount === 0) {
+      return res.status(404).json({
+        success: false,
+        message: 'Vendor not found',
+      });
+    }
+
+    const currentRating = parseFloat(vendorResult.rows[0].rating || '0');
+    // If vendor doesn't have rating yet, set it directly. Otherwise, average it.
+    const newRating = currentRating === 0 ? parsedRating : (currentRating + parsedRating) / 2;
+
+    const result = await query(
+      `UPDATE vendors 
+       SET rating = $1, updated_at = NOW() 
+       WHERE id = $2 
+       RETURNING *`,
+      [newRating.toFixed(2), id]
+    );
+
+    return res.status(200).json({
+      success: true,
+      message: 'Vendor rated successfully',
+      data: result.rows[0],
+    });
+  } catch (error) {
+    return next(error);
+  }
+};

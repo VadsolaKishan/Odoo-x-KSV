@@ -198,9 +198,23 @@ export const getMe = async (req: Request, res: Response, next: NextFunction) => 
       });
     }
 
+    const user = result.rows[0];
+
+    if (user.role === 'vendor') {
+      const vendorResult = await query(
+        'SELECT * FROM vendors WHERE created_by = $1',
+        [user.id]
+      );
+      if (vendorResult.rows.length > 0) {
+        user.vendor = vendorResult.rows[0];
+      } else {
+        user.vendor = null;
+      }
+    }
+
     return res.status(200).json({
       success: true,
-      data: result.rows[0],
+      data: user,
     });
   } catch (error) {
     return next(error);

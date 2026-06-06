@@ -1,6 +1,22 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 
+export interface Vendor {
+  id: string;
+  name: string;
+  category: string;
+  gst_number: string;
+  contact_name?: string | null;
+  contact_phone: string;
+  contact_email?: string | null;
+  address?: string | null;
+  status: 'active' | 'pending' | 'blocked';
+  rating: string | number;
+  created_by?: string | null;
+  created_at?: string;
+  updated_at?: string;
+}
+
 export interface User { 
   id: string; 
   first_name: string; 
@@ -13,6 +29,7 @@ export interface User {
   is_active?: boolean;
   created_at?: string;
   updated_at?: string;
+  vendor?: Vendor | null;
 }
 
 interface AuthState {

@@ -278,7 +278,7 @@ export default function RFQsPage() {
                   <th className="py-4 px-6 font-semibold">Category</th>
                   <th className="py-4 px-6 font-semibold">Creator</th>
                   <th className="py-4 px-6 text-center font-semibold">Lines</th>
-                  <th className="py-4 px-6 text-center font-semibold">Invited Vendors</th>
+                  {!isVendor && <th className="py-4 px-6 text-center font-semibold">Invited Vendors</th>}
                   <th className="py-4 px-6 font-semibold">Deadline</th>
                   <th className="py-4 px-6 text-center font-semibold">Status</th>
                   <th className="py-4 px-6 text-center font-semibold">Action</th>
@@ -307,9 +307,11 @@ export default function RFQsPage() {
                     <td className="py-4 px-6 text-center font-mono text-xs font-semibold text-text-secondary">
                       {rfq.line_items_count}
                     </td>
-                    <td className="py-4 px-6 text-center font-mono text-xs font-semibold text-text-secondary">
-                      {rfq.vendor_count}
-                    </td>
+                    {!isVendor && (
+                      <td className="py-4 px-6 text-center font-mono text-xs font-semibold text-text-secondary">
+                        {rfq.vendor_count}
+                      </td>
+                    )}
                     <td className={`py-4 px-6 text-xs font-semibold ${
                       new Date(rfq.deadline).getTime() < Date.now() && rfq.status !== 'awarded' && rfq.status !== 'closed'
                         ? 'text-red-400'
@@ -464,25 +466,27 @@ export default function RFQsPage() {
                     </div>
 
                     {/* Assigned Vendors list */}
-                    <div>
-                      <h4 className="text-xs text-text-secondary font-bold uppercase tracking-wider mb-2.5">
-                        Assigned Vendors ({rfqDetailData.assigned_vendors?.length || 0})
-                      </h4>
-                      <div className="flex flex-wrap gap-2">
-                        {rfqDetailData.assigned_vendors?.map((vendor: any) => (
-                          <div 
-                            key={vendor.id}
-                            className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1.5"
-                          >
-                            <Building2 className="w-3.5 h-3.5 text-brand-green" />
-                            <span>{vendor.name}</span>
-                          </div>
-                        ))}
-                        {(!rfqDetailData.assigned_vendors || rfqDetailData.assigned_vendors.length === 0) && (
-                          <span className="text-xs text-text-secondary italic">No vendors assigned to this RFQ yet.</span>
-                        )}
+                    {!isVendor && (
+                      <div>
+                        <h4 className="text-xs text-text-secondary font-bold uppercase tracking-wider mb-2.5">
+                          Assigned Vendors ({rfqDetailData.assigned_vendors?.length || 0})
+                        </h4>
+                        <div className="flex flex-wrap gap-2">
+                          {rfqDetailData.assigned_vendors?.map((vendor: any) => (
+                            <div 
+                              key={vendor.id}
+                              className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 px-3 py-1 rounded-full text-xs font-medium flex items-center gap-1.5"
+                            >
+                              <Building2 className="w-3.5 h-3.5 text-brand-green" />
+                              <span>{vendor.name}</span>
+                            </div>
+                          ))}
+                          {(!rfqDetailData.assigned_vendors || rfqDetailData.assigned_vendors.length === 0) && (
+                            <span className="text-xs text-text-secondary italic">No vendors assigned to this RFQ yet.</span>
+                          )}
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </>
                 ) : null}
 

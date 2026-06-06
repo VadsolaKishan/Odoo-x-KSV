@@ -23,6 +23,7 @@ import {
 import MainLayout from '../components/Layout/MainLayout';
 import api from '../lib/axios';
 import { useAuthStore } from '../store/auth.store';
+import { useThemeStore } from '../store/theme.store';
 import toast from 'react-hot-toast';
 
 interface ReportSummary {
@@ -48,6 +49,7 @@ interface VendorPerf {
 
 export default function ReportsPage() {
   const { user } = useAuthStore();
+  const { theme } = useThemeStore();
 
   // API State
   const [summary, setSummary] = useState<ReportSummary | null>(null);
@@ -308,12 +310,21 @@ export default function ReportsPage() {
                         />
                         <Tooltip 
                           contentStyle={{ 
-                            background: '#1a2e25', 
+                            background: theme === 'dark' ? '#111917' : '#ffffff', 
                             border: '1px solid rgba(16, 185, 129, 0.2)', 
                             borderRadius: 8,
-                            color: '#e2e8f0',
-                            fontSize: '12px'
+                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)'
                           }} 
+                          itemStyle={{
+                            color: theme === 'dark' ? '#f8fafc' : '#0f172a',
+                            fontSize: '12px'
+                          }}
+                          labelStyle={{
+                            color: theme === 'dark' ? '#94a3b8' : '#475569',
+                            fontWeight: 'bold',
+                            fontSize: '12px',
+                            marginBottom: '4px'
+                          }}
                           formatter={(val) => [formatCurrency(Number(val)), 'Total Spend']}
                         />
                         <Bar dataKey="amount" fill="#10b981" radius={[4, 4, 0, 0]}>

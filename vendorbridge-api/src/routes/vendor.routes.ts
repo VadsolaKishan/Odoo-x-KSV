@@ -22,5 +22,6 @@ router.put(
   vc.updateVendor
 );
 router.delete('/:id', authMiddleware, requireRole('admin'), vc.deleteVendor);
+router.patch('/:id/rate', authMiddleware, requireRole('admin', 'manager'), vc.rateVendor);
 
 export default router;

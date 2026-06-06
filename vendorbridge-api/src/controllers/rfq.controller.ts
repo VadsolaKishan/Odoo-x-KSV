@@ -62,12 +62,39 @@ export const getRFQs = async (req: Request, res: Response, next: NextFunction) =
       conditions.push(`r.status = $${params.length}`);
     }
 
-    // Filter by assigned vendor when vendor_id is provided
-    const vendorJoin = vendor_id
+    if (req.user?.role === 'vendor') {
+      conditions.push("r.status != 'draft'");
+    }
+
+    let activeVendorId: string | null = null;
+    if (req.user?.role === 'vendor') {
+      const vendorResult = await query(
+        'SELECT id FROM vendors WHERE created_by = $1',
+        [req.user.userId]
+      );
+      if (vendorResult.rows.length > 0) {
+        activeVendorId = vendorResult.rows[0].id;
+      } else {
+        return res.status(200).json({
+          success: true,
+          data: [],
+          meta: {
+            total: 0,
+            page: pageVal,
+            limit: limitVal,
+          },
+        });
+      }
+    }
+
+    const targetVendorId = req.user?.role === 'vendor' ? activeVendorId : (vendor_id as string | undefined);
+
+    // Filter by assigned vendor when targetVendorId is provided
+    const vendorJoin = targetVendorId
       ? `JOIN rfq_vendor_assignments rva_filter ON r.id = rva_filter.rfq_id AND rva_filter.vendor_id = $${params.length + 1}`
       : '';
-    if (vendor_id && typeof vendor_id === 'string') {
-      params.push(vendor_id);
+    if (targetVendorId) {
+      params.push(targetVendorId);
     }
 
     const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
@@ -156,6 +183,32 @@ export const getRFQById = async (req: Request, res: Response, next: NextFunction
     }
 
     const rfq = rfqResult.rows[0];
+
+    // Authorize vendor access
+    if (req.user?.role === 'vendor') {
+      const vendorResult = await query(
+        'SELECT id FROM vendors WHERE created_by = $1',
+        [req.user.userId]
+      );
+      if (vendorResult.rows.length === 0) {
+        return res.status(403).json({
+          success: false,
+          message: 'Access denied: vendor profile not found',
+        });
+      }
+      
+      const vendorId = vendorResult.rows[0].id;
+      const assignmentResult = await query(
+        'SELECT 1 FROM rfq_vendor_assignments WHERE rfq_id = $1 AND vendor_id = $2',
+        [id, vendorId]
+      );
+      if (assignmentResult.rows.length === 0) {
+        return res.status(403).json({
+          success: false,
+          message: 'Access denied: you are not assigned to this RFQ',
+        });
+      }
+    }
 
     // Fetch related line items
     const lineItemsResult = await query(

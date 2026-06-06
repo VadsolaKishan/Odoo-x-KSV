@@ -7,7 +7,8 @@ import {
   Mail, 
   Check, 
   AlertCircle,
-  Loader2
+  Loader2,
+  Star
 } from 'lucide-react';
 import MainLayout from '../components/Layout/MainLayout';
 import api from '../lib/axios';
@@ -69,6 +70,8 @@ export default function InvoiceDetailPage() {
   const [invoice, setInvoice] = useState<InvoiceDetail | null>(null);
   const [isMarkingPaid, setIsMarkingPaid] = useState(false);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
+  const [showRateModal, setShowRateModal] = useState(false);
+  const [ratingValue, setRatingValue] = useState(5);
 
   // Check authorization role to Mark as Paid
   const canMarkAsPaid = user?.role === 'admin' || user?.role === 'manager';
@@ -93,20 +96,27 @@ export default function InvoiceDetailPage() {
     loadInvoice();
   }, [id]);
 
-  // Handle Mark as Paid
-  const handleMarkPaid = async () => {
-    if (!id || !canMarkAsPaid) return;
+
+
+  // Handle Rate & Confirm Payment
+  const handleRateAndConfirmPayment = async () => {
+    if (!id || !canMarkAsPaid || !invoice) return;
     setIsMarkingPaid(true);
+    setShowRateModal(false);
     try {
+      // 1. Rate the vendor
+      await api.patch(`/vendors/${invoice.vendor_id}/rate`, { rating: ratingValue });
+      toast.success('Vendor rated successfully!');
+      
+      // 2. Mark invoice as paid
       const res = await api.patch(`/invoices/${id}/mark-paid`);
       if (res.data && res.data.success) {
         toast.success('Invoice marked as paid successfully!');
-        // Update local status
         setInvoice(prev => prev ? { ...prev, status: 'paid', paid_at: new Date().toISOString() } : null);
       }
     } catch (err: any) {
       console.error(err);
-      toast.error(err.response?.data?.message || 'Failed to update invoice status');
+      toast.error(err.response?.data?.message || 'Failed to complete payment and rating');
     } finally {
       setIsMarkingPaid(false);
     }
@@ -268,7 +278,7 @@ export default function InvoiceDetailPage() {
 
             {invoice.status !== 'paid' && canMarkAsPaid && (
               <button
-                onClick={handleMarkPaid}
+                onClick={() => setShowRateModal(true)}
                 disabled={isMarkingPaid}
                 className="h-10 px-5 bg-brand-green hover:bg-brand-green-dark text-white font-bold text-xs rounded-lg flex items-center justify-center gap-1.5 shadow-glow transition-all ml-auto disabled:opacity-50"
               >
@@ -448,6 +458,57 @@ export default function InvoiceDetailPage() {
               )}
             </div>
 
+          </div>
+        </div>
+      )}
+
+      {showRateModal && invoice && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="w-full max-w-md bg-surface-card border border-white/10 rounded-2xl p-6 shadow-card space-y-6">
+            <div className="text-center space-y-2">
+              <h3 className="text-lg font-bold text-white">Rate Vendor</h3>
+              <p className="text-xs text-text-secondary">
+                Please rate your experience with <span className="text-brand-green font-semibold">{invoice.vendor.name}</span> before processing the payment.
+              </p>
+            </div>
+
+            {/* Stars selection */}
+            <div className="flex justify-center items-center gap-2">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <button
+                  key={star}
+                  type="button"
+                  onClick={() => setRatingValue(star)}
+                  className="p-1 transition-transform transform active:scale-95"
+                >
+                  <Star
+                    className={`w-8 h-8 transition-colors ${
+                      star <= ratingValue 
+                        ? 'fill-amber-500 text-amber-500' 
+                        : 'text-white/10 hover:text-white/30'
+                    }`}
+                  />
+                </button>
+              ))}
+            </div>
+
+            {/* Action buttons */}
+            <div className="flex gap-3 pt-2">
+              <button
+                type="button"
+                onClick={() => setShowRateModal(false)}
+                className="flex-1 py-2.5 bg-white/5 hover:bg-white/10 text-white border border-white/10 rounded-lg text-xs font-semibold transition-colors"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                onClick={handleRateAndConfirmPayment}
+                className="flex-1 py-2.5 bg-brand-green hover:bg-brand-green-dark text-white font-bold rounded-lg text-xs shadow-glow hover:shadow-[0_0_15px_rgba(16,185,129,0.25)] transition-all"
+              >
+                Submit &amp; Mark Paid
+              </button>
+            </div>
           </div>
         </div>
       )}

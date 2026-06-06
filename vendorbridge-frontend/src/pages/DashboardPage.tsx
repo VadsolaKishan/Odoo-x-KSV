@@ -15,7 +15,11 @@ import {
   ArrowRight,
   TrendingUp,
   ClipboardList,
-  CheckSquare
+  CheckSquare,
+  Star,
+  ShieldCheck,
+  ShieldAlert,
+  Building
 } from 'lucide-react';
 import { 
   BarChart,
@@ -32,6 +36,20 @@ export default function DashboardPage() {
   const { user } = useAuthStore();
   const { theme } = useThemeStore();
   const navigate = useNavigate();
+
+  // Profile Query (to get latest vendor details if user is vendor)
+  const { data: profileRes, isLoading: loadingProfile } = useQuery({
+    queryKey: ['userProfile', user?.id],
+    queryFn: async () => {
+      const res = await api.get('/auth/me');
+      return res.data;
+    },
+    enabled: !!user,
+    gcTime: 0,
+    staleTime: 0
+  });
+
+  const vendorProfile = profileRes?.data?.vendor;
 
   // Queries
   const { data: summaryRes, isLoading: loadingSummary, error: summaryError } = useQuery({
@@ -155,6 +173,118 @@ export default function DashboardPage() {
           LIVE ENVIRONMENT
         </div>
       </div>
+
+      {/* Vendor Profile Status & Rating Section */}
+      {user?.role === 'vendor' && (
+        loadingProfile ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className="animate-pulse bg-white/5 rounded-xl border border-white/5 h-24 w-full"></div>
+            ))}
+          </div>
+        ) : vendorProfile ? (
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            {/* Status Card */}
+            <div className="glass-card rounded-xl p-6 border border-white/5 flex items-center justify-between">
+              <div className="space-y-2">
+                <span className="block text-xs font-semibold text-text-secondary uppercase tracking-wider">
+                  Profile Verification
+                </span>
+                <div className="flex items-center gap-3 pt-1">
+                  {vendorProfile.status === 'active' && (
+                    <>
+                      <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20 text-emerald-400">
+                        <ShieldCheck className="w-5.5 h-5.5" />
+                      </div>
+                      <div>
+                        <span className="text-sm font-bold text-white block">Active / Verified</span>
+                        <span className="text-[10px] text-emerald-400 font-medium">Eligible to submit bids</span>
+                      </div>
+                    </>
+                  )}
+                  {vendorProfile.status === 'pending' && (
+                    <>
+                      <div className="w-10 h-10 rounded-lg bg-amber-500/10 flex items-center justify-center border border-amber-500/20 text-amber-500 animate-pulse">
+                        <Clock className="w-5.5 h-5.5" />
+                      </div>
+                      <div>
+                        <span className="text-sm font-bold text-white block">Pending Verification</span>
+                        <span className="text-[10px] text-amber-500 font-medium">Under review by officer/admin</span>
+                      </div>
+                    </>
+                  )}
+                  {vendorProfile.status === 'blocked' && (
+                    <>
+                      <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center border border-red-500/20 text-red-500">
+                        <ShieldAlert className="w-5.5 h-5.5" />
+                      </div>
+                      <div>
+                        <span className="text-sm font-bold text-red-400 block">Suspended / Blocked</span>
+                        <span className="text-[10px] text-red-400/80 font-medium">Bidding restricted</span>
+                      </div>
+                    </>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Rating Card */}
+            <div className="glass-card rounded-xl p-6 border border-white/5 flex items-center justify-between">
+              <div className="space-y-2">
+                <span className="block text-xs font-semibold text-text-secondary uppercase tracking-wider">
+                  Your Performance Rating
+                </span>
+                <div className="flex items-center gap-3 pt-1">
+                  <span className="text-3xl font-extrabold text-white">
+                    {Number(vendorProfile.rating || 0).toFixed(2)}
+                  </span>
+                  <div className="flex flex-col">
+                    <div className="flex items-center gap-0.5">
+                      {[1, 2, 3, 4, 5].map((star) => {
+                        const val = Number(vendorProfile.rating || 0);
+                        return (
+                          <Star
+                            key={star}
+                            className={`w-4 h-4 ${
+                              star <= Math.round(val)
+                                ? 'fill-amber-500 text-amber-500'
+                                : 'text-white/10'
+                            }`}
+                          />
+                        );
+                      })}
+                    </div>
+                    <span className="text-[10px] text-text-secondary mt-0.5">Calculated average rating</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Company Info Card */}
+            <div className="glass-card rounded-xl p-6 border border-white/5 flex items-center justify-between">
+              <div className="space-y-2">
+                <span className="block text-xs font-semibold text-text-secondary uppercase tracking-wider">
+                  Company Registration
+                </span>
+                <div className="flex items-start gap-3 pt-1">
+                  <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center border border-blue-500/20 text-blue-400 shrink-0">
+                    <Building className="w-5.5 h-5.5" />
+                  </div>
+                  <div className="min-w-0">
+                    <span className="text-sm font-bold text-white block truncate">{vendorProfile.name}</span>
+                    <span className="text-[10px] text-text-secondary block">GSTIN: <span className="font-semibold text-white/80">{vendorProfile.gst_number}</span></span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        ) : (
+          <div className="glass-card rounded-xl p-6 border border-amber-500/20 text-center mb-8">
+            <AlertCircle className="w-8 h-8 text-amber-400 mx-auto mb-2" />
+            <p className="text-sm text-text-secondary">Please complete your vendor profile setup.</p>
+          </div>
+        )
+      )}
 
       {/* Stats Cards (4 cards, grid-cols-4) */}
       {user?.role !== 'vendor' && (
@@ -356,10 +486,18 @@ export default function DashboardPage() {
                         background: theme === 'dark' ? '#111917' : '#ffffff', 
                         border: '1px solid rgba(16, 185, 129, 0.2)',
                         borderRadius: '8px',
-                        color: theme === 'dark' ? '#e2e8f0' : '#0f172a',
-                        fontSize: '12px',
                         boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)'
                       }} 
+                      itemStyle={{
+                        color: theme === 'dark' ? '#f8fafc' : '#0f172a',
+                        fontSize: '12px'
+                      }}
+                      labelStyle={{
+                        color: theme === 'dark' ? '#94a3b8' : '#475569',
+                        fontWeight: 'bold',
+                        fontSize: '12px',
+                        marginBottom: '4px'
+                      }}
                       formatter={(v: any) => [formatCurrency(Number(v)), 'Monthly Spend']}
                     />
                     <Bar dataKey="amount" radius={[4, 4, 0, 0]}>
