@@ -27,28 +27,31 @@ export const createQuotationSchema = z.object({
 
 // Controllers
 
-// GET /api/quotations?rfq_id=xxx
+// GET /api/quotations?rfq_id=xxx&status=xxx&search=xxx&page=1&limit=10
 export const getQuotations = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const { rfq_id } = req.query;
+    const { rfq_id, status, search } = req.query;
+    const page = Math.max(1, parseInt(req.query.page as string) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(req.query.limit as string) || 20));
+    const offset = (page - 1) * limit;
 
-    // Fetch all quotations (optionally filtered by rfq_id)
-    let queryText = `
-       SELECT q.*, 
-              v.name AS vendor_name, 
-              v.rating AS vendor_rating,
-              r.title AS rfq_title,
-              r.rfq_number AS rfq_number
-       FROM quotations q
-       JOIN vendors v ON q.vendor_id = v.id
-       JOIN rfqs r ON q.rfq_id = r.id
-    `;
     const params: any[] = [];
     const conditions: string[] = [];
 
     if (rfq_id && typeof rfq_id === 'string') {
       params.push(rfq_id);
       conditions.push(`q.rfq_id = $${params.length}`);
+    }
+
+    if (status && typeof status === 'string' && status !== 'all') {
+      params.push(status);
+      conditions.push(`q.status = $${params.length}`);
+    }
+
+    if (search && typeof search === 'string' && search.trim()) {
+      params.push(`%${search.trim().toLowerCase()}%`);
+      const si = params.length;
+      conditions.push(`(LOWER(r.rfq_number) LIKE $${si} OR LOWER(r.title) LIKE $${si} OR LOWER(v.name) LIKE $${si})`);
     }
 
     if (req.user?.role === 'vendor') {
@@ -59,51 +62,70 @@ export const getQuotations = async (req: Request, res: Response, next: NextFunct
       conditions.push(`(v.created_by = $${userParamIdx} OR v.contact_email = $${emailParamIdx})`);
     }
 
-    if (conditions.length > 0) {
-      queryText += ` WHERE ${conditions.join(' AND ')}`;
-    }
+    const whereClause = conditions.length > 0 ? `WHERE ${conditions.join(' AND ')}` : '';
 
-    queryText += ` ORDER BY q.created_at DESC`;
-    const quotationsResult = await query(queryText, params);
+    // Count query
+    const countResult = await query(
+      `SELECT COUNT(*) AS total
+       FROM quotations q
+       JOIN vendors v ON q.vendor_id = v.id
+       JOIN rfqs r ON q.rfq_id = r.id
+       ${whereClause}`,
+      params
+    );
+    const total = parseInt(countResult.rows[0].total, 10);
 
-    const quotations = quotationsResult.rows;
+    // Data query with pagination
+    const paginationParams = [...params, limit, offset];
+    const quotationsResult = await query(
+      `SELECT q.*, 
+              v.name AS vendor_name, 
+              v.rating AS vendor_rating,
+              r.title AS rfq_title,
+              r.rfq_number AS rfq_number
+       FROM quotations q
+       JOIN vendors v ON q.vendor_id = v.id
+       JOIN rfqs r ON q.rfq_id = r.id
+       ${whereClause}
+       ORDER BY q.created_at DESC
+       LIMIT $${paginationParams.length - 1} OFFSET $${paginationParams.length}`,
+      paginationParams
+    );
 
-    // Fetch line items for all these quotations
-    const formattedQuotations = [];
-    for (const q of quotations) {
-      const lineItemsResult = await query(
-        `SELECT * FROM quotation_line_items WHERE quotation_id = $1`,
-        [q.id]
-      );
-      formattedQuotations.push({
-        id: q.id,
-        rfq_id: q.rfq_id,
-        vendor_id: q.vendor_id,
-        status: q.status,
-        subtotal: q.subtotal,
-        gst_percentage: q.gst_percentage,
-        gst_amount: q.gst_amount,
-        grand_total: q.grand_total,
-        delivery_days: q.delivery_days,
-        payment_terms: q.payment_terms,
-        notes: q.notes,
-        submitted_at: q.submitted_at,
-        created_at: q.created_at,
-        updated_at: q.updated_at,
-        rfq_title: q.rfq_title,
-        rfq_number: q.rfq_number,
-        vendor: {
-          id: q.vendor_id,
-          name: q.vendor_name,
-          rating: q.vendor_rating,
-        },
-        line_items: lineItemsResult.rows,
-      });
-    }
+    const formattedQuotations = quotationsResult.rows.map((q) => ({
+      id: q.id,
+      rfq_id: q.rfq_id,
+      vendor_id: q.vendor_id,
+      status: q.status,
+      subtotal: q.subtotal,
+      gst_percentage: q.gst_percentage,
+      gst_amount: q.gst_amount,
+      grand_total: q.grand_total,
+      delivery_days: q.delivery_days,
+      payment_terms: q.payment_terms,
+      notes: q.notes,
+      submitted_at: q.submitted_at,
+      created_at: q.created_at,
+      updated_at: q.updated_at,
+      rfq_title: q.rfq_title,
+      rfq_number: q.rfq_number,
+      vendor_name: q.vendor_name,
+      vendor: {
+        id: q.vendor_id,
+        name: q.vendor_name,
+        rating: q.vendor_rating,
+      },
+    }));
 
     return res.status(200).json({
       success: true,
       data: formattedQuotations,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
     });
   } catch (error) {
     return next(error);
@@ -438,20 +460,32 @@ export const compareQuotations = async (req: Request, res: Response, next: NextF
       [rfq_id]
     );
 
-    const quotations = quotationsResult.rows.map((q, idx) => ({
-      id: q.id,
-      vendor: {
-        id: q.vendor_id,
-        name: q.vendor_name,
-        rating: q.vendor_rating,
-      },
-      grand_total: parseFloat(q.grand_total),
-      gst_percentage: parseFloat(q.gst_percentage),
-      delivery_days: q.delivery_days,
-      payment_terms: q.payment_terms,
-      notes: q.notes,
-      is_lowest: idx === 0,
-    }));
+    // Determine lowest grand_total (first row after ORDER BY ASC, but handle ties)
+    const lowestTotal = quotationsResult.rows.length > 0
+      ? parseFloat(quotationsResult.rows[0].grand_total)
+      : null;
+
+    let markedLowest = false;
+    const quotations = quotationsResult.rows.map((q) => {
+      const grandTotal = parseFloat(q.grand_total);
+      // Only mark the very first (cheapest) entry as lowest, not ties
+      const isLowest = lowestTotal !== null && grandTotal === lowestTotal && !markedLowest;
+      if (isLowest) markedLowest = true;
+      return {
+        id: q.id,
+        vendor: {
+          id: q.vendor_id,
+          name: q.vendor_name,
+          rating: q.vendor_rating,
+        },
+        grand_total: grandTotal,
+        gst_percentage: parseFloat(q.gst_percentage),
+        delivery_days: q.delivery_days,
+        payment_terms: q.payment_terms,
+        notes: q.notes,
+        is_lowest: isLowest,
+      };
+    });
 
     return res.status(200).json({
       success: true,
