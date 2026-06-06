@@ -2,7 +2,7 @@
 ### Enterprise Procurement & Vendor Management ERP Platform
 > **Odoo Hackathon Project** — A fully integrated, secure, and automated ERP solution designed to streamline the procurement lifecycle, coordinate multi-level vendor bidding, and manage audit-ready approvals.
 
-![VendorBridge Dashboard Demo](./{7AD96649-CC2A-4078-A008-797CF8A94105}.png)
+![VendorBridge Dashboard Demo](./Demo_Image/Screenshot%202026-06-06%20160641.png)
 
 VendorBridge is designed to **simplify, centralize, and digitize procurement operations**. It streamlines vendor communication, automates request for quotations (RFQs), manages approvals, and generates purchase orders and invoices, providing real-time tracking and audit logging.
 
@@ -36,6 +36,45 @@ VendorBridge is designed to **simplify, centralize, and digitize procurement ope
 * **Frontend**: React (v19), TypeScript, Vite, TailwindCSS (for responsive UI/UX), Lucide Icons, TanStack React Query, Zustand.
 * **Backend**: Node.js, Express, TypeScript, Zod Validation, JWT Authentication, bcryptjs.
 * **Database**: PostgreSQL (Neon.tech Hosted).
+
+---
+
+## 📸 Platform Tour & Screenshots
+
+### 🏠 Landing Page
+![Landing Page](./Demo_Image/Screenshot%202026-06-06%20160641.png)
+
+### 📊 Admin Dashboard
+*A comprehensive view of active RFQs, pending approvals, monthly PO spending trend, and quick access action buttons.*
+![Admin Dashboard](./Demo_Image/Screenshot%202026-06-06%20160345.png)
+
+### 🤝 Vendor Directory
+*Manage supplier profiles, categories, GSTIN numbers, and active/pending status.*
+![Vendor Directory](./Demo_Image/Screenshot%202026-06-06%20160401.png)
+
+### 📋 Request For Quotations (RFQs)
+*Monitor RFQ specifications, active bidding, invited vendors, deadlines, and lifecycle stages.*
+![RFQ Management](./Demo_Image/Screenshot%202026-06-06%20160413.png)
+
+### 💬 Quotations & Bidding Portal
+*Review, compare, and select/reject vendor bids, including subtotal, GST, grand total, and lead times.*
+![Quotations Bidding](./Demo_Image/Screenshot%202026-06-06%20160427.png)
+
+### 📦 Purchase Orders (PO)
+*Automatically generate professional purchase orders with exact CGST/SGST breakdowns upon quotation selection.*
+![Purchase Orders](./Demo_Image/Screenshot%202026-06-06%20160451.png)
+
+### 🧾 Invoices & Payments
+*Track purchase billing lifecycles, due dates, payments, and invoice status.*
+![Invoices Payments](./Demo_Image/Screenshot%202026-06-06%20160502.png)
+
+### 📈 Reports & Analytics
+*Detailed monthly spend trends, active vendor counts, PO fulfillment rate, and vendor performance rankings.*
+![Reports Analytics](./Demo_Image/Screenshot%202026-06-06%20160530.png)
+
+### 📜 Immutable Activity & Audit Logs
+*Full system audit trails tracking activities for compliance and transparency.*
+![Activity Logs](./Demo_Image/Screenshot%202026-06-06%20160556.png)
 
 ---
 
