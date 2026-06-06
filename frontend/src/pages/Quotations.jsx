@@ -82,28 +82,28 @@ export const Quotations = () => {
   const grandTotal = subtotal + gstAmount;
 
   return (
-    <div className="space-y-6 text-xs text-slate-700 dark:text-dark-300">
+    <div className="space-y-6 text-xs text-slate-700 dark:text-neutral-300">
       
       {/* Header and Toggle */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-dark-800 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-neutral-800 pb-4">
         <div>
-          <h1 className="text-3xl font-display font-extrabold text-slate-800 dark:text-dark-100 tracking-tight">
+          <h1 className="text-3xl font-display font-extrabold text-slate-800 dark:text-neutral-100 tracking-tight">
             Quotations
           </h1>
-          <p className="text-xs text-slate-400 dark:text-dark-500 font-medium">
+          <p className="text-xs text-slate-400 dark:text-neutral-500 font-medium">
             Submit and compare quotation bids side-by-side
           </p>
         </div>
 
         {/* Tab Controls and RFQ selector */}
         <div className="flex flex-wrap items-center gap-3 select-none">
-          <div className="flex rounded-lg border border-slate-200 dark:border-dark-800 p-0.5 bg-slate-50 dark:bg-dark-950">
+          <div className="flex rounded-lg border border-slate-200 dark:border-neutral-800 p-0.5 bg-slate-50 dark:bg-neutral-950">
             <button
               onClick={() => setActiveTab('comparison')}
               className={`px-3 py-1.5 rounded-md font-semibold transition-all cursor-pointer ${
                 activeTab === 'comparison'
-                  ? 'bg-white dark:bg-dark-900 text-slate-900 dark:text-dark-100 shadow-sm'
-                  : 'text-slate-500 dark:text-dark-400'
+                  ? 'bg-white dark:bg-neutral-900 text-slate-900 dark:text-neutral-100 shadow-sm'
+                  : 'text-slate-500 dark:text-neutral-400'
               }`}
             >
               Comparison Table
@@ -112,8 +112,8 @@ export const Quotations = () => {
               onClick={() => setActiveTab('submit')}
               className={`px-3 py-1.5 rounded-md font-semibold transition-all cursor-pointer ${
                 activeTab === 'submit'
-                  ? 'bg-white dark:bg-dark-900 text-slate-900 dark:text-dark-100 shadow-sm'
-                  : 'text-slate-500 dark:text-dark-400'
+                  ? 'bg-white dark:bg-neutral-900 text-slate-900 dark:text-neutral-100 shadow-sm'
+                  : 'text-slate-500 dark:text-neutral-400'
               }`}
             >
               Submit Quotation
@@ -124,7 +124,7 @@ export const Quotations = () => {
             <select
               value={selectedRfqId}
               onChange={handleRfqChange}
-              className="px-3 py-2 bg-white dark:bg-dark-900 border border-slate-200 dark:border-dark-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 text-slate-700 dark:text-dark-300 font-semibold"
+              className="px-3 py-2 bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 text-slate-700 dark:text-neutral-300 font-semibold"
             >
               <option value="">-- Select RFQ --</option>
               {rfqs.map(r => (
@@ -136,8 +136,8 @@ export const Quotations = () => {
       </div>
 
       {(!selectedRfqId) ? (
-        <div className="border border-slate-200 dark:border-dark-800 p-12 text-center rounded-2xl bg-white dark:bg-dark-900/40">
-          <p className="text-slate-400 dark:text-dark-500">
+        <div className="border border-slate-200 dark:border-neutral-800 p-12 text-center rounded-2xl bg-white dark:bg-neutral-900/40">
+          <p className="text-slate-400 dark:text-neutral-500">
             Please choose an RFQ from the dropdown list to proceed.
           </p>
         </div>
@@ -146,28 +146,28 @@ export const Quotations = () => {
         /* ---------------- SUBMIT QUOTATION VIEW (SCREEN 6) ---------------- */
         <div className="space-y-6 animate-fade-in">
           <div>
-            <h2 className="text-2xl font-bold text-slate-800 dark:text-dark-100">Submit Quotations</h2>
-            <p className="text-xs text-slate-450 dark:text-dark-500">
+            <h2 className="text-2xl font-bold text-slate-800 dark:text-neutral-100">Submit Quotations</h2>
+            <p className="text-xs text-slate-450 dark:text-neutral-500">
               RFQ: {activeRfq?.title || 'office furniture procurement q2'} - deadline {activeRfq?.deadline || '15 June 2025'}
             </p>
           </div>
 
           {/* RFQ Summary Box */}
-          <div className="border border-slate-200 dark:border-dark-800 rounded-xl p-4 bg-white dark:bg-dark-900/50 shadow-sm">
-            <p className="text-[10px] font-bold text-slate-400 dark:text-dark-500 uppercase tracking-wider mb-1">RFQ Summary</p>
-            <p className="font-semibold text-slate-700 dark:text-dark-300">
+          <div className="border border-slate-200 dark:border-neutral-800 rounded-xl p-4 bg-white dark:bg-neutral-900/50 shadow-sm">
+            <p className="text-[10px] font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-wider mb-1">RFQ Summary</p>
+            <p className="font-semibold text-slate-700 dark:text-neutral-300">
               {activeRfq?.items.map(it => `${it.name} * ${it.quantity}`).join(', ') || 'Ergonomic chair * 25, standing desk * 10'} - category {activeRfq?.title.toLowerCase().includes('furniture') ? 'furniture' : 'hardware'}
             </p>
           </div>
 
           {/* Quotation Form Table */}
           <div className="space-y-2">
-            <h3 className="font-bold text-slate-500 dark:text-dark-400">Your Quotation</h3>
+            <h3 className="font-bold text-slate-500 dark:text-neutral-400">Your Quotation</h3>
             
-            <div className="border border-slate-200 dark:border-dark-800 rounded-xl overflow-hidden bg-white dark:bg-dark-900/40">
+            <div className="border border-slate-200 dark:border-neutral-800 rounded-xl overflow-hidden bg-white dark:bg-neutral-900/40">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-slate-200 dark:border-dark-800 text-[10px] font-bold text-slate-400 dark:text-dark-500">
+                  <tr className="border-b border-slate-200 dark:border-neutral-800 text-[10px] font-bold text-slate-400 dark:text-neutral-500">
                     <th className="px-6 py-3">Item</th>
                     <th className="px-6 py-3 w-24 text-center">Qty</th>
                     <th className="px-6 py-3 w-36 text-center">Unit price</th>
@@ -175,7 +175,7 @@ export const Quotations = () => {
                     <th className="px-6 py-3 w-36 text-center">Delivery (days)</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-dark-800 text-slate-750 dark:text-dark-300">
+                <tbody className="divide-y divide-slate-100 dark:divide-neutral-800 text-slate-750 dark:text-neutral-300">
                   {activeRfq?.items.map((item, idx) => {
                     const price = quotePrices[idx] || 0;
                     const totalCost = item.quantity * price;
@@ -190,7 +190,7 @@ export const Quotations = () => {
                             type="number"
                             value={price}
                             onChange={(e) => handleItemChange(idx, 'price', parseInt(e.target.value) || 0)}
-                            className="w-full px-3 py-1.5 text-center bg-slate-50 dark:bg-dark-950 border border-slate-200 dark:border-dark-800 rounded-lg focus:outline-none focus:border-brand-500 text-slate-800 dark:text-dark-100"
+                            className="w-full px-3 py-1.5 text-center bg-slate-50 dark:bg-neutral-950 border border-slate-200 dark:border-neutral-800 rounded-lg focus:outline-none focus:border-brand-500 text-slate-800 dark:text-neutral-100"
                           />
                         </td>
                         <td className="px-6 py-3 w-36 text-center font-semibold">
@@ -201,7 +201,7 @@ export const Quotations = () => {
                             type="number"
                             value={quoteDeliveries[idx] || 7}
                             onChange={(e) => handleItemChange(idx, 'delivery', parseInt(e.target.value) || 0)}
-                            className="w-full px-3 py-1.5 text-center bg-slate-50 dark:bg-dark-950 border border-slate-200 dark:border-dark-800 rounded-lg focus:outline-none focus:border-brand-500 text-slate-800 dark:text-dark-100"
+                            className="w-full px-3 py-1.5 text-center bg-slate-50 dark:bg-neutral-950 border border-slate-200 dark:border-neutral-800 rounded-lg focus:outline-none focus:border-brand-500 text-slate-800 dark:text-neutral-100"
                           />
                         </td>
                       </tr>
@@ -212,7 +212,7 @@ export const Quotations = () => {
             </div>
           </div>
 
-          <hr className="border-slate-200 dark:border-dark-800 my-4" />
+          <hr className="border-slate-200 dark:border-neutral-800 my-4" />
 
           {/* Form details and Totals block */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -220,52 +220,52 @@ export const Quotations = () => {
             {/* Tax and Note inputs */}
             <div className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-dark-400 mb-1.5">tax / GST %</label>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-neutral-400 mb-1.5">tax / GST %</label>
                 <input
                   type="number"
                   value={gstRate}
                   onChange={(e) => setGstRate(parseInt(e.target.value) || 0)}
-                  className="w-48 px-3 py-2 bg-white dark:bg-dark-900 border border-slate-200 dark:border-dark-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 text-slate-800 dark:text-dark-100 font-semibold"
+                  className="w-48 px-3 py-2 bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 text-slate-800 dark:text-neutral-100 font-semibold"
                 />
               </div>
               
               <div>
-                <label className="block text-xs font-semibold text-slate-500 dark:text-dark-400 mb-1.5">Note / terms</label>
+                <label className="block text-xs font-semibold text-slate-500 dark:text-neutral-400 mb-1.5">Note / terms</label>
                 <textarea
                   rows={4}
                   value={terms}
                   onChange={(e) => setTerms(e.target.value)}
-                  className="w-full px-3 py-2 bg-white dark:bg-dark-900 border border-slate-200 dark:border-dark-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 text-slate-800 dark:text-dark-100 resize-none"
+                  className="w-full px-3 py-2 bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 text-slate-800 dark:text-neutral-100 resize-none"
                   placeholder="e.g. Payment terms: 20 days net..."
                 />
               </div>
             </div>
 
             {/* Totals Summary */}
-            <div className="border border-slate-200 dark:border-dark-800 rounded-xl p-6 bg-white dark:bg-dark-900/50 shadow-sm flex flex-col justify-between max-w-md ml-auto w-full space-y-4">
+            <div className="border border-slate-200 dark:border-neutral-800 rounded-xl p-6 bg-white dark:bg-neutral-900/50 shadow-sm flex flex-col justify-between max-w-md ml-auto w-full space-y-4">
               <div className="flex justify-between items-center py-1.5">
-                <span className="font-semibold text-slate-500 dark:text-dark-450">Subtotal</span>
-                <span className="font-semibold text-slate-850 dark:text-dark-100">{subtotal.toLocaleString('en-IN')}</span>
+                <span className="font-semibold text-slate-500 dark:text-neutral-450">Subtotal</span>
+                <span className="font-semibold text-slate-850 dark:text-neutral-100">{subtotal.toLocaleString('en-IN')}</span>
               </div>
               
-              <div className="flex justify-between items-center py-1.5 border-t border-slate-100 dark:border-dark-850">
-                <span className="font-semibold text-slate-500 dark:text-dark-450">GST ({gstRate}%)</span>
-                <span className="font-semibold text-slate-850 dark:text-dark-100">{gstAmount.toLocaleString('en-IN')}</span>
+              <div className="flex justify-between items-center py-1.5 border-t border-slate-100 dark:border-neutral-850">
+                <span className="font-semibold text-slate-500 dark:text-neutral-450">GST ({gstRate}%)</span>
+                <span className="font-semibold text-slate-850 dark:text-neutral-100">{gstAmount.toLocaleString('en-IN')}</span>
               </div>
 
-              <div className="flex justify-between items-center py-2 border-t-2 border-slate-200 dark:border-dark-800">
-                <span className="font-bold text-slate-700 dark:text-dark-200 text-sm">Grand total</span>
-                <span className="font-bold text-slate-900 dark:text-dark-50 text-base">{grandTotal.toLocaleString('en-IN')}</span>
+              <div className="flex justify-between items-center py-2 border-t-2 border-slate-200 dark:border-neutral-800">
+                <span className="font-bold text-slate-700 dark:text-neutral-200 text-sm">Grand total</span>
+                <span className="font-bold text-slate-900 dark:text-neutral-50 text-base">{grandTotal.toLocaleString('en-IN')}</span>
               </div>
             </div>
 
           </div>
 
           {/* Action Buttons Stack */}
-          <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-slate-200 dark:border-dark-800">
+          <div className="flex flex-col sm:flex-row gap-3 pt-4 border-t border-slate-200 dark:border-neutral-800">
             <button
               onClick={handleSubmitQuote}
-              className="px-6 py-2.5 text-xs font-semibold bg-transparent border border-slate-300 dark:border-dark-700 text-slate-800 dark:text-dark-200 rounded-xl hover:bg-slate-50 dark:hover:bg-dark-800 hover:border-slate-400 dark:hover:border-dark-600 transition-all cursor-pointer"
+              className="px-6 py-2.5 text-xs font-semibold bg-transparent border border-slate-300 dark:border-neutral-700 text-slate-800 dark:text-neutral-200 rounded-xl hover:bg-slate-50 dark:hover:bg-neutral-800 hover:border-slate-400 dark:hover:border-neutral-600 transition-all cursor-pointer"
             >
               Submit Quotation
             </button>
@@ -274,7 +274,7 @@ export const Quotations = () => {
                 addToast('Draft saved successfully!', 'success');
                 navigate('/dashboard');
               }}
-              className="px-6 py-2.5 text-xs font-semibold bg-transparent border border-slate-300 dark:border-dark-700 text-slate-850 dark:text-dark-300 rounded-xl hover:bg-slate-50 dark:hover:bg-dark-800 hover:border-slate-400 dark:hover:border-dark-600 transition-all cursor-pointer"
+              className="px-6 py-2.5 text-xs font-semibold bg-transparent border border-slate-300 dark:border-neutral-700 text-slate-850 dark:text-neutral-300 rounded-xl hover:bg-slate-50 dark:hover:bg-neutral-800 hover:border-slate-400 dark:hover:border-neutral-600 transition-all cursor-pointer"
             >
               Save Draft
             </button>
@@ -286,33 +286,33 @@ export const Quotations = () => {
         /* ---------------- COMPARISON MATRIX VIEW (SCREEN 7) ---------------- */
         <div className="space-y-6 animate-fade-in">
           <div>
-            <h2 className="text-2xl font-bold text-slate-800 dark:text-dark-100">Quotation Comparison</h2>
-            <p className="text-xs text-slate-450 dark:text-dark-500">
+            <h2 className="text-2xl font-bold text-slate-800 dark:text-neutral-100">Quotation Comparison</h2>
+            <p className="text-xs text-slate-450 dark:text-neutral-500">
               RFQ: {activeRfq?.title || 'office furniture procurement q2'} - {activeQuotes.length} quotations received
             </p>
           </div>
 
           {activeQuotes.length === 0 ? (
-            <div className="border border-slate-200 dark:border-dark-800 p-12 text-center rounded-2xl bg-white dark:bg-dark-900/40">
-              <p className="text-slate-400 dark:text-dark-500">No quotation bids have been submitted for this RFQ yet.</p>
+            <div className="border border-slate-200 dark:border-neutral-800 p-12 text-center rounded-2xl bg-white dark:bg-neutral-900/40">
+              <p className="text-slate-400 dark:text-neutral-500">No quotation bids have been submitted for this RFQ yet.</p>
             </div>
           ) : (
             <div className="space-y-6">
               
               {/* Matrix Table */}
-              <div className="border border-slate-200 dark:border-dark-800 rounded-2xl overflow-hidden bg-white dark:bg-dark-900/50 shadow-sm">
+              <div className="border border-slate-200 dark:border-neutral-800 rounded-2xl overflow-hidden bg-white dark:bg-neutral-900/50 shadow-sm">
                 <div className="overflow-x-auto">
                   <table className="w-full text-center border-collapse">
                     <thead>
-                      <tr className="border-b border-slate-200 dark:border-dark-800 text-slate-500 dark:text-dark-400 text-xs">
+                      <tr className="border-b border-slate-200 dark:border-neutral-800 text-slate-500 dark:text-neutral-400 text-xs">
                         <th className="px-6 py-4 text-left font-bold w-1/4">Criteria</th>
                         {activeQuotes.map(q => {
                           const isLowest = q.id === lowestPriceQuoteId;
                           return (
                             <th 
                               key={q.id} 
-                              className={`px-6 py-4 font-bold border-l border-slate-200 dark:border-dark-800 ${
-                                isLowest ? 'bg-emerald-600/90 text-white' : 'text-slate-800 dark:text-dark-200'
+                              className={`px-6 py-4 font-bold border-l border-slate-200 dark:border-neutral-800 ${
+                                isLowest ? 'bg-emerald-600/90 text-white' : 'text-slate-800 dark:text-neutral-200'
                               }`}
                             >
                               {q.vendorName} {isLowest && '(Lowest)'}
@@ -321,17 +321,17 @@ export const Quotations = () => {
                         })}
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-slate-150 dark:divide-dark-800 text-slate-700 dark:text-dark-300">
+                    <tbody className="divide-y divide-slate-150 dark:divide-neutral-800 text-slate-700 dark:text-neutral-300">
                       
                       {/* Grand Total */}
                       <tr className="font-semibold">
-                        <td className="px-6 py-4 text-left font-bold text-slate-800 dark:text-dark-100">Grand Total</td>
+                        <td className="px-6 py-4 text-left font-bold text-slate-800 dark:text-neutral-100">Grand Total</td>
                         {activeQuotes.map(q => {
                           const isLowest = q.id === lowestPriceQuoteId;
                           return (
                             <td 
                               key={q.id} 
-                              className={`px-6 py-4 border-l border-slate-200 dark:border-dark-800 font-bold ${
+                              className={`px-6 py-4 border-l border-slate-200 dark:border-neutral-800 font-bold ${
                                 isLowest ? 'bg-emerald-600/90 text-white' : ''
                               }`}
                             >
@@ -349,7 +349,7 @@ export const Quotations = () => {
                           return (
                             <td 
                               key={q.id} 
-                              className={`px-6 py-4 border-l border-slate-200 dark:border-dark-800 font-medium ${
+                              className={`px-6 py-4 border-l border-slate-200 dark:border-neutral-800 font-medium ${
                                 isLowest ? 'bg-emerald-600/90 text-white/95' : ''
                               }`}
                             >
@@ -367,7 +367,7 @@ export const Quotations = () => {
                           return (
                             <td 
                               key={q.id} 
-                              className={`px-6 py-4 border-l border-slate-200 dark:border-dark-800 font-medium ${
+                              className={`px-6 py-4 border-l border-slate-200 dark:border-neutral-800 font-medium ${
                                 isLowest ? 'bg-emerald-600/90 text-white/95' : ''
                               }`}
                             >
@@ -387,7 +387,7 @@ export const Quotations = () => {
                           return (
                             <td 
                               key={q.id} 
-                              className={`px-6 py-4 border-l border-slate-200 dark:border-dark-800 font-semibold ${
+                              className={`px-6 py-4 border-l border-slate-200 dark:border-neutral-800 font-semibold ${
                                 isLowest ? 'bg-emerald-600/90 text-white/95' : ''
                               }`}
                             >
@@ -406,7 +406,7 @@ export const Quotations = () => {
                           return (
                             <td 
                               key={q.id} 
-                              className={`px-6 py-4 border-l border-slate-200 dark:border-dark-800 ${
+                              className={`px-6 py-4 border-l border-slate-200 dark:border-neutral-800 ${
                                 isLowest ? 'bg-emerald-600/90 text-white/95' : ''
                               }`}
                             >
@@ -417,14 +417,14 @@ export const Quotations = () => {
                       </tr>
 
                       {/* Action Select buttons */}
-                      <tr className="bg-slate-50/50 dark:bg-dark-950/20">
-                        <td className="px-6 py-4 text-left font-bold text-slate-750 dark:text-dark-250">Action</td>
+                      <tr className="bg-slate-50/50 dark:bg-neutral-950/20">
+                        <td className="px-6 py-4 text-left font-bold text-slate-750 dark:text-neutral-250">Action</td>
                         {activeQuotes.map(q => {
                           const isLowest = q.id === lowestPriceQuoteId;
                           return (
                             <td 
                               key={q.id} 
-                              className={`px-6 py-4 border-l border-slate-200 dark:border-dark-800 ${
+                              className={`px-6 py-4 border-l border-slate-200 dark:border-neutral-800 ${
                                 isLowest ? 'bg-emerald-600/90' : ''
                               }`}
                             >
@@ -438,7 +438,7 @@ export const Quotations = () => {
                               ) : (
                                 <button
                                   onClick={() => handleSelectBid(q.id)}
-                                  className="w-full py-2 bg-transparent border border-slate-300 dark:border-dark-700 text-slate-700 dark:text-dark-350 rounded-xl hover:bg-slate-50 dark:hover:bg-dark-800 active:scale-95 transition-all cursor-pointer"
+                                  className="w-full py-2 bg-transparent border border-slate-300 dark:border-neutral-700 text-slate-700 dark:text-neutral-350 rounded-xl hover:bg-slate-50 dark:hover:bg-neutral-800 active:scale-95 transition-all cursor-pointer"
                                 >
                                   Select
                                 </button>

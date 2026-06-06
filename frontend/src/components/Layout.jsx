@@ -13,7 +13,7 @@ export const Layout = ({ children }) => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 dark:bg-dark-950 transition-colors duration-300 grid-lines flex flex-col">
+    <div className="min-h-screen bg-slate-50 dark:bg-neutral-950 transition-colors duration-300 grid-lines flex flex-col">
       {/* Top Header */}
       <Navbar toggleMobileSidebar={toggleMobileSidebar} />
       

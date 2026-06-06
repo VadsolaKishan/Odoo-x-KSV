@@ -70,7 +70,10 @@ export const convertNumberToWords = (num) => {
 };
 
 export const AppProvider = ({ children }) => {
-  const [theme, setTheme] = useState('light');
+  const [theme, setTheme] = useState(() => {
+    const savedTheme = localStorage.getItem('vb_theme');
+    return savedTheme || 'light';
+  });
   const [currentUser, setCurrentUser] = useState(() => {
     const user = localStorage.getItem('vb_user');
     return user ? JSON.parse(user) : { name: 'Sarah Jenkins', email: 'sarah.j@vendorbridge.com', role: 'VP of Procurement' }; // Initial log state
@@ -323,6 +326,7 @@ export const AppProvider = ({ children }) => {
         refreshAllData,
         formatIndianCurrency,
         convertNumberToWords,
+        setCurrentUser,
       }}
     >
       {children}

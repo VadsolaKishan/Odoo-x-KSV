@@ -7,43 +7,46 @@ export const FormInput = ({
   type = 'text',
   error,
   icon: Icon,
-  options = [], // For select input
+  options = [],
   className = '',
   ...props
 }) => {
   const [showPassword, setShowPassword] = useState(false);
   const isPassword = type === 'password';
-  
-  // Toggle input type for password
   const inputType = isPassword ? (showPassword ? 'text' : 'password') : type;
 
-  const inputStyles = `w-full px-4 py-2.5 text-sm bg-slate-50 dark:bg-dark-950 border rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 transition-all text-slate-700 dark:text-dark-250 ${
-    error 
-      ? 'border-danger-300 focus:ring-danger-500/20 focus:border-danger-500' 
-      : 'border-slate-200 dark:border-dark-800'
-  } ${Icon ? 'pl-10' : ''} ${isPassword ? 'pr-10' : ''}`;
+  const baseInput = `w-full px-4 py-2.5 text-sm bg-white dark:bg-neutral-950 border rounded-xl
+    focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500
+    transition-all duration-200 text-slate-800 dark:text-neutral-200
+    placeholder:text-slate-400 dark:placeholder:text-neutral-600
+    ${error
+      ? 'border-danger-300 dark:border-danger-700 focus:ring-danger-500/20 focus:border-danger-500'
+      : 'border-slate-200 dark:border-neutral-800 hover:border-slate-300 dark:hover:border-neutral-700'
+    }
+    ${Icon ? 'pl-10' : ''}
+    ${isPassword ? 'pr-10' : ''}`;
 
   return (
     <div className={`space-y-1.5 ${className}`}>
       {label && (
-        <label htmlFor={id} className="block text-xs font-semibold text-slate-500 dark:text-dark-400 uppercase tracking-wider">
+        <label htmlFor={id} className="block text-xs font-semibold text-slate-500 dark:text-neutral-400 uppercase tracking-wider">
           {label}
         </label>
       )}
-      
+
       <div className="relative">
         {Icon && (
-          <Icon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-dark-500 pointer-events-none" />
+          <Icon className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 dark:text-neutral-500 pointer-events-none" />
         )}
 
         {type === 'textarea' ? (
           <textarea
             id={id}
-            className={`${inputStyles} min-h-[100px] resize-none`}
+            className={`${baseInput} min-h-[100px] resize-none`}
             {...props}
           />
         ) : type === 'select' ? (
-          <select id={id} className={inputStyles} {...props}>
+          <select id={id} className={baseInput} {...props}>
             <option value="">Select an option</option>
             {options.map((opt) => (
               <option key={opt.value || opt} value={opt.value || opt}>
@@ -55,7 +58,7 @@ export const FormInput = ({
           <input
             id={id}
             type={inputType}
-            className={inputStyles}
+            className={baseInput}
             {...props}
           />
         )}
@@ -64,7 +67,7 @@ export const FormInput = ({
           <button
             type="button"
             onClick={() => setShowPassword(!showPassword)}
-            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-dark-500 dark:hover:text-dark-300 transition-colors"
+            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:text-neutral-500 dark:hover:text-neutral-300 transition-colors"
           >
             {showPassword ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
           </button>
@@ -73,7 +76,8 @@ export const FormInput = ({
 
       {error && (
         <p className="text-xs font-semibold text-danger-600 dark:text-danger-400 flex items-center gap-1 animate-fade-in">
-          <span>●</span> {error}
+          <span className="w-1 h-1 rounded-full bg-danger-500 shrink-0" />
+          {error}
         </p>
       )}
     </div>

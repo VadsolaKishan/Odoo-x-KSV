@@ -49,20 +49,20 @@ export const Approvals = () => {
   };
 
   return (
-    <div className="space-y-6 text-xs text-slate-700 dark:text-dark-300">
+    <div className="space-y-6 text-xs text-slate-700 dark:text-neutral-300">
       
       {/* Header and Selector */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-dark-800 pb-4">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-neutral-800 pb-4">
         <div>
-          <h1 className="text-3xl font-display font-extrabold text-slate-800 dark:text-dark-100 tracking-tight">
+          <h1 className="text-3xl font-display font-extrabold text-slate-800 dark:text-neutral-100 tracking-tight">
             Approval Workflow
           </h1>
           {activeRfq && selectedQuote ? (
-            <p className="text-xs text-slate-400 dark:text-dark-500 font-medium">
+            <p className="text-xs text-slate-400 dark:text-neutral-500 font-medium">
               RFQ: {activeRfq.title} - Vendor: {selectedQuote.vendorName} - {formatIndianCurrency(selectedQuote.totalCost)}
             </p>
           ) : (
-            <p className="text-xs text-slate-400 dark:text-dark-500 font-medium">
+            <p className="text-xs text-slate-400 dark:text-neutral-500 font-medium">
               Select a pending RFQ authorization request
             </p>
           )}
@@ -74,7 +74,7 @@ export const Approvals = () => {
             <select
               value={selectedRfqId}
               onChange={handleRfqChange}
-              className="px-3 py-2 bg-white dark:bg-dark-900 border border-slate-200 dark:border-dark-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 text-slate-700 dark:text-dark-300 font-semibold"
+              className="px-3 py-2 bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 text-slate-700 dark:text-neutral-300 font-semibold"
             >
               <option value="">-- Choose Approval Request --</option>
               {pendingRfqs.map(r => (
@@ -87,8 +87,8 @@ export const Approvals = () => {
 
       {pendingRfqs.length === 0 || !activeRfq ? (
         // Empty State
-        <div className="border border-slate-200 dark:border-dark-800 p-12 text-center rounded-2xl bg-white dark:bg-dark-900/40">
-          <p className="text-slate-405 dark:text-dark-500">
+        <div className="border border-slate-200 dark:border-neutral-800 p-12 text-center rounded-2xl bg-white dark:bg-neutral-900/40">
+          <p className="text-slate-405 dark:text-neutral-500">
             Your approvals inbox is empty. No pending workflow signatures at this time.
           </p>
         </div>
@@ -100,22 +100,22 @@ export const Approvals = () => {
             <div className="flex items-center w-full max-w-xl relative px-4">
               
               {/* Connector line */}
-              <div className="absolute left-8 right-8 top-4 h-0.5 bg-slate-200 dark:bg-dark-800 z-0" />
+              <div className="absolute left-8 right-8 top-4 h-0.5 bg-slate-200 dark:bg-neutral-800 z-0" />
               
               {/* Step 1 */}
               <div className="flex flex-col items-center text-center z-10 flex-1">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full border border-slate-300 dark:border-dark-750 bg-white dark:bg-dark-900 text-slate-500 font-bold text-sm">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full border border-slate-300 dark:border-neutral-750 bg-white dark:bg-neutral-900 text-slate-500 font-bold text-sm">
                   1
                 </div>
-                <span className="text-[10px] text-slate-450 dark:text-dark-500 mt-2 font-medium">Submitted</span>
+                <span className="text-[10px] text-slate-450 dark:text-neutral-500 mt-2 font-medium">Submitted</span>
               </div>
               
               {/* Step 2 */}
               <div className="flex flex-col items-center text-center z-10 flex-1">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full border border-slate-300 dark:border-dark-750 bg-white dark:bg-dark-900 text-slate-500 font-bold text-sm">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full border border-slate-300 dark:border-neutral-750 bg-white dark:bg-neutral-900 text-slate-500 font-bold text-sm">
                   2
                 </div>
-                <span className="text-[10px] text-slate-455 dark:text-dark-500 mt-2 font-medium">L1 Review</span>
+                <span className="text-[10px] text-slate-455 dark:text-neutral-500 mt-2 font-medium">L1 Review</span>
               </div>
 
               {/* Step 3: Active approval circle */}
@@ -128,10 +128,10 @@ export const Approvals = () => {
 
               {/* Step 4 */}
               <div className="flex flex-col items-center text-center z-10 flex-1">
-                <div className="flex items-center justify-center w-8 h-8 rounded-full border border-slate-300 dark:border-dark-750 bg-white dark:bg-dark-900 text-slate-500 font-bold text-sm">
+                <div className="flex items-center justify-center w-8 h-8 rounded-full border border-slate-300 dark:border-neutral-750 bg-white dark:bg-neutral-900 text-slate-500 font-bold text-sm">
                   4
                 </div>
-                <span className="text-[10px] text-slate-450 dark:text-dark-500 mt-2 font-medium">Generate PO</span>
+                <span className="text-[10px] text-slate-450 dark:text-neutral-500 mt-2 font-medium">Generate PO</span>
               </div>
 
             </div>
@@ -145,7 +145,7 @@ export const Approvals = () => {
               
               {/* Approval Chain Section */}
               <div className="space-y-4">
-                <h3 className="font-bold text-slate-500 dark:text-dark-400 uppercase tracking-wider">
+                <h3 className="font-bold text-slate-500 dark:text-neutral-400 uppercase tracking-wider">
                   APPROVAL CHAIN
                 </h3>
                 
@@ -156,8 +156,8 @@ export const Approvals = () => {
                       ✓
                     </div>
                     <div>
-                      <p className="font-bold text-slate-800 dark:text-dark-100">Rahul Mehta (Procurement head)</p>
-                      <p className="text-[10px] text-slate-400 dark:text-dark-550 font-medium">Approved on may 20, 10:32 Am</p>
+                      <p className="font-bold text-slate-800 dark:text-neutral-100">Rahul Mehta (Procurement head)</p>
+                      <p className="text-[10px] text-slate-400 dark:text-neutral-550 font-medium">Approved on may 20, 10:32 Am</p>
                     </div>
                   </div>
 
@@ -167,9 +167,9 @@ export const Approvals = () => {
                       🕒
                     </div>
                     <div>
-                      <p className="font-bold text-slate-800 dark:text-dark-100">Priya Shah (finance manager)</p>
-                      <p className="text-[10px] text-slate-400 dark:text-dark-550 font-semibold">Awaiting</p>
-                      <p className="text-[9px] text-slate-500 dark:text-dark-500 font-medium">Assigned may 21</p>
+                      <p className="font-bold text-slate-800 dark:text-neutral-100">Priya Shah (finance manager)</p>
+                      <p className="text-[10px] text-slate-400 dark:text-neutral-550 font-semibold">Awaiting</p>
+                      <p className="text-[9px] text-slate-500 dark:text-neutral-500 font-medium">Assigned may 21</p>
                     </div>
                   </div>
                 </div>
@@ -177,7 +177,7 @@ export const Approvals = () => {
 
               {/* Approval Remarks input */}
               <div className="space-y-2">
-                <h3 className="font-bold text-slate-500 dark:text-dark-400 uppercase tracking-wider">
+                <h3 className="font-bold text-slate-500 dark:text-neutral-400 uppercase tracking-wider">
                   Approval Remarks
                 </h3>
                 <textarea
@@ -185,7 +185,7 @@ export const Approvals = () => {
                   value={remarks}
                   onChange={(e) => setRemarks(e.target.value)}
                   placeholder="Add your comments or conditions...."
-                  className="w-full px-4 py-3 bg-white dark:bg-dark-900 border border-slate-200 dark:border-dark-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 text-slate-800 dark:text-dark-100 resize-none"
+                  className="w-full px-4 py-3 bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 text-slate-800 dark:text-neutral-100 resize-none"
                 />
               </div>
 
@@ -197,29 +197,29 @@ export const Approvals = () => {
               {/* Quotation Summary Box */}
               {selectedQuote && (
                 <div className="space-y-2">
-                  <h3 className="font-bold text-slate-500 dark:text-dark-400 uppercase tracking-wider">
+                  <h3 className="font-bold text-slate-500 dark:text-neutral-400 uppercase tracking-wider">
                     QUOTATIONS SUMMARY
                   </h3>
 
-                  <div className="border border-slate-200 dark:border-dark-800 rounded-xl p-5 bg-white dark:bg-dark-900/50 shadow-sm space-y-4">
+                  <div className="border border-slate-200 dark:border-neutral-800 rounded-xl p-5 bg-white dark:bg-neutral-900/50 shadow-sm space-y-4">
                     <div className="flex justify-between items-center text-xs">
-                      <span className="font-semibold text-slate-500 dark:text-dark-450">Vendor:</span>
-                      <span className="font-bold text-slate-800 dark:text-dark-205">{selectedQuote.vendorName}</span>
+                      <span className="font-semibold text-slate-500 dark:text-neutral-450">Vendor:</span>
+                      <span className="font-bold text-slate-800 dark:text-neutral-205">{selectedQuote.vendorName}</span>
                     </div>
                     
-                    <div className="flex justify-between items-center text-xs border-t border-slate-100 dark:border-dark-850 pt-2.5">
-                      <span className="font-semibold text-slate-500 dark:text-dark-450">Total:</span>
-                      <span className="font-bold text-slate-850 dark:text-dark-100">{selectedQuote.totalCost.toLocaleString('en-IN')}</span>
+                    <div className="flex justify-between items-center text-xs border-t border-slate-100 dark:border-neutral-850 pt-2.5">
+                      <span className="font-semibold text-slate-500 dark:text-neutral-450">Total:</span>
+                      <span className="font-bold text-slate-850 dark:text-neutral-100">{selectedQuote.totalCost.toLocaleString('en-IN')}</span>
                     </div>
 
-                    <div className="flex justify-between items-center text-xs border-t border-slate-100 dark:border-dark-850 pt-2.5">
-                      <span className="font-semibold text-slate-500 dark:text-dark-450">Delivery:</span>
-                      <span className="font-bold text-slate-850 dark:text-dark-100">{selectedQuote.deliveryTimeDays} days</span>
+                    <div className="flex justify-between items-center text-xs border-t border-slate-100 dark:border-neutral-850 pt-2.5">
+                      <span className="font-semibold text-slate-500 dark:text-neutral-450">Delivery:</span>
+                      <span className="font-bold text-slate-850 dark:text-neutral-100">{selectedQuote.deliveryTimeDays} days</span>
                     </div>
 
-                    <div className="flex justify-between items-center text-xs border-t border-slate-100 dark:border-dark-850 pt-2.5">
-                      <span className="font-semibold text-slate-500 dark:text-dark-450">Rating:</span>
-                      <span className="font-bold text-slate-850 dark:text-dark-100">
+                    <div className="flex justify-between items-center text-xs border-t border-slate-100 dark:border-neutral-850 pt-2.5">
+                      <span className="font-semibold text-slate-500 dark:text-neutral-450">Rating:</span>
+                      <span className="font-bold text-slate-850 dark:text-neutral-100">
                         {vendorObj ? `${vendorObj.rating.toFixed(1)}/5` : '4.5/5'}
                       </span>
                     </div>
@@ -233,7 +233,7 @@ export const Approvals = () => {
                   type="button"
                   disabled={loading}
                   onClick={() => handleAction('approve')}
-                  className="flex-1 py-2.5 text-xs font-semibold bg-transparent border border-slate-350 dark:border-dark-700 text-slate-800 dark:text-dark-200 rounded-xl hover:bg-slate-50 dark:hover:bg-dark-800 hover:border-slate-400 dark:hover:border-dark-600 transition-all cursor-pointer text-center"
+                  className="flex-1 py-2.5 text-xs font-semibold bg-transparent border border-slate-350 dark:border-neutral-700 text-slate-800 dark:text-neutral-200 rounded-xl hover:bg-slate-50 dark:hover:bg-neutral-800 hover:border-slate-400 dark:hover:border-neutral-600 transition-all cursor-pointer text-center"
                 >
                   Approve
                 </button>
@@ -241,7 +241,7 @@ export const Approvals = () => {
                   type="button"
                   disabled={loading}
                   onClick={() => handleAction('reject')}
-                  className="flex-1 py-2.5 text-xs font-semibold bg-transparent border border-slate-350 dark:border-dark-700 text-slate-800 dark:text-dark-200 rounded-xl hover:bg-slate-50 dark:hover:bg-dark-800 hover:border-slate-400 dark:hover:border-dark-600 transition-all cursor-pointer text-center"
+                  className="flex-1 py-2.5 text-xs font-semibold bg-transparent border border-slate-350 dark:border-neutral-700 text-slate-800 dark:text-neutral-200 rounded-xl hover:bg-slate-50 dark:hover:bg-neutral-800 hover:border-slate-400 dark:hover:border-neutral-600 transition-all cursor-pointer text-center"
                 >
                   Reject
                 </button>

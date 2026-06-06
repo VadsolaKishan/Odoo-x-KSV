@@ -3,106 +3,118 @@ import { NavLink, Link } from 'react-router-dom';
 import {
   X,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  LayoutDashboard,
+  Users,
+  FilePlus,
+  FileText,
+  CheckSquare,
+  ShoppingBag,
+  Receipt,
+  BarChart3,
+  Activity,
 } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
+const NAV_ITEMS = [
+  { to: '/dashboard',       label: 'Dashboard',       icon: LayoutDashboard },
+  { to: '/vendors',         label: 'Vendors',          icon: Users           },
+  { to: '/rfq/create',      label: "RFQ's",            icon: FilePlus        },
+  { to: '/quotations',      label: 'Quotations',       icon: FileText        },
+  { to: '/approvals',       label: 'Approvals',        icon: CheckSquare     },
+  { to: '/purchase-orders', label: 'Purchase Orders',  icon: ShoppingBag     },
+  { to: '/invoices',        label: 'Invoices',         icon: Receipt         },
+  { to: '/reports',         label: 'Reports',          icon: BarChart3       },
+  { to: '/activity',        label: 'Activity',         icon: Activity        },
+];
+
 export const Sidebar = ({ isOpen, toggleMobileSidebar, isCollapsed = false, setIsCollapsed }) => {
   const { currentUser, rfqs } = useApp();
-
-  // Calculate pending approvals count
   const pendingApprovalsCount = rfqs.filter(r => r.status === 'Pending Approval').length;
-
-  const navItems = [
-    { to: '/dashboard', label: 'Dashboard', short: 'DB' },
-    { to: '/vendors', label: 'Vendors', short: 'VD' },
-    { to: '/rfq/create', label: "RFQ's", short: 'RF' },
-    { to: '/quotations', label: 'Quotations', short: 'QT' },
-    { to: '/approvals', label: 'Approvals', badge: pendingApprovalsCount, short: 'AP' },
-    { to: '/purchase-orders', label: 'Purchase orders', short: 'PO' },
-    { to: '/invoices', label: 'Invoices', short: 'IV' },
-    { to: '/reports', label: 'Reports', short: 'RP' },
-    { to: '/activity', label: 'Activity', short: 'AC' },
-  ];
 
   if (!currentUser) return null;
 
   return (
     <>
-      {/* Mobile Sidebar Overlay */}
+      {/* Mobile Overlay */}
       {isOpen && (
-        <div 
+        <div
           onClick={toggleMobileSidebar}
-          className="fixed inset-0 z-40 bg-slate-900/50 backdrop-blur-sm lg:hidden transition-opacity" 
+          className="fixed inset-0 z-40 bg-slate-900/60 backdrop-blur-sm lg:hidden transition-opacity"
         />
       )}
 
-      {/* Sidebar container - starts below top header (top-16) on desktop */}
+      {/* Sidebar Panel */}
       <aside
-        className={`fixed top-0 lg:top-16 bottom-0 left-0 z-40 flex flex-col bg-white dark:bg-dark-900 border-r border-slate-200 dark:border-dark-800 transition-all duration-300 lg:translate-x-0 ${
-          isOpen ? 'translate-x-0' : '-translate-x-full'
-        } ${isCollapsed ? 'lg:w-16 w-64' : 'w-64'}`}
+        className={`fixed top-0 lg:top-16 bottom-0 left-0 z-40 flex flex-col
+          bg-white dark:bg-neutral-900
+          border-r border-slate-200/80 dark:border-neutral-800/60
+          shadow-premium-sm
+          transition-all duration-300 lg:translate-x-0
+          ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+          ${isCollapsed ? 'lg:w-16 w-64' : 'w-64'}`}
       >
-        {/* Brand Header - visible on mobile only */}
-        <div className="flex items-center justify-between h-16 px-6 border-b border-slate-200 dark:border-dark-800 lg:hidden">
-          <Link to="/" className="flex items-center gap-2">
-            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-gradient-to-tr from-brand-600 to-brand-400 text-white font-bold text-lg shadow-md shadow-brand-500/20">
-              VB
+        {/* Mobile Header */}
+        <div className="flex items-center justify-between h-16 px-5 border-b border-slate-200/80 dark:border-neutral-800/60 lg:hidden">
+          <Link to="/" className="flex items-center gap-2.5">
+            <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-brand-600 to-brand-500 flex items-center justify-center shadow-sm shadow-brand-500/30">
+              <span className="text-white font-bold text-xs font-display">VB</span>
             </div>
-            <span className="font-display font-bold text-lg text-slate-800 dark:text-dark-100 tracking-tight">
+            <span className="font-display font-bold text-base text-slate-800 dark:text-neutral-100 tracking-tight">
               VendorBridge
             </span>
           </Link>
-          <button 
+          <button
             onClick={toggleMobileSidebar}
-            className="p-1.5 rounded-lg text-slate-500 dark:text-dark-400 hover:bg-slate-100 dark:hover:bg-dark-800"
+            className="p-1.5 rounded-xl text-slate-500 dark:text-neutral-400 hover:bg-slate-100 dark:hover:bg-neutral-800 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
         </div>
 
-        {/* Navigation items */}
-        <nav className={`flex-1 ${isCollapsed ? 'px-2 py-6' : 'px-4 py-6'} space-y-1.5 overflow-y-auto`}>
-          {navItems.map((item) => {
+        {/* Navigation */}
+        <nav className={`flex-1 ${isCollapsed ? 'px-2 py-5' : 'px-3 py-5'} space-y-1 overflow-y-auto`}>
+          {NAV_ITEMS.map((item) => {
+            const Icon = item.icon;
+            const badge = item.label === 'Approvals' ? pendingApprovalsCount : 0;
+
             return (
               <NavLink
                 key={item.to}
                 to={item.to}
-                onClick={() => {
-                  if (isOpen) toggleMobileSidebar();
-                }}
+                onClick={() => { if (isOpen) toggleMobileSidebar(); }}
+                title={isCollapsed ? item.label : undefined}
                 className={({ isActive }) =>
-                  `flex items-center transition-all duration-200 group ${
-                    isCollapsed 
-                      ? 'justify-center py-2.5 px-0 w-full' 
-                      : 'justify-between px-4 py-2.5'
-                  } text-sm font-semibold rounded-xl ${
-                    isActive
-                      ? 'bg-brand-50/70 dark:bg-brand-950/20 text-brand-600 dark:text-brand-400 border border-brand-500/10'
-                      : 'text-slate-600 dark:text-dark-400 hover:bg-slate-50 dark:hover:bg-dark-800/60 hover:text-slate-900 dark:hover:text-dark-200'
+                  `flex items-center transition-all duration-200 group rounded-xl
+                  ${isCollapsed ? 'justify-center w-full px-0 py-2.5' : 'justify-between px-3 py-2.5'}
+                  text-sm font-semibold
+                  ${isActive
+                    ? 'bg-brand-600 text-white shadow-md shadow-brand-500/20'
+                    : 'text-slate-600 dark:text-neutral-400 hover:bg-slate-100 dark:hover:bg-neutral-800/70 hover:text-slate-900 dark:hover:text-neutral-200'
                   }`
                 }
-                title={isCollapsed ? item.label : undefined}
               >
-                {isCollapsed ? (
-                  <div className="relative flex items-center justify-center w-8 h-8 rounded-lg group-hover:bg-slate-100 dark:group-hover:bg-dark-800 transition-colors">
-                    <span className="text-xs font-bold tracking-tight text-slate-650 dark:text-dark-300 font-display">
-                      {item.short}
-                    </span>
-                    {item.badge > 0 && (
-                      <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-brand-500 border-2 border-white dark:border-dark-900" />
-                    )}
-                  </div>
-                ) : (
+                {({ isActive }) => (
                   <>
-                    <div className="flex items-center gap-3">
-                      <span className="text-slate-400 dark:text-dark-500 font-bold shrink-0 w-4 text-center">-</span>
-                      <span>{item.label}</span>
-                    </div>
-                    {item.badge > 0 && (
-                      <span className="flex items-center justify-center px-2 py-0.5 text-xs font-semibold rounded-full bg-brand-500 text-white shadow-sm shadow-brand-500/10">
-                        {item.badge}
-                      </span>
+                    {isCollapsed ? (
+                      <div className="relative flex items-center justify-center w-8 h-8">
+                        <Icon className={`w-4.5 h-4.5 transition-transform group-hover:scale-110 ${isActive ? 'text-white' : 'text-slate-500 dark:text-neutral-400 group-hover:text-slate-700 dark:group-hover:text-neutral-200'}`} />
+                        {badge > 0 && (
+                          <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-brand-500 border-2 border-white dark:border-neutral-900" />
+                        )}
+                      </div>
+                    ) : (
+                      <>
+                        <div className="flex items-center gap-3">
+                          <Icon className={`w-4 h-4 shrink-0 transition-transform group-hover:scale-105 ${isActive ? 'text-white' : 'text-slate-500 dark:text-neutral-500 group-hover:text-slate-700 dark:group-hover:text-neutral-300'}`} />
+                          <span>{item.label}</span>
+                        </div>
+                        {badge > 0 && (
+                          <span className={`flex items-center justify-center px-2 py-0.5 text-[10px] font-bold rounded-full min-w-[20px] ${isActive ? 'bg-white/20 text-white' : 'bg-brand-500 text-white shadow-sm'}`}>
+                            {badge}
+                          </span>
+                        )}
+                      </>
                     )}
                   </>
                 )}
@@ -111,17 +123,17 @@ export const Sidebar = ({ isOpen, toggleMobileSidebar, isCollapsed = false, setI
           })}
         </nav>
 
-        {/* Desktop Collapse Toggle Footer Button */}
-        <div className="hidden lg:block p-3 border-t border-slate-200 dark:border-dark-800">
+        {/* Collapse Toggle Footer */}
+        <div className="hidden lg:block p-3 border-t border-slate-200/80 dark:border-neutral-800/60 bg-slate-50/50 dark:bg-neutral-950/10">
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
-            className="flex items-center justify-center w-full p-2.5 rounded-xl text-slate-500 hover:text-slate-800 dark:text-dark-400 dark:hover:text-dark-200 bg-slate-50 dark:bg-dark-850 hover:bg-slate-100 dark:hover:bg-dark-800 border border-slate-200 dark:border-dark-800 transition-all select-none cursor-pointer"
-            title={isCollapsed ? "Expand Sidebar" : "Collapse Sidebar"}
+            className="flex items-center justify-center w-full py-2.5 px-3 rounded-xl text-slate-500 hover:text-slate-800 dark:text-neutral-400 dark:hover:text-neutral-200 hover:bg-slate-100 dark:hover:bg-neutral-800 border border-slate-200 dark:border-neutral-800 transition-all select-none cursor-pointer text-xs font-semibold"
+            title={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
           >
             {isCollapsed ? (
               <ChevronRight className="w-4 h-4" />
             ) : (
-              <div className="flex items-center justify-center gap-2 text-xs font-bold w-full">
+              <div className="flex items-center justify-center gap-2 w-full">
                 <ChevronLeft className="w-4 h-4 shrink-0" />
                 <span className="truncate">Collapse Panel</span>
               </div>

@@ -223,8 +223,8 @@ export const Vendors = () => {
       key: 'name',
       render: (row) => (
         <div className="flex flex-col gap-0.5">
-          <span className="font-bold text-slate-800 dark:text-dark-100">{row.name}</span>
-          <span className="text-[10px] text-slate-400 dark:text-dark-500 font-medium">ID: {row.id}</span>
+          <span className="font-bold text-slate-800 dark:text-neutral-100">{row.name}</span>
+          <span className="text-[10px] text-slate-400 dark:text-neutral-500 font-medium">ID: {row.id}</span>
         </div>
       )
     },
@@ -239,7 +239,7 @@ export const Vendors = () => {
       label: 'GST no.',
       key: 'gstin',
       render: (row) => (
-        <span className="font-mono text-slate-600 dark:text-dark-350">{row.gstin || '-'}</span>
+        <span className="font-mono text-slate-600 dark:text-neutral-350">{row.gstin || '-'}</span>
       )
     },
     {
@@ -248,7 +248,7 @@ export const Vendors = () => {
       render: (row) => (
         <div className="flex flex-col">
           <span>{row.phone || '-'}</span>
-          <span className="text-[10px] text-slate-450 dark:text-dark-500">{row.email}</span>
+          <span className="text-[10px] text-slate-450 dark:text-neutral-500">{row.email}</span>
         </div>
       )
     },
@@ -276,7 +276,7 @@ export const Vendors = () => {
       render: (row) => (
         <button
           onClick={() => handleOpenEditModal(row)}
-          className="px-3 py-1 text-xs font-semibold bg-transparent border border-slate-300 dark:border-dark-700 text-slate-700 dark:text-dark-300 rounded-lg hover:bg-slate-50 dark:hover:bg-dark-800 transition-all active:scale-95 cursor-pointer"
+          className="px-3 py-1 text-xs font-semibold bg-transparent border border-slate-300 dark:border-neutral-700 text-slate-700 dark:text-neutral-300 rounded-lg hover:bg-slate-50 dark:hover:bg-neutral-800 transition-all active:scale-95 cursor-pointer"
         >
           View
         </button>
@@ -290,29 +290,29 @@ export const Vendors = () => {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-display font-extrabold text-slate-800 dark:text-dark-100 tracking-tight">
+          <h1 className="text-3xl font-display font-extrabold text-slate-800 dark:text-neutral-100 tracking-tight">
             Vendors
           </h1>
-          <p className="text-xs text-slate-400 dark:text-dark-500 font-medium">
+          <p className="text-xs text-slate-400 dark:text-neutral-500 font-medium">
             Manage supplier profiles and registrations
           </p>
         </div>
         <button
           onClick={handleOpenAddModal}
-          className="px-5 py-2.5 bg-transparent border border-slate-300 dark:border-dark-700 text-slate-700 dark:text-dark-300 rounded-xl hover:bg-slate-50 dark:hover:bg-dark-800 transition-all font-semibold text-xs active:scale-98 cursor-pointer"
+          className="px-5 py-2.5 bg-transparent border border-slate-300 dark:border-neutral-700 text-slate-700 dark:text-neutral-300 rounded-xl hover:bg-slate-50 dark:hover:bg-neutral-800 hover-glow-button transition-all font-semibold text-xs cursor-pointer"
         >
           + Add Vendor
         </button>
       </div>
 
       {/* Search panel */}
-      <div className="border border-slate-200 dark:border-dark-800 rounded-xl p-3 bg-white dark:bg-dark-900/50 shadow-sm">
+      <div className="border border-slate-200 dark:border-neutral-800 focus-within:border-brand-500/50 focus-within:ring-2 focus-within:ring-brand-500/10 transition-all duration-300 rounded-xl p-3 bg-white dark:bg-neutral-900/50 shadow-sm">
         <input
           type="text"
           placeholder="Search bar ...... search by name, gst number, category..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full px-4 py-2 text-xs bg-transparent focus:outline-none text-slate-700 dark:text-dark-200"
+          className="w-full px-4 py-2 text-xs bg-transparent focus:outline-none text-slate-700 dark:text-neutral-200"
         />
       </div>
 
@@ -320,7 +320,7 @@ export const Vendors = () => {
       <div className="flex flex-wrap items-center gap-2 select-none">
         {[
           { key: '', label: `All (${allCount})` },
-          { key: 'Active', label: `active (${activeCount})` },
+          { key: 'Active', label: `Active (${activeCount})` },
           { key: 'Pending', label: `Pending (${pendingCount})` },
           { key: 'Blocked', label: `Blocked (${blockedCount})` }
         ].map((tab) => {
@@ -329,10 +329,10 @@ export const Vendors = () => {
             <button
               key={tab.key}
               onClick={() => setSelectedStatus(tab.key)}
-              className={`px-3 py-1.5 text-xs font-semibold rounded-lg border transition-all cursor-pointer ${
+              className={`px-4 py-1.5 text-xs font-bold rounded-lg border transition-all cursor-pointer ${
                 isActive
-                  ? 'bg-slate-100 dark:bg-dark-800 text-slate-900 dark:text-dark-100 border-slate-400 dark:border-dark-600'
-                  : 'bg-transparent text-slate-500 dark:text-dark-400 border-slate-200 dark:border-dark-800 hover:border-slate-350 dark:hover:border-dark-750'
+                  ? 'bg-blue-600 border-blue-600 text-white shadow-sm'
+                  : 'bg-transparent text-slate-600 dark:text-neutral-300 border-slate-250 dark:border-neutral-800 hover:border-slate-400 dark:hover:border-neutral-500'
               }`}
             >
               {tab.label}
@@ -357,7 +357,7 @@ export const Vendors = () => {
       >
         <form onSubmit={handleSubmit} className="space-y-4 text-xs leading-normal">
           
-          <div className="border-b border-slate-100 dark:border-dark-800 pb-2 flex items-center gap-1.5 font-bold text-slate-750 dark:text-dark-250">
+          <div className="border-b border-slate-100 dark:border-neutral-800 pb-2 flex items-center gap-1.5 font-bold text-slate-750 dark:text-neutral-250">
             <Building className="w-4 h-4 text-brand-500" />
             <span>Company Credentials</span>
           </div>
@@ -420,7 +420,7 @@ export const Vendors = () => {
           </div>
 
           {/* GSTIN / PAN Validation inputs */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50/50 dark:bg-dark-950/20 p-3 rounded-xl border border-slate-150 dark:border-dark-850">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-slate-50/50 dark:bg-neutral-950/20 p-3 rounded-xl border border-slate-150 dark:border-neutral-850">
             <FormInput
               label="GSTIN (GST Number)"
               id="v_gstin"
@@ -441,7 +441,7 @@ export const Vendors = () => {
             />
           </div>
 
-          <div className="border-b border-slate-100 dark:border-dark-800 pb-2 pt-2 flex items-center gap-1.5 font-bold text-slate-750 dark:text-dark-250">
+          <div className="border-b border-slate-100 dark:border-neutral-800 pb-2 pt-2 flex items-center gap-1.5 font-bold text-slate-750 dark:text-neutral-250">
             <MapPin className="w-4 h-4 text-brand-500" />
             <span>Address Details</span>
           </div>
@@ -496,7 +496,7 @@ export const Vendors = () => {
             />
           </div>
 
-          <div className="border-b border-slate-100 dark:border-dark-800 pb-2 pt-2 flex items-center gap-1.5 font-bold text-slate-750 dark:text-dark-250">
+          <div className="border-b border-slate-100 dark:border-neutral-800 pb-2 pt-2 flex items-center gap-1.5 font-bold text-slate-750 dark:text-neutral-250">
             <CreditCard className="w-4 h-4 text-brand-500" />
             <span>Payment & Banking Details</span>
           </div>
@@ -539,11 +539,11 @@ export const Vendors = () => {
             />
           </div>
 
-          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-dark-800 select-none">
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-100 dark:border-neutral-800 select-none">
             <button
               type="button"
               onClick={() => setModalOpen(false)}
-              className="px-4 py-2 text-xs font-semibold bg-slate-50 hover:bg-slate-100 dark:bg-dark-800 dark:hover:bg-dark-850 text-slate-700 dark:text-dark-300 rounded-lg transition-colors border border-slate-150 dark:border-dark-750"
+              className="px-4 py-2 text-xs font-semibold bg-slate-50 hover:bg-slate-100 dark:bg-neutral-800 dark:hover:bg-neutral-850 text-slate-700 dark:text-neutral-300 rounded-lg transition-colors border border-slate-150 dark:border-neutral-750"
             >
               Cancel
             </button>
@@ -564,14 +564,14 @@ export const Vendors = () => {
         title="Confirm Vendor Deletion"
       >
         <div className="space-y-4">
-          <p className="text-xs text-slate-600 dark:text-dark-300 leading-normal">
-            Are you sure you want to remove <span className="font-bold text-slate-800 dark:text-dark-100">"{vendorToDelete?.name}"</span>? 
+          <p className="text-xs text-slate-600 dark:text-neutral-300 leading-normal">
+            Are you sure you want to remove <span className="font-bold text-slate-800 dark:text-neutral-100">"{vendorToDelete?.name}"</span>? 
             This action deletes their credentials, ratings, and log history. It cannot be undone.
           </p>
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 dark:border-dark-800">
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-100 dark:border-neutral-800">
             <button
               onClick={() => setDeleteConfirmOpen(false)}
-              className="px-4 py-2 text-xs font-semibold bg-slate-50 hover:bg-slate-100 dark:bg-dark-800 dark:hover:bg-dark-850 text-slate-700 dark:text-dark-300 rounded-lg transition-colors border border-slate-150 dark:border-dark-750"
+              className="px-4 py-2 text-xs font-semibold bg-slate-50 hover:bg-slate-100 dark:bg-neutral-800 dark:hover:bg-neutral-850 text-slate-700 dark:text-neutral-300 rounded-lg transition-colors border border-slate-150 dark:border-neutral-750"
             >
               Keep Vendor
             </button>

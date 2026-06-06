@@ -23,7 +23,7 @@ export const PurchaseOrders = () => {
       label: 'PO Code',
       key: 'id',
       render: (row) => (
-        <span className="font-bold text-slate-800 dark:text-dark-100">
+        <span className="font-bold text-slate-800 dark:text-neutral-100">
           {row.id}
         </span>
       )
@@ -31,27 +31,27 @@ export const PurchaseOrders = () => {
     {
       label: 'Vendor Partner',
       key: 'vendorName',
-      render: (row) => <span className="font-bold text-slate-700 dark:text-dark-200">{row.vendorName}</span>
+      render: (row) => <span className="font-bold text-slate-700 dark:text-neutral-200">{row.vendorName}</span>
     },
     {
       label: 'Linked Project/RFQ',
       key: 'rfqTitle',
       render: (row) => (
         <div className="flex flex-col gap-0.5">
-          <span className="font-medium text-slate-755 dark:text-dark-200">{row.rfqTitle}</span>
-          <span className="text-[10px] text-slate-400 dark:text-dark-500">RFQ Ref: {row.rfqId}</span>
+          <span className="font-medium text-slate-755 dark:text-neutral-200">{row.rfqTitle}</span>
+          <span className="text-[10px] text-slate-400 dark:text-neutral-500">RFQ Ref: {row.rfqId}</span>
         </div>
       )
     },
     {
       label: 'Date Created',
       key: 'createdAt',
-      render: (row) => <span className="text-slate-500 dark:text-dark-450 font-medium">{row.createdAt}</span>
+      render: (row) => <span className="text-slate-500 dark:text-neutral-450 font-medium">{row.createdAt}</span>
     },
     {
       label: 'Total Value',
       key: 'totalCost',
-      render: (row) => <span className="font-bold text-slate-800 dark:text-dark-150">{formatIndianCurrency(row.totalCost)}</span>
+      render: (row) => <span className="font-bold text-slate-800 dark:text-neutral-150">{formatIndianCurrency(row.totalCost)}</span>
     },
     {
       label: 'Status',
@@ -68,7 +68,7 @@ export const PurchaseOrders = () => {
       render: (row) => (
         <button
           onClick={() => setSelectedPo(row)}
-          className="px-3 py-1 text-xs font-semibold bg-transparent border border-slate-300 dark:border-dark-700 text-slate-700 dark:text-dark-300 rounded-lg hover:bg-slate-50 dark:hover:bg-dark-800 transition-all active:scale-95 cursor-pointer"
+          className="px-3 py-1 text-xs font-semibold bg-transparent border border-slate-300 dark:border-neutral-700 text-slate-700 dark:text-neutral-300 rounded-lg hover:bg-slate-50 dark:hover:bg-neutral-800 hover-glow-button transition-all cursor-pointer"
         >
           View
         </button>
@@ -83,15 +83,15 @@ export const PurchaseOrders = () => {
     const computedGrandTotal = selectedPo.subtotal + cgst + sgst;
 
     return (
-      <div className="space-y-6 text-xs text-slate-700 dark:text-dark-300 animate-fade-in">
+      <div className="space-y-6 text-xs text-slate-700 dark:text-neutral-300 animate-fade-in">
         
         {/* Header Actions */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-dark-800 pb-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200 dark:border-neutral-800 pb-4">
           <div>
-            <h1 className="text-3xl font-display font-extrabold text-slate-800 dark:text-dark-100 tracking-tight">
+            <h1 className="text-3xl font-display font-extrabold text-slate-800 dark:text-neutral-100 tracking-tight">
               Purchase Order & Invoice
             </h1>
-            <p className="text-xs text-slate-400 dark:text-dark-500 font-medium">
+            <p className="text-xs text-slate-400 dark:text-neutral-500 font-medium">
               {selectedPo.id}-auto-generated after approval
             </p>
           </div>
@@ -99,19 +99,19 @@ export const PurchaseOrders = () => {
           <div className="flex flex-wrap items-center gap-2.5 select-none">
             <button
               onClick={() => handleDownload(selectedPo.id)}
-              className="px-4 py-2 text-xs font-semibold bg-transparent border border-slate-300 dark:border-dark-700 text-slate-700 dark:text-dark-300 rounded-xl hover:bg-slate-50 dark:hover:bg-dark-800 transition-all active:scale-98 cursor-pointer"
+              className="px-4 py-2 text-xs font-semibold bg-transparent border border-slate-300 dark:border-neutral-700 text-slate-700 dark:text-neutral-300 rounded-xl hover:bg-slate-50 dark:hover:bg-neutral-800 hover-glow-button transition-all cursor-pointer"
             >
               Download PDF
             </button>
             <button
               onClick={() => handlePrint(selectedPo.id)}
-              className="px-4 py-2 text-xs font-semibold bg-transparent border border-slate-300 dark:border-dark-700 text-slate-700 dark:text-dark-300 rounded-xl hover:bg-slate-50 dark:hover:bg-dark-800 transition-all active:scale-98 cursor-pointer"
+              className="px-4 py-2 text-xs font-semibold bg-transparent border border-slate-300 dark:border-neutral-700 text-slate-700 dark:text-neutral-300 rounded-xl hover:bg-slate-50 dark:hover:bg-neutral-800 hover-glow-button transition-all cursor-pointer"
             >
               Print
             </button>
             <button
               onClick={() => handleEmail(selectedPo.id)}
-              className="px-4 py-2 text-xs font-semibold bg-transparent border border-slate-300 dark:border-dark-700 text-slate-700 dark:text-dark-300 rounded-xl hover:bg-slate-50 dark:hover:bg-dark-800 transition-all active:scale-98 cursor-pointer"
+              className="px-4 py-2 text-xs font-semibold bg-transparent border border-slate-300 dark:border-neutral-700 text-slate-700 dark:text-neutral-300 rounded-xl hover:bg-slate-50 dark:hover:bg-neutral-800 hover-glow-button transition-all cursor-pointer"
             >
               Email invoice
             </button>
@@ -119,49 +119,49 @@ export const PurchaseOrders = () => {
         </div>
 
         {/* Bill Info Grid Box */}
-        <div className="border border-slate-200 dark:border-dark-800 rounded-2xl p-6 bg-white dark:bg-dark-900/50 shadow-sm space-y-4">
+        <div className="border border-slate-200 dark:border-neutral-800 rounded-2xl p-6 bg-white dark:bg-neutral-900/50 shadow-sm space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <p className="text-[10px] font-bold text-slate-400 dark:text-dark-500 uppercase tracking-wider mb-2">Bill to:</p>
-              <p className="font-bold text-slate-800 dark:text-dark-100 text-sm">your Organization Name</p>
-              <p className="text-slate-500 dark:text-dark-400 font-medium">123 business park, ahmedabad</p>
-              <p className="text-slate-500 dark:text-dark-400 font-medium mt-1">GSTIN: <span className="font-bold">253834384FB</span></p>
+              <p className="text-[10px] font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-wider mb-2">Bill to:</p>
+              <p className="font-bold text-slate-800 dark:text-neutral-100 text-sm">your Organization Name</p>
+              <p className="text-slate-500 dark:text-neutral-400 font-medium">123 business park, ahmedabad</p>
+              <p className="text-slate-500 dark:text-neutral-400 font-medium mt-1">GSTIN: <span className="font-bold">253834384FB</span></p>
             </div>
             
             <div>
-              <p className="text-[10px] font-bold text-slate-400 dark:text-dark-500 uppercase tracking-wider mb-2">Vendor</p>
-              <p className="font-bold text-slate-800 dark:text-dark-100 text-sm">{selectedPo.vendorName}</p>
-              <p className="text-slate-500 dark:text-dark-400 font-medium">456, industrial estate, surat</p>
-              <p className="text-slate-500 dark:text-dark-400 font-medium mt-1">GSTIN: <span className="font-bold">{selectedPo.vendorGstin || '343434DB4523'}</span></p>
+              <p className="text-[10px] font-bold text-slate-400 dark:text-neutral-500 uppercase tracking-wider mb-2">Vendor</p>
+              <p className="font-bold text-slate-800 dark:text-neutral-100 text-sm">{selectedPo.vendorName}</p>
+              <p className="text-slate-500 dark:text-neutral-400 font-medium">456, industrial estate, surat</p>
+              <p className="text-slate-500 dark:text-neutral-400 font-medium mt-1">GSTIN: <span className="font-bold">{selectedPo.vendorGstin || '343434DB4523'}</span></p>
             </div>
           </div>
 
-          <hr className="border-slate-250 dark:border-dark-850" />
+          <hr className="border-slate-250 dark:border-neutral-850" />
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 text-xs">
             <div className="space-y-1">
-              <p>PO Number: <span className="font-bold text-slate-800 dark:text-dark-200">{selectedPo.id}</span></p>
-              <p>PO date: <span className="font-bold text-slate-800 dark:text-dark-200">{selectedPo.createdAt}</span></p>
+              <p>PO Number: <span className="font-bold text-slate-800 dark:text-neutral-200">{selectedPo.id}</span></p>
+              <p>PO date: <span className="font-bold text-slate-800 dark:text-neutral-200">{selectedPo.createdAt}</span></p>
             </div>
             <div className="space-y-1">
-              <p>invoice date: <span className="font-bold text-slate-800 dark:text-dark-200">{selectedPo.createdAt}</span></p>
-              <p>Due date: <span className="font-bold text-slate-800 dark:text-dark-200">21 june 2025</span></p>
+              <p>invoice date: <span className="font-bold text-slate-800 dark:text-neutral-200">{selectedPo.createdAt}</span></p>
+              <p>Due date: <span className="font-bold text-slate-800 dark:text-neutral-200">21 june 2025</span></p>
             </div>
           </div>
         </div>
 
         {/* Invoice Items table */}
-        <div className="border border-slate-200 dark:border-dark-800 rounded-2xl overflow-hidden bg-white dark:bg-dark-900/50 shadow-sm">
+        <div className="border border-slate-200 dark:border-neutral-800 rounded-2xl overflow-hidden bg-white dark:bg-neutral-900/50 shadow-sm">
           <table className="w-full text-left border-collapse text-xs">
             <thead>
-              <tr className="border-b border-slate-200 dark:border-dark-800 text-[10px] font-bold text-slate-400 dark:text-dark-550 uppercase">
+              <tr className="border-b border-slate-200 dark:border-neutral-800 text-[10px] font-bold text-slate-400 dark:text-neutral-550 uppercase">
                 <th className="px-6 py-3">Item</th>
                 <th className="px-6 py-3 w-24 text-center">Qty</th>
                 <th className="px-6 py-3 w-36 text-center">Unit price</th>
                 <th className="px-6 py-3 w-36 text-right">Total</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-150 dark:divide-dark-855 text-slate-700 dark:text-dark-300">
+            <tbody className="divide-y divide-slate-150 dark:divide-neutral-855 text-slate-700 dark:text-neutral-300">
               {selectedPo.items.map((it, idx) => (
                 <tr key={idx}>
                   <td className="px-6 py-3 font-semibold">{it.name || (idx === 0 ? 'Ergonomic chair' : 'Tech Core LTD')}</td>
@@ -172,21 +172,21 @@ export const PurchaseOrders = () => {
               ))}
               
               {/* Totals Summary */}
-              <tr className="bg-slate-50/10 text-slate-550 dark:text-dark-400">
+              <tr className="bg-slate-50/10 text-slate-550 dark:text-neutral-400">
                 <td colSpan="3" className="px-6 py-2 text-right font-semibold">Subtotal</td>
                 <td className="px-6 py-2 text-right font-bold">{selectedPo.subtotal.toLocaleString('en-IN')}</td>
               </tr>
-              <tr className="bg-slate-50/10 text-slate-550 dark:text-dark-400">
+              <tr className="bg-slate-50/10 text-slate-550 dark:text-neutral-400">
                 <td colSpan="3" className="px-6 py-2 text-right font-semibold">CGST(9%)</td>
                 <td className="px-6 py-2 text-right font-bold">{cgst.toLocaleString('en-IN')}</td>
               </tr>
-              <tr className="bg-slate-50/10 text-slate-550 dark:text-dark-400">
+              <tr className="bg-slate-50/10 text-slate-550 dark:text-neutral-400">
                 <td colSpan="3" className="px-6 py-2 text-right font-semibold">SGST(9%)</td>
                 <td className="px-6 py-2 text-right font-bold">{sgst.toLocaleString('en-IN')}</td>
               </tr>
-              <tr className="bg-slate-50/20 font-bold text-slate-800 dark:text-dark-150 text-sm">
+              <tr className="bg-slate-50/20 font-bold text-slate-800 dark:text-neutral-150 text-sm">
                 <td colSpan="3" className="px-6 py-3 text-right">Grand total</td>
-                <td className="px-6 py-3 text-right text-base font-extrabold text-slate-900 dark:text-dark-50">{computedGrandTotal.toLocaleString('en-IN')}</td>
+                <td className="px-6 py-3 text-right text-base font-extrabold text-slate-900 dark:text-neutral-50">{computedGrandTotal.toLocaleString('en-IN')}</td>
               </tr>
             </tbody>
           </table>
@@ -194,7 +194,7 @@ export const PurchaseOrders = () => {
 
         {/* Bottom Status */}
         <div className="flex items-center gap-3 select-none">
-          <span className="font-semibold text-slate-550 dark:text-dark-400">status:</span>
+          <span className="font-semibold text-slate-550 dark:text-neutral-400">status:</span>
           <span className="bg-emerald-100 dark:bg-emerald-950/20 text-emerald-700 dark:text-emerald-400 font-bold px-2 py-0.5 rounded text-[10px]">
             {selectedPo.status}
           </span>
@@ -204,7 +204,7 @@ export const PurchaseOrders = () => {
         <div>
           <button
             onClick={() => setSelectedPo(null)}
-            className="px-5 py-2 text-xs font-semibold bg-transparent border border-slate-300 dark:border-dark-700 text-slate-700 dark:text-dark-300 rounded-xl hover:bg-slate-50 dark:hover:bg-dark-800 transition-all active:scale-98 cursor-pointer mt-4"
+            className="px-5 py-2 text-xs font-semibold bg-transparent border border-slate-300 dark:border-neutral-700 text-slate-700 dark:text-neutral-300 rounded-xl hover:bg-slate-50 dark:hover:bg-neutral-800 hover-glow-button transition-all cursor-pointer mt-4"
           >
             Back to Purchase Orders List
           </button>
@@ -215,14 +215,14 @@ export const PurchaseOrders = () => {
   }
 
   return (
-    <div className="space-y-6 text-xs text-slate-700 dark:text-dark-300">
+    <div className="space-y-6 text-xs text-slate-700 dark:text-neutral-300">
       
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-display font-extrabold text-slate-800 dark:text-dark-100 tracking-tight">
+        <h1 className="text-3xl font-display font-extrabold text-slate-800 dark:text-neutral-100 tracking-tight">
           Purchase Orders
         </h1>
-        <p className="text-xs text-slate-400 dark:text-dark-500 font-medium">
+        <p className="text-xs text-slate-400 dark:text-neutral-500 font-medium">
           Contracts and official purchasing orders issued to vendors
         </p>
       </div>

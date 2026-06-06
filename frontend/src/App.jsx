@@ -20,6 +20,7 @@ import { PurchaseOrders } from './pages/PurchaseOrders';
 import { Invoices } from './pages/Invoices';
 import { Reports } from './pages/Reports';
 import { ActivityLog } from './pages/ActivityLog';
+import { Profile } from './pages/Profile';
 
 // Route Guard for Authenticated Views
 const ProtectedRoute = ({ children }) => {
@@ -140,6 +141,14 @@ export const App = () => {
           element={
             <ProtectedRoute>
               <ActivityLog />
+            </ProtectedRoute>
+          } 
+        />
+        <Route 
+          path="/profile" 
+          element={
+            <ProtectedRoute>
+              <Profile />
             </ProtectedRoute>
           } 
         />

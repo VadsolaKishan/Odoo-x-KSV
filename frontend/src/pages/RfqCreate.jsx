@@ -104,14 +104,14 @@ export const RfqCreate = () => {
   const unassignedVendors = vendors.filter((v) => !assignedVendors.includes(v.id));
 
   return (
-    <div className="max-w-4xl mx-auto space-y-6 text-xs text-slate-700 dark:text-dark-300">
+    <div className="max-w-4xl mx-auto space-y-6 text-xs text-slate-700 dark:text-neutral-300">
       
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-display font-extrabold text-slate-800 dark:text-dark-100 tracking-tight">
+        <h1 className="text-3xl font-display font-extrabold text-slate-800 dark:text-neutral-100 tracking-tight">
           Create RFQ's
         </h1>
-        <p className="text-xs text-slate-400 dark:text-dark-500 font-medium">
+        <p className="text-xs text-slate-400 dark:text-neutral-500 font-medium">
           new request for quotation
         </p>
       </div>
@@ -122,12 +122,12 @@ export const RfqCreate = () => {
           <div className="flex items-center justify-center w-8 h-8 rounded-full border border-brand-500 bg-brand-50/70 dark:bg-brand-950/20 text-brand-600 dark:text-brand-400 font-semibold text-sm">
             1
           </div>
-          <div className="flex-1 h-px bg-slate-200 dark:bg-dark-800 mx-2" />
-          <div className="flex items-center justify-center w-8 h-8 rounded-full border border-slate-300 dark:border-dark-750 text-slate-400 dark:text-dark-500 font-semibold text-sm">
+          <div className="flex-1 h-px bg-slate-200 dark:bg-neutral-800 mx-2" />
+          <div className="flex items-center justify-center w-8 h-8 rounded-full border border-slate-300 dark:border-neutral-750 text-slate-400 dark:text-neutral-500 font-semibold text-sm">
             2
           </div>
-          <div className="flex-1 h-px bg-slate-200 dark:bg-dark-800 mx-2" />
-          <div className="flex items-center justify-center w-8 h-8 rounded-full border border-slate-300 dark:border-dark-750 text-slate-400 dark:text-dark-500 font-semibold text-sm">
+          <div className="flex-1 h-px bg-slate-200 dark:bg-neutral-800 mx-2" />
+          <div className="flex items-center justify-center w-8 h-8 rounded-full border border-slate-300 dark:border-neutral-750 text-slate-400 dark:text-neutral-500 font-semibold text-sm">
             3
           </div>
         </div>
@@ -140,7 +140,7 @@ export const RfqCreate = () => {
         <div className="space-y-4">
           
           <div>
-            <label className="block text-xs font-semibold text-slate-500 dark:text-dark-400 mb-1.5">
+            <label className="block text-xs font-semibold text-slate-500 dark:text-neutral-400 mb-1.5">
               RFQ's title*
             </label>
             <input
@@ -148,26 +148,26 @@ export const RfqCreate = () => {
               required
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full px-3 py-2 text-xs bg-white dark:bg-dark-900 border border-slate-200 dark:border-dark-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-slate-800 dark:text-dark-100"
+              className="w-full px-3 py-2 text-xs bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-slate-800 dark:text-neutral-100"
               placeholder="e.g. Office Furniture procurement Q2"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-500 dark:text-dark-400 mb-1.5">
+            <label className="block text-xs font-semibold text-slate-500 dark:text-neutral-400 mb-1.5">
               Category
             </label>
             <input
               type="text"
               value={category}
               onChange={(e) => setCategory(e.target.value)}
-              className="w-full px-3 py-2 text-xs bg-white dark:bg-dark-900 border border-slate-200 dark:border-dark-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-slate-800 dark:text-dark-100"
+              className="w-full px-3 py-2 text-xs bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-slate-800 dark:text-neutral-100"
               placeholder="e.g. Furniture"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-500 dark:text-dark-400 mb-1.5">
+            <label className="block text-xs font-semibold text-slate-500 dark:text-neutral-400 mb-1.5">
               Deadline*
             </label>
             <input
@@ -175,19 +175,19 @@ export const RfqCreate = () => {
               required
               value={deadline}
               onChange={(e) => setDeadline(e.target.value)}
-              className="w-full px-3 py-2 text-xs bg-white dark:bg-dark-900 border border-slate-200 dark:border-dark-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-slate-800 dark:text-dark-100"
+              className="w-full px-3 py-2 text-xs bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-slate-800 dark:text-neutral-100"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-500 dark:text-dark-400 mb-1.5">
+            <label className="block text-xs font-semibold text-slate-500 dark:text-neutral-400 mb-1.5">
               Description
             </label>
             <textarea
               rows={4}
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="w-full px-3 py-2 text-xs bg-white dark:bg-dark-900 border border-slate-200 dark:border-dark-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-slate-800 dark:text-dark-100 resize-none"
+              className="w-full px-3 py-2 text-xs bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-800 rounded-xl focus:outline-none focus:ring-2 focus:ring-brand-500/20 focus:border-brand-500 text-slate-800 dark:text-neutral-100 resize-none"
               placeholder="Ergonomic chairs and standing desks for 3rd floor..."
             />
           </div>
@@ -199,21 +199,21 @@ export const RfqCreate = () => {
           
           {/* Line items Section */}
           <div className="space-y-2">
-            <label className="block text-xs font-semibold text-slate-500 dark:text-dark-400">
+            <label className="block text-xs font-semibold text-slate-500 dark:text-neutral-400">
               Line items
             </label>
             
-            <div className="border border-slate-200 dark:border-dark-800 rounded-xl overflow-hidden bg-white dark:bg-dark-900/40">
+            <div className="border border-slate-200 dark:border-neutral-800 rounded-xl overflow-hidden bg-white dark:bg-neutral-900/40">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="border-b border-slate-200 dark:border-dark-800 text-slate-400 dark:text-dark-500 text-[10px] font-bold">
+                  <tr className="border-b border-slate-200 dark:border-neutral-800 text-slate-400 dark:text-neutral-500 text-[10px] font-bold">
                     <th className="px-4 py-2">item</th>
                     <th className="px-4 py-2 w-20 text-center">qty</th>
                     <th className="px-4 py-2 w-20 text-center">Unit</th>
                     <th className="px-4 py-2 w-10 text-center"></th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-dark-800 text-slate-700 dark:text-dark-300">
+                <tbody className="divide-y divide-slate-100 dark:divide-neutral-800 text-slate-700 dark:text-neutral-300">
                   {items.map((item, idx) => (
                     <tr key={idx}>
                       <td className="p-1">
@@ -222,7 +222,7 @@ export const RfqCreate = () => {
                           required
                           value={item.name}
                           onChange={(e) => handleItemChange(idx, 'name', e.target.value)}
-                          className="w-full px-2 py-1 text-xs bg-transparent border-0 focus:outline-none focus:bg-slate-50 dark:focus:bg-dark-800 font-semibold"
+                          className="w-full px-2 py-1 text-xs bg-transparent border-0 focus:outline-none focus:bg-slate-50 dark:focus:bg-neutral-800 font-semibold"
                           placeholder="item description"
                         />
                       </td>
@@ -233,7 +233,7 @@ export const RfqCreate = () => {
                           required
                           value={item.quantity}
                           onChange={(e) => handleItemChange(idx, 'quantity', parseInt(e.target.value) || 0)}
-                          className="w-full px-2 py-1 text-xs bg-transparent border-0 focus:outline-none focus:bg-slate-50 dark:focus:bg-dark-800 text-center"
+                          className="w-full px-2 py-1 text-xs bg-transparent border-0 focus:outline-none focus:bg-slate-50 dark:focus:bg-neutral-800 text-center"
                         />
                       </td>
                       <td className="p-1 w-20">
@@ -242,7 +242,7 @@ export const RfqCreate = () => {
                           required
                           value={item.unit}
                           onChange={(e) => handleItemChange(idx, 'unit', e.target.value)}
-                          className="w-full px-2 py-1 text-xs bg-transparent border-0 focus:outline-none focus:bg-slate-50 dark:focus:bg-dark-800 text-center"
+                          className="w-full px-2 py-1 text-xs bg-transparent border-0 focus:outline-none focus:bg-slate-50 dark:focus:bg-neutral-800 text-center"
                           placeholder="NOS"
                         />
                       </td>
@@ -264,7 +264,7 @@ export const RfqCreate = () => {
             <button
               type="button"
               onClick={handleAddItem}
-              className="px-4 py-1.5 text-xs font-semibold bg-transparent border border-slate-300 dark:border-dark-700 text-slate-700 dark:text-dark-300 rounded-xl hover:bg-slate-50 dark:hover:bg-dark-800 transition-all cursor-pointer"
+              className="px-4 py-1.5 text-xs font-semibold bg-transparent border border-slate-300 dark:border-neutral-700 text-slate-700 dark:text-neutral-300 rounded-xl hover:bg-slate-50 dark:hover:bg-neutral-800 transition-all cursor-pointer"
             >
               + add line item
             </button>
@@ -272,19 +272,19 @@ export const RfqCreate = () => {
 
           {/* Assign Vendors Section */}
           <div className="space-y-2">
-            <label className="block text-xs font-semibold text-slate-500 dark:text-dark-400 uppercase tracking-wider">
+            <label className="block text-xs font-semibold text-slate-500 dark:text-neutral-400 uppercase tracking-wider">
               ASSIGN VENDORS
             </label>
 
-            <div className="border border-slate-200 dark:border-dark-800 rounded-xl bg-white dark:bg-dark-900/40 p-1 divide-y divide-slate-100 dark:divide-dark-800 relative">
+            <div className="border border-slate-200 dark:border-neutral-800 rounded-xl bg-white dark:bg-neutral-900/40 p-1 divide-y divide-slate-100 dark:divide-neutral-800 relative">
               {assignedVendors.length === 0 ? (
-                <p className="p-4 text-xs text-slate-400 dark:text-dark-500 text-center">No vendors assigned yet.</p>
+                <p className="p-4 text-xs text-slate-400 dark:text-neutral-500 text-center">No vendors assigned yet.</p>
               ) : (
                 assignedVendors.map((vendorId) => {
                   const vendorObj = vendors.find(v => v.id === vendorId);
                   return (
                     <div key={vendorId} className="flex items-center justify-between px-3 py-2 text-xs">
-                      <span className="font-semibold text-slate-800 dark:text-dark-200">
+                      <span className="font-semibold text-slate-800 dark:text-neutral-200">
                         {vendorObj ? vendorObj.name : vendorId}
                       </span>
                       <button
@@ -300,7 +300,7 @@ export const RfqCreate = () => {
               )}
               
               {/* Add vendor trigger action */}
-              <div className="p-2 bg-slate-50/50 dark:bg-dark-950/20">
+              <div className="p-2 bg-slate-50/50 dark:bg-neutral-950/20">
                 <button
                   type="button"
                   onClick={() => setShowVendorSelect(!showVendorSelect)}
@@ -311,18 +311,18 @@ export const RfqCreate = () => {
                 
                 {/* Vendors Selection Popover dropdown */}
                 {showVendorSelect && (
-                  <div className="absolute left-2 right-2 bottom-12 mt-1 max-h-48 overflow-y-auto bg-white dark:bg-dark-900 border border-slate-250 dark:border-dark-750 rounded-xl shadow-lg z-10 divide-y divide-slate-100 dark:divide-dark-800 animate-fade-scale">
+                  <div className="absolute left-2 right-2 bottom-12 mt-1 max-h-48 overflow-y-auto bg-white dark:bg-neutral-900 border border-slate-250 dark:border-neutral-750 rounded-xl shadow-lg z-10 divide-y divide-slate-100 dark:divide-neutral-800 animate-fade-scale">
                     {unassignedVendors.length === 0 ? (
-                      <div className="p-3 text-center text-slate-400 dark:text-dark-500">All vendors assigned.</div>
+                      <div className="p-3 text-center text-slate-400 dark:text-neutral-500">All vendors assigned.</div>
                     ) : (
                       unassignedVendors.map((v) => (
                         <div
                           key={v.id}
                           onClick={() => handleAddVendor(v.id)}
-                          className="px-3 py-2 hover:bg-slate-50 dark:hover:bg-dark-800 cursor-pointer text-xs flex justify-between items-center"
+                          className="px-3 py-2 hover:bg-slate-50 dark:hover:bg-neutral-800 cursor-pointer text-xs flex justify-between items-center"
                         >
                           <span className="font-semibold">{v.name}</span>
-                          <span className="text-[10px] text-slate-400 dark:text-dark-500">{v.category}</span>
+                          <span className="text-[10px] text-slate-400 dark:text-neutral-500">{v.category}</span>
                         </div>
                       ))
                     )}
@@ -339,7 +339,7 @@ export const RfqCreate = () => {
 
       {/* Bottom Area (horizontal rule divider + actions + attachments) */}
       <div>
-        <hr className="border-slate-200 dark:border-dark-800 my-6" />
+        <hr className="border-slate-200 dark:border-neutral-800 my-6" />
         
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           
@@ -348,14 +348,14 @@ export const RfqCreate = () => {
             <button
               type="button"
               onClick={handleSubmit}
-              className="w-full py-2.5 text-xs font-semibold bg-transparent border border-slate-300 dark:border-dark-700 text-slate-800 dark:text-dark-200 rounded-xl hover:bg-slate-50 dark:hover:bg-dark-800 hover:border-slate-400 dark:hover:border-dark-600 transition-all cursor-pointer"
+              className="w-full py-2.5 text-xs font-semibold bg-transparent border border-slate-300 dark:border-neutral-700 text-slate-800 dark:text-neutral-200 rounded-xl hover:bg-slate-50 dark:hover:bg-neutral-800 hover:border-slate-400 dark:hover:border-neutral-600 transition-all cursor-pointer"
             >
               Save & Send to Vendors
             </button>
             <button
               type="button"
               onClick={handleSaveDraft}
-              className="w-full py-2.5 text-xs font-semibold bg-transparent border border-slate-300 dark:border-dark-700 text-slate-800 dark:text-dark-200 rounded-xl hover:bg-slate-50 dark:hover:bg-dark-800 hover:border-slate-400 dark:hover:border-dark-600 transition-all cursor-pointer"
+              className="w-full py-2.5 text-xs font-semibold bg-transparent border border-slate-300 dark:border-neutral-700 text-slate-800 dark:text-neutral-200 rounded-xl hover:bg-slate-50 dark:hover:bg-neutral-800 hover:border-slate-400 dark:hover:border-neutral-600 transition-all cursor-pointer"
             >
               Save as Draft
             </button>
@@ -363,14 +363,14 @@ export const RfqCreate = () => {
 
           {/* Attachments Section */}
           <div className="space-y-2">
-            <label className="block text-xs font-semibold text-slate-500 dark:text-dark-400">
+            <label className="block text-xs font-semibold text-slate-500 dark:text-neutral-400">
               Attchements
             </label>
             <div 
               onClick={() => addToast('Attachment selector opened!', 'info')}
-              className="border border-dashed border-slate-300 dark:border-dark-750 rounded-xl p-8 bg-white dark:bg-dark-900/20 text-center cursor-pointer hover:border-brand-500/50 hover:bg-slate-50/50 dark:hover:bg-dark-800/20 transition-all flex items-center justify-center"
+              className="border border-dashed border-slate-300 dark:border-neutral-750 rounded-xl p-8 bg-white dark:bg-neutral-900/20 text-center cursor-pointer hover:border-brand-500/50 hover:bg-slate-50/50 dark:hover:bg-neutral-800/20 transition-all flex items-center justify-center"
             >
-              <span className="text-xs text-slate-450 dark:text-dark-500">
+              <span className="text-xs text-slate-450 dark:text-neutral-500">
                 Drag & drop files or click to upload
               </span>
             </div>

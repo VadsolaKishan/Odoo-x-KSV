@@ -6,8 +6,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="VendorBridge ERP is a premium SaaS Procurement and Vendor Management system designed for streamlined RFQ dispatch, quote comparisons, approvals, purchase orders, and analytics." />
     <title>VendorBridge | Procurement & Vendor Management ERP</title>
+    <script>
+      (function() {
+        const theme = localStorage.getItem('vb_theme') || 'light';
+        if (theme === 'dark') {
+          document.documentElement.classList.add('dark');
+        } else {
+          document.documentElement.classList.remove('dark');
+        }
+      })();
+    </script>
   </head>
-  <body class="bg-slate-50 dark:bg-dark-950 text-slate-800 dark:text-slate-100 transition-colors duration-300 antialiased">
+  <body class="bg-slate-50 dark:bg-neutral-950 text-slate-800 dark:text-neutral-100 transition-colors duration-300 antialiased">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
   </body>

@@ -16,7 +16,7 @@ export const Timeline = ({ currentStep = 0 }) => {
       <div className="relative flex items-center justify-between">
         
         {/* Connection lines background */}
-        <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-0.5 bg-slate-200 dark:bg-dark-800 -z-10" />
+        <div className="absolute left-0 right-0 top-1/2 -translate-y-1/2 h-0.5 bg-slate-200 dark:bg-neutral-800 -z-10" />
         
         {/* Active connection line overlay */}
         <div 
@@ -30,11 +30,11 @@ export const Timeline = ({ currentStep = 0 }) => {
           const isCompleted = idx < currentStep;
           const isActive = idx === currentStep;
 
-          let borderStyle = 'border-slate-300 dark:border-dark-700 bg-white dark:bg-dark-900 text-slate-400 dark:text-dark-500';
+          let borderStyle = 'border-slate-300 dark:border-neutral-700 bg-white dark:bg-neutral-900 text-slate-400 dark:text-neutral-500';
           if (isCompleted) {
             borderStyle = 'border-brand-500 bg-brand-500 text-white shadow-md shadow-brand-500/20';
           } else if (isActive) {
-            borderStyle = 'border-brand-500 bg-white dark:bg-dark-900 text-brand-600 dark:text-brand-400 ring-4 ring-brand-500/10 scale-110';
+            borderStyle = 'border-brand-500 bg-white dark:bg-neutral-900 text-brand-600 dark:text-brand-400 ring-4 ring-brand-500/10 scale-110';
           }
 
           return (
@@ -54,8 +54,8 @@ export const Timeline = ({ currentStep = 0 }) => {
                 isActive 
                   ? 'text-brand-600 dark:text-brand-400 font-bold' 
                   : isCompleted 
-                    ? 'text-slate-800 dark:text-dark-200' 
-                    : 'text-slate-400 dark:text-dark-500'
+                    ? 'text-slate-800 dark:text-neutral-200' 
+                    : 'text-slate-400 dark:text-neutral-500'
               }`}>
                 {step.label}
               </span>

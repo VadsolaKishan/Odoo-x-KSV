@@ -64,7 +64,7 @@ export const QuickAction = ({ onAddVendorClick }) => {
             const Icon = item.icon;
             return (
               <div key={index} className="flex items-center gap-3 group">
-                <span className="px-2.5 py-1 text-xs font-semibold bg-white dark:bg-dark-900 border border-slate-200 dark:border-dark-850 rounded-lg shadow-sm text-slate-700 dark:text-dark-300 opacity-0 group-hover:opacity-100 transition-opacity duration-200 select-none">
+                <span className="px-2.5 py-1 text-xs font-semibold bg-white dark:bg-neutral-900 border border-slate-200 dark:border-neutral-850 rounded-lg shadow-sm text-slate-700 dark:text-neutral-300 opacity-0 group-hover:opacity-100 transition-opacity duration-200 select-none">
                   {item.label}
                 </span>
                 <button
