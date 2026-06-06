@@ -216,3 +216,135 @@ select:-webkit-autofill:active {
   transition: background-color 5000s ease-in-out 0s;
 }
 
+/* =================================================================
+   LIGHT THEME — Tailwind Utility Overrides
+   Color palette:
+     Primary text:    #0f172a  (slate-900)
+     Secondary text:  #475569  (slate-600)
+     Elevated bg:     #f1f5f9  (slate-100)
+     Subtle border:   rgba(15,23,42,0.08)
+     Secondary btn:   #f1f5f9 bg + #334155 text + #e2e8f0 border
+   ================================================================= */
+
+/* ── Transparent white backgrounds ── */
+:root.light [class*="bg-white/5"],
+:root.light [class*="bg-white/[0.01"],
+:root.light [class*="bg-white/[0.02"],
+:root.light [class*="bg-white/[0.03"],
+:root.light [class*="bg-white/[0.04"],
+:root.light [class*="bg-white/[0.05"] {
+  background-color: #f1f5f9 !important;
+}
+:root.light [class*="bg-white/[0.00"] {
+  background-color: transparent !important;
+}
+:root.light [class*="bg-white/10"] {
+  background-color: #e2e8f0 !important;
+}
+
+/* ── Hover: transparent white backgrounds ── */
+:root.light [class*="hover:bg-white/5"]:hover,
+:root.light [class*="hover:bg-white/[0.0"]:hover {
+  background-color: #e2e8f0 !important;
+}
+:root.light [class*="hover:bg-white/10"]:hover {
+  background-color: #cbd5e1 !important;
+}
+
+/* ── Dark glass / black overlay ── */
+:root.light [class*="bg-black/20"],
+:root.light [class*="bg-black/60"] {
+  background-color: rgba(15, 23, 42, 0.04) !important;
+}
+
+/* ── White / transparent borders ── */
+:root.light [class*="border-white/"] {
+  border-color: #e2e8f0 !important;
+}
+:root.light [class*="hover:border-white/"]:hover {
+  border-color: #cbd5e1 !important;
+}
+
+/* ── Dividers ── */
+:root.light [class*="divide-white/"] > * + * {
+  border-color: #e2e8f0 !important;
+}
+
+/* ── Footer border ── */
+:root.light .border-t[class*="border-white/"] {
+  border-color: #e2e8f0 !important;
+}
+
+/* ── text-white opacity variants ── */
+:root.light [class*="text-white/80"] {
+  color: #0f172a !important;
+  opacity: 0.8;
+}
+:root.light [class*="text-white/30"] {
+  color: #475569 !important;
+  opacity: 1;
+}
+:root.light [class*="text-white/10"] {
+  color: #94a3b8 !important;
+  opacity: 1;
+}
+
+/* ── Hardcoded dark-theme slate color ── */
+/* #94a3b8 is slate-400 — fine on dark, too light on white bg */
+:root.light [class*="text-[#94a3b8]"] {
+  color: #475569 !important;
+}
+
+/* ── hover:text-white → hover to primary dark ── */
+:root.light [class*="hover:text-white"]:hover {
+  color: #0f172a !important;
+}
+
+/* =================================================================
+   LIGHT THEME — .text-white conversion
+   Rule 1: Convert ALL .text-white → #0f172a (dark primary text)
+   Rule 2: Restore #ffffff for solid colored-bg buttons & badges
+   ================================================================= */
+
+/* Rule 1 — global text-white → dark */
+:root.light .text-white {
+  color: #0f172a !important;
+}
+
+/* Rule 2 — restore white on solid colored backgrounds (self) */
+:root.light [class*="bg-brand-green"].text-white,
+:root.light [class*="bg-emerald-5"].text-white,
+:root.light [class*="bg-emerald-6"].text-white,
+:root.light [class*="bg-blue-5"].text-white,
+:root.light [class*="bg-blue-6"].text-white,
+:root.light [class*="bg-red-5"].text-white,
+:root.light [class*="bg-red-6"].text-white,
+:root.light [class*="bg-amber-5"].text-white,
+:root.light [class*="bg-indigo-5"].text-white,
+:root.light [class*="bg-indigo-6"].text-white,
+:root.light [class*="from-emerald-"].text-white,
+:root.light [class*="from-brand-"].text-white,
+:root.light [class*="from-blue-"].text-white,
+:root.light [class*="from-red-"].text-white,
+:root.light .bg-emerald-500.text-white,
+:root.light .bg-emerald-600.text-white {
+  color: #ffffff !important;
+}
+
+/* Rule 2 — restore white on children inside solid colored parents */
+:root.light [class*="bg-brand-green"] .text-white,
+:root.light [class*="bg-emerald-5"] .text-white,
+:root.light [class*="bg-emerald-6"] .text-white,
+:root.light [class*="bg-blue-5"] .text-white,
+:root.light [class*="bg-blue-6"] .text-white,
+:root.light [class*="bg-red-5"] .text-white,
+:root.light [class*="bg-red-6"] .text-white,
+:root.light [class*="bg-amber-5"] .text-white,
+:root.light [class*="bg-indigo-5"] .text-white,
+:root.light [class*="bg-indigo-6"] .text-white,
+:root.light [class*="from-emerald-"] .text-white,
+:root.light [class*="from-brand-"] .text-white,
+:root.light [class*="from-blue-"] .text-white,
+:root.light [class*="from-red-"] .text-white {
+  color: #ffffff !important;
+}
